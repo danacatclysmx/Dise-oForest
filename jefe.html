@@ -8,6 +8,45 @@
 </head>
 <body>
     <div class="container">
+
+        <!-- Botón de menú hamburguesa -->
+    <button class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <!-- Overlay para cerrar el menú -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Menú lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">Menú</h2>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-item active">
+                <i class="fas fa-list"></i>
+                <span>Lista de Conglomerados</span>
+            </li>
+            <li class="menu-item">
+                <i class="fas fa-trash"></i>
+                <span>Papelera</span>
+            </li>
+        </ul>
+        
+        <div class="create-button" id="createButton">
+            <i class="fas fa-plus"></i> CREAR
+        </div>
+    </div>
+    
+    <!-- Contenido principal (solo para demostración) -->
+    <div class="main-content">
+        <h1>Contenido Principal</h1>
+        <p>Este es el contenido de tu aplicación. Haz clic en el botón de hamburguesa en la esquina superior izquierda para abrir/cerrar el menú.</p>
+    </div>
+
         <h1>CONGLOMERADOS</h1>
         
         <div class="status-tabs">

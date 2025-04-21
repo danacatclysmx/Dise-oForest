@@ -1,3 +1,46 @@
+// Control del menú lateral
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const createButton = document.getElementById('createButton');
+
+// Alternar menú lateral
+menuToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+    menuToggle.classList.toggle('open');
+});
+
+// Cerrar menú al hacer clic en el overlay
+overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    menuToggle.classList.remove('open');
+});
+
+// Cerrar menú al hacer clic fuera
+document.addEventListener('click', function(e) {
+    if (!sidebar.contains(e.target) && e.target !== menuToggle) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        menuToggle.classList.remove('open');
+    }
+});
+
+// Funcionalidad para el menú lateral
+document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', function() {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Botón CREAR
+createButton.addEventListener('click', function() {
+    alert('Creando nuevo elemento');
+});
+
 // Datos de ejemplo para los conglomerados
 const conglomeradosData = {
     "CONG_004523": {
