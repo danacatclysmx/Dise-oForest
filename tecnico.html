@@ -1,11 +1,254 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tecnico de Suelos</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Técnico de Suelos - Forest Track</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- css stylesheet -->
+    <link rel="stylesheet" href="tecnico.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Botón de menú hamburguesa -->
+      <button class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Overlay para cerrar el menú -->
+      <div class="overlay" id="overlay"></div>
+
+      <!-- Menú lateral -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">Menú Técnico</h2>
+        </div>
+
+        <ul class="sidebar-menu">
+          <li class="menu-item active" onclick="loadSection('visualizar')">
+            <i class="fas fa-eye"></i>
+            <span>Visualiza Conglomerados</span>
+          </li>
+          <li class="menu-item" onclick="loadSection('registro')">
+            <i class="fas fa-edit"></i>
+            <span>Registro de Muestras</span>
+          </li>
+          <li class="menu-item" onclick="loadSection('gestion')">
+            <i class="fas fa-truck"></i>
+            <span>Gestión de Envío</span>
+          </li>
+          <li class="menu-item" onclick="loadSection('historial')">
+            <i class="fas fa-history"></i>
+            <span>Historial Muestras</span>
+          </li>
+        </ul>
+      </div>
+
+      <h1>TÉCNICO DE SUELOS</h1>
+
+      <!-- Sección de Visualización de Conglomerados (predeterminada) -->
+      <div id="visualizar-section" class="content-section active">
+        <h2>Visualización de Conglomerados</h2>
+
+        <div class="filter-options">
+          <div class="filter-option active" onclick="filterByColor('all')">
+            <div class="status-circle" style="background-color: #ccc"></div>
+            TODOS
+          </div>
+          <div class="filter-option" onclick="filterByColor('red')">
+            <div class="status-circle status-red"></div>
+            ROJO
+          </div>
+          <div class="filter-option" onclick="filterByColor('green')">
+            <div class="status-circle status-green"></div>
+            VERDE
+          </div>
+          <div class="filter-option" onclick="filterByColor('blue')">
+            <div class="status-circle status-blue"></div>
+            AZUL
+          </div>
+        </div>
+
+        <div id="conglomeradosContainer">
+          <!-- Ejemplo de conglomerado con indicador de color -->
+          <div
+            class="conglomerado conglomerado-view"
+            data-color="red"
+            onclick="showDetails('CONG_004523')"
+          >
+            <div class="color-indicator status-red"></div>
+            <div class="conglomerado-id">CONG_004523</div>
+            <div class="conglomerado-info">
+              <strong>Ubicación:</strong> Departamento: Antioquia, Municipio:
+              Medellín
+            </div>
+            <div class="conglomerado-info">
+              <strong>Coordenadas Centro:</strong> 6°15'00"N 75°34'00"W
+            </div>
+            <div class="conglomerado-info">
+              <strong>Fecha Muestreo:</strong> 15/05/2024
+            </div>
+            <div class="conglomerado-info">
+              <strong>Tipo Suelo:</strong> Arcilloso
+            </div>
+          </div>
+
+          <!-- Segundo ejemplo de conglomerado -->
+          <div
+            class="conglomerado conglomerado-view"
+            data-color="green"
+            onclick="showDetails('CONG_004524')"
+          >
+            <div class="color-indicator status-green"></div>
+            <div class="conglomerado-id">CONG_004524</div>
+            <div class="conglomerado-info">
+              <strong>Ubicación:</strong> Departamento: Cundinamarca, Municipio:
+              Bogotá
+            </div>
+            <div class="conglomerado-info">
+              <strong>Coordenadas Centro:</strong> 4°38'00"N 74°05'00"W
+            </div>
+            <div class="conglomerado-info">
+              <strong>Fecha Muestreo:</strong> 18/05/2024
+            </div>
+            <div class="conglomerado-info">
+              <strong>Tipo Suelo:</strong> Franco-arenoso
+            </div>
+          </div>
+
+          <!-- Tercer ejemplo de conglomerado -->
+          <div
+            class="conglomerado conglomerado-view"
+            data-color="blue"
+            onclick="showDetails('CONG_004525')"
+          >
+            <div class="color-indicator status-blue"></div>
+            <div class="conglomerado-id">CONG_004525</div>
+            <div class="conglomerado-info">
+              <strong>Ubicación:</strong> Departamento: Valle del Cauca,
+              Municipio: Cali
+            </div>
+            <div class="conglomerado-info">
+              <strong>Coordenadas Centro:</strong> 3°25'00"N 76°31'00"W
+            </div>
+            <div class="conglomerado-info">
+              <strong>Fecha Muestreo:</strong> 20/05/2024
+            </div>
+            <div class="conglomerado-info">
+              <strong>Tipo Suelo:</strong> Limoso
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Registro de Muestras (oculta inicialmente) -->
+      <div id="registro-section" class="content-section">
+        <h2>Registro de Muestras</h2>
+        <p>Formulario para registrar nuevas muestras de suelo...</p>
+      </div>
+
+      <!-- Sección de Gestión de Envío (oculta inicialmente) -->
+      <div id="gestion-section" class="content-section">
+        <h2>Gestión de Envío</h2>
+        <p>Interfaz para gestionar el envío de muestras al laboratorio...</p>
+      </div>
+
+      <!-- Sección de Historial de Muestras (oculta inicialmente) -->
+      <div id="historial-section" class="content-section">
+        <h2>Historial de Muestras</h2>
+        <p>Registro histórico de todas las muestras procesadas...</p>
+      </div>
+    </div>
+
+    <!-- Modal de Detalles (adaptado para técnico de suelos) -->
+    <div class="modal-overlay" id="modalDetalles">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="modalConglomeradoId">CONG_004523</div>
+          <button class="close-button" id="closeModal">&times;</button>
+        </div>
+
+        <div class="modal-section">
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Fecha de Muestreo:</strong>
+              <span id="fechaMuestreo">20240515</span>
+            </div>
+            <div class="info-item">
+              <strong>Departamento:</strong>
+              <span id="departamento">Antioquia</span>
+            </div>
+            <div class="info-item">
+              <strong>Municipio:</strong> <span id="municipio">Medellín</span>
+            </div>
+            <div class="info-item">
+              <strong>Coordenadas Centro:</strong>
+              <span id="coordenadas">6°15'00"N 75°34'00"W</span>
+            </div>
+            <div class="info-item">
+              <strong>Tipo de Suelo:</strong>
+              <span id="tipoSuelo">Arcilloso</span>
+            </div>
+            <div class="info-item">
+              <strong>Profundidad Muestra:</strong>
+              <span id="profundidad">0-30 cm</span>
+            </div>
+            <div class="info-item">
+              <strong>Color Muestra:</strong>
+              <span id="colorMuestra">Rojo (10YR 4/6)</span>
+            </div>
+            <div class="info-item">
+              <strong>Textura:</strong>
+              <span id="textura">Arcilla</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3>Características Físicas</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Densidad Aparente:</strong>
+              <span id="densidad">1.25 g/cm³</span>
+            </div>
+            <div class="info-item">
+              <strong>Porosidad:</strong>
+              <span id="porosidad">45%</span>
+            </div>
+            <div class="info-item">
+              <strong>Humedad:</strong>
+              <span id="humedad">22%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3>Muestras Tomadas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Subparcela</th>
+                <th>Profundidad</th>
+                <th>Código Muestra</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="muestrasTable">
+              <!-- Datos de muestras se llenarán dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="tecnico.js"></script>
 </html>

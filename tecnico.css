@@ -1,0 +1,45 @@
+/* Estilos específicos para el módulo de técnico */
+.status-circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.status-red {
+  background-color: #ff4d4d;
+}
+.status-green {
+  background-color: #4caf50;
+}
+.status-blue {
+  background-color: #2196f3;
+}
+
+.filter-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-option {
+  padding: 8px 15px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.filter-option.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.conglomerado-view {
+  cursor: default;
+}
+
+.conglomerado-view .options-menu {
+  display: none;
+}
