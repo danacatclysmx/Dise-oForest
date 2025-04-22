@@ -1,204 +1,269 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Conglomerados</title>
-    <link rel="stylesheet" href="jefecss.css">
-</head>
-<body>
+    <link rel="stylesheet" href="jefecss.css" />
+  </head>
+  <body>
     <div class="container">
+      <!-- Botón de menú hamburguesa -->
+      <button class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-        <!-- Botón de menú hamburguesa -->
-    <button class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    
-    <!-- Overlay para cerrar el menú -->
-    <div class="overlay" id="overlay"></div>
-    
-    <!-- Menú lateral -->
-    <div class="sidebar" id="sidebar">
+      <!-- Overlay para cerrar el menú -->
+      <div class="overlay" id="overlay"></div>
+
+      <!-- Menú lateral -->
+      <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h2 class="sidebar-title">Menú</h2>
+          <h2 class="sidebar-title">Menú</h2>
         </div>
-        
+
         <ul class="sidebar-menu">
-            <li class="menu-item active">
-                <i class="fas fa-list"></i>
-                <span>Lista de Conglomerados</span>
-            </li>
-            <li class="menu-item">
-                <i class="fas fa-trash"></i>
-                <span>Papelera</span>
-            </li>
+          <li class="menu-item active">
+            <i class="fas fa-list"></i>
+            <span>Lista de Conglomerados</span>
+          </li>
+          <li class="menu-item">
+            <i class="fas fa-trash"></i>
+            <span>Papelera</span>
+          </li>
         </ul>
-        
+
         <div class="create-button" id="createButton">
-            <i class="fas fa-plus"></i> CREAR
+          <i class="fas fa-plus"></i> CREAR
         </div>
-    </div>
-    
-    <!-- Contenido principal (solo para demostración) -->
-    <div class="main-content">
-        <h1>Contenido Principal</h1>
-        <p>Este es el contenido de tu aplicación. Haz clic en el botón de hamburguesa en la esquina superior izquierda para abrir/cerrar el menú.</p>
+      </div>
+
+      <h1>CONGLOMERADOS</h1>
+
+      <div class="status-tabs">
+        <div
+          class="status-tab active"
+          onclick="filterConglomerados('pendientes')"
+        >
+          PENDIENTES
+        </div>
+        <div class="status-tab" onclick="filterConglomerados('aprobados')">
+          APROBADOS
+        </div>
+        <div class="status-tab" onclick="filterConglomerados('rechazados')">
+          RECHAZADOS
+        </div>
+      </div>
+
+      <div id="conglomeradosContainer">
+        <!-- Ejemplo de conglomerado -->
+        <div
+          class="conglomerado"
+          data-status="pendientes"
+          onclick="showDetails('CONG_004523')"
+        >
+          <div class="options-menu">
+            <button
+              class="options-button"
+              onclick="event.stopPropagation(); toggleOptionsMenu(this)"
+            >
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </button>
+            <div class="options-dropdown">
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); editConglomerado('CONG_004523')"
+              >
+                EDITAR
+              </div>
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); deleteConglomerado('CONG_004523')"
+              >
+                ELIMINAR
+              </div>
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); showDetails('CONG_004523')"
+              >
+                VER DETALLES
+              </div>
+            </div>
+          </div>
+
+          <div class="conglomerado-id">CONG_004523</div>
+          <div class="conglomerado-info">
+            <strong>Ubicación:</strong> Departamento: Antioquia, Municipio:
+            Medellín, Corregimiento: Santa Elena
+          </div>
+          <div class="conglomerado-info">
+            <strong>Coordenadas Centro:</strong> 6°15'00"N 75°34'00"W
+          </div>
+          <div class="conglomerado-info">
+            <strong>Fecha Inicio:</strong> 15/05/2024 -
+            <strong>Fecha Fin:</strong> 17/05/2024
+          </div>
+          <div class="conglomerado-info">
+            <strong>Subparcelas:</strong> 5 (Norte, Sur, Este, Oeste, Centro)
+          </div>
+        </div>
+
+        <!-- Segundo ejemplo de conglomerado -->
+        <div
+          class="conglomerado"
+          data-status="aprobados"
+          onclick="showDetails('CONG_004524')"
+        >
+          <div class="options-menu">
+            <button
+              class="options-button"
+              onclick="event.stopPropagation(); toggleOptionsMenu(this)"
+            >
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </button>
+            <div class="options-dropdown">
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); editConglomerado('CONG_004524')"
+              >
+                EDITAR
+              </div>
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); deleteConglomerado('CONG_004524')"
+              >
+                ELIMINAR
+              </div>
+              <div
+                class="option-item"
+                onclick="event.stopPropagation(); showDetails('CONG_004524')"
+              >
+                VER DETALLES
+              </div>
+            </div>
+          </div>
+
+          <div class="conglomerado-id">CONG_004524</div>
+          <div class="conglomerado-info">
+            <strong>Ubicación:</strong> Departamento: Cundinamarca, Municipio:
+            Bogotá, Corregimiento: Usaquén
+          </div>
+          <div class="conglomerado-info">
+            <strong>Coordenadas Centro:</strong> 4°38'00"N 74°05'00"W
+          </div>
+          <div class="conglomerado-info">
+            <strong>Fecha Inicio:</strong> 18/05/2024 -
+            <strong>Fecha Fin:</strong> 20/05/2024
+          </div>
+          <div class="conglomerado-info">
+            <strong>Subparcelas:</strong> 5 (Norte, Sur, Este, Oeste, Centro)
+          </div>
+        </div>
+      </div>
     </div>
 
-        <h1>CONGLOMERADOS</h1>
-        
-        <div class="status-tabs">
-            <div class="status-tab active" onclick="filterConglomerados('pendientes')">PENDIENTES</div>
-            <div class="status-tab" onclick="filterConglomerados('aprobados')">APROBADOS</div>
-            <div class="status-tab" onclick="filterConglomerados('rechazados')">RECHAZADOS</div>
-        </div>
-        
-        <div id="conglomeradosContainer">
-            <!-- Ejemplo de conglomerado -->
-            <div class="conglomerado" data-status="pendientes" onclick="showDetails('CONG_004523')">
-                <div class="options-menu">
-                    <button class="options-button" onclick="event.stopPropagation(); toggleOptionsMenu(this)">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </button>
-                    <div class="options-dropdown">
-                        <div class="option-item" onclick="event.stopPropagation(); editConglomerado('CONG_004523')">EDITAR</div>
-                        <div class="option-item" onclick="event.stopPropagation(); deleteConglomerado('CONG_004523')">ELIMINAR</div>
-                        <div class="option-item" onclick="event.stopPropagation(); showDetails('CONG_004523')">VER DETALLES</div>
-                    </div>
-                </div>
-                
-                <div class="conglomerado-id">CONG_004523</div>
-                <div class="conglomerado-info">
-                    <strong>Ubicación:</strong> Departamento: Antioquia, Municipio: Medellín, Corregimiento: Santa Elena
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Coordenadas Centro:</strong> 6°15'00"N 75°34'00"W
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Fecha Inicio:</strong> 15/05/2024 - <strong>Fecha Fin:</strong> 17/05/2024
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Subparcelas:</strong> 5 (Norte, Sur, Este, Oeste, Centro)
-                </div>
-            </div>
-            
-            <!-- Segundo ejemplo de conglomerado -->
-            <div class="conglomerado" data-status="aprobados" onclick="showDetails('CONG_004524')">
-                <div class="options-menu">
-                    <button class="options-button" onclick="event.stopPropagation(); toggleOptionsMenu(this)">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </button>
-                    <div class="options-dropdown">
-                        <div class="option-item" onclick="event.stopPropagation(); editConglomerado('CONG_004524')">EDITAR</div>
-                        <div class="option-item" onclick="event.stopPropagation(); deleteConglomerado('CONG_004524')">ELIMINAR</div>
-                        <div class="option-item" onclick="event.stopPropagation(); showDetails('CONG_004524')">VER DETALLES</div>
-                    </div>
-                </div>
-                
-                <div class="conglomerado-id">CONG_004524</div>
-                <div class="conglomerado-info">
-                    <strong>Ubicación:</strong> Departamento: Cundinamarca, Municipio: Bogotá, Corregimiento: Usaquén
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Coordenadas Centro:</strong> 4°38'00"N 74°05'00"W
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Fecha Inicio:</strong> 18/05/2024 - <strong>Fecha Fin:</strong> 20/05/2024
-                </div>
-                <div class="conglomerado-info">
-                    <strong>Subparcelas:</strong> 5 (Norte, Sur, Este, Oeste, Centro)
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <!-- Modal de Detalles -->
     <div class="modal-overlay" id="modalDetalles">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title" id="modalConglomeradoId">CONG_004523</div>
-                <button class="close-button" id="closeModal">&times;</button>
-            </div>
-            
-            <div class="modal-section">
-                <div class="info-grid">
-                    <div class="info-item">
-                        <strong>Fecha de Inicio:</strong> <span id="fechaInicio">20240515</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Fecha de Finalización:</strong> <span id="fechaFin">20240517</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Departamento:</strong> <span id="departamento">Antioquia</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Municipio:</strong> <span id="municipio">Medellín</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Corregimiento:</strong> <span id="corregimiento">Santa Elena</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Coordenadas Centro:</strong> <span id="coordenadas">6°15'00"N 75°34'00"W</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Aprobado por:</strong> <span id="aprobadoPor">Juan Pérez</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Precisión GPS:</strong> <span id="precision">±0.35 m</span>
-                    </div>
-                    <div class="info-item">
-                        <strong>Fecha Aprobación:</strong> <span id="fechaAprobacion">20/05/2024</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="modal-section">
-                <h3>Puntos de Referencia</h3>
-                <div class="punto-referencia">
-                    <div><strong>Tipo:</strong> <span id="puntoTipo">Árbol destacado</span></div>
-                    <div><strong>Azimut:</strong> <span id="puntoAzimut">45°</span></div>
-                    <div><strong>Distancia horizontal:</strong> <span id="puntoDistancia">15 m</span></div>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="modal-section">
-                <h3>Subparcelas</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Subparcela</th>
-                            <th>Radio</th>
-                            <th>Azimut</th>
-                            <th>Distancia al Centro</th>
-                            <th>Materializado</th>
-                            <th>Color</th>
-                            <th>Posición</th>
-                        </tr>
-                    </thead>
-                    <tbody id="subparcelasTable">
-                        <!-- Datos de subparcelas se llenarán dinámicamente -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="action-buttons">
-                <button class="action-button reject-button">RECHAZAR</button>
-                <button class="action-button correct-button">CORREGIR</button>
-                <button class="action-button approve-button">APROBAR</button>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title" id="modalConglomeradoId">CONG_004523</div>
+          <button class="close-button" id="closeModal">&times;</button>
         </div>
+
+        <div class="modal-section">
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Fecha de Inicio:</strong>
+              <span id="fechaInicio">20240515</span>
+            </div>
+            <div class="info-item">
+              <strong>Fecha de Finalización:</strong>
+              <span id="fechaFin">20240517</span>
+            </div>
+            <div class="info-item">
+              <strong>Departamento:</strong>
+              <span id="departamento">Antioquia</span>
+            </div>
+            <div class="info-item">
+              <strong>Municipio:</strong> <span id="municipio">Medellín</span>
+            </div>
+            <div class="info-item">
+              <strong>Corregimiento:</strong>
+              <span id="corregimiento">Santa Elena</span>
+            </div>
+            <div class="info-item">
+              <strong>Coordenadas Centro:</strong>
+              <span id="coordenadas">6°15'00"N 75°34'00"W</span>
+            </div>
+            <div class="info-item">
+              <strong>Aprobado por:</strong>
+              <span id="aprobadoPor">Juan Pérez</span>
+            </div>
+            <div class="info-item">
+              <strong>Precisión GPS:</strong>
+              <span id="precision">±0.35 m</span>
+            </div>
+            <div class="info-item">
+              <strong>Fecha Aprobación:</strong>
+              <span id="fechaAprobacion">20/05/2024</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3>Puntos de Referencia</h3>
+          <div class="punto-referencia">
+            <div>
+              <strong>Tipo:</strong> <span id="puntoTipo">Árbol destacado</span>
+            </div>
+            <div>
+              <strong>Azimut:</strong> <span id="puntoAzimut">45°</span>
+            </div>
+            <div>
+              <strong>Distancia horizontal:</strong>
+              <span id="puntoDistancia">15 m</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="modal-section">
+          <h3>Subparcelas</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Subparcela</th>
+                <th>Radio</th>
+                <th>Azimut</th>
+                <th>Distancia al Centro</th>
+                <th>Materializado</th>
+                <th>Color</th>
+                <th>Posición</th>
+              </tr>
+            </thead>
+            <tbody id="subparcelasTable">
+              <!-- Datos de subparcelas se llenarán dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="action-buttons">
+          <button class="action-button reject-button">RECHAZAR</button>
+          <button class="action-button correct-button">CORREGIR</button>
+          <button class="action-button approve-button">APROBAR</button>
+        </div>
+      </div>
     </div>
 
     <script src="jefejs.js"></script>
-</body>
+  </body>
 </html>

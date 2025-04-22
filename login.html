@@ -1,86 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>iniciar sesión</title>
     <!-- font awesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <!-- css stylesheet -->
-    <link rel="stylesheet" href="estilos.css">
-    <link rel="icon" type="image/png" href="imagenes/lobo_logo_ turquesa 32x32.png">
-</head>
-<body class="class_body_login">
-
-    <button class="new-button" onclick="window.location.href='Index.html'">Volver</button>
-
+    <link rel="stylesheet" href="estilos.css" />
+    <link rel="icon" type="image/png" href="imgs/logo.png" />
+  </head>
+  <body class="class_body_login">
+    <button class="new-button" onclick="window.location.href='Index.html'">
+      Volver
+    </button>
 
     <div class="container" id="container">
-        <div class="form-container sign-up-container">
-            <form action="#">
-                <h1>Pide Tu cuenta</h1>
-                
-                <div class="infield">
-                    <input type="text" placeholder="Nombre" />
-                    <label></label>
-                </div>
-                <div class="infield">
-                    <input type="tEXT" placeholder="Cargo"/>
-                    <label></label>
-                </div>
-                <div class="infield">
-                    <input type="email" placeholder="Correo" name="email"/>
-                    <label></label>
-                </div>
-                
-                <button class="styles_button">Pidela</button>
-            </form>
+      <div class="form-container sign-up-container">
+        <form action="#">
+          <h1>Pide Tu cuenta</h1>
+
+          <div class="infield">
+            <input type="text" placeholder="Nombre" />
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="text" placeholder="Cargo" />
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="email" placeholder="Correo" name="email" />
+            <label></label>
+          </div>
+
+          <button class="styles_button">Pidela</button>
+        </form>
+      </div>
+      <div class="form-container sign-in-container">
+        <form action="#" id="loginForm">
+          <h1>Iniciar sesión</h1>
+          <div class="infield">
+            <input type="text" id="usuario" placeholder="usuario" />
+            <label></label>
+          </div>
+          <div class="infield">
+            <input type="password" id="contrasena" placeholder="Contraseña" />
+            <label></label>
+          </div>
+          <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+          <button class="styles_button" type="submit" id="accederBtn">
+            Acceder
+          </button>
+          <p id="mensajeError" class="error"></p>
+        </form>
+      </div>
+      <div class="overlay-container" id="overlayCon">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>FOREST TRACK</h1>
+            <p><strong>Accede a tu cuenta</strong> y sigue donde lo dejaste.</p>
+            <button type="submit">Acceder</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <img src="imgs/logo.png" alt="Forest Track Logo" class="logo" />
+
+            <p>¿No te han dado tu usuario?, <strong>Pídelo ahora!</strong></p>
+            <button>Pídelo</button>
+          </div>
         </div>
-        <div class="form-container sign-in-container">
-            <form action="#">
-                <h1>Iniciar sesión</h1>
-                <div class="infield">
-                    <input type="email" placeholder="correo" name="email"/>
-                    <label></label>
-                </div>
-                <div class="infield">
-                    <input type="password" placeholder="Contraseña" />
-                    <label></label>
-                </div>
-                <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
-                <button class="styles_button">Acceder</button>
-            </form>
-        </div>
-        <div class="overlay-container" id="overlayCon">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Hola otra vez!</h1>
-                    <p> <strong>Accede a tu cuenta</strong> y sigue donde lo dejaste.</p>
-                    <button>Acceder</button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h1>
-                        <img src="imgs/logo.png" alt="Forest Track Logo" class="logo">
-                    </h1>
-                    <p>¿No te han dado tu usuario?, <strong>Pídelo ahora!</strong></p>
-                    <button>Pídelo</button>
-                </div>
-            </div>
-            <button id="overlayBtn"></button>
-        </div>
+        <button id="overlayBtn"></button>
+      </div>
     </div>
 
-    <!--<footer>
-        <mark>See more on <a href="https://www.youtube.com/channel/UCHIkJZkap10qGFHq5ViIExg">Karacode</a></mark>
-    </footer> -->
-    
-    <!-- From Uiverse.io by xopc333 --> 
-
-
-    
     <!-- js code -->
     <script src="main.js"></script>
-
-</body>
+  </body>
 </html>
