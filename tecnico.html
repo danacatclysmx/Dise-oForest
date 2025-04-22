@@ -1,254 +1,356 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Técnico de Suelos - Forest Track</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <!-- css stylesheet -->
-    <link rel="stylesheet" href="tecnico.css" />
-  </head>
-  <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muestreo de Suelos</title>
+    <link rel="stylesheet" href="tecnico.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
     <div class="container">
-      <!-- Botón de menú hamburguesa -->
-      <button class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <!-- Overlay para cerrar el menú -->
-      <div class="overlay" id="overlay"></div>
-
-      <!-- Menú lateral -->
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Menú Técnico</h2>
+        <!-- Botón de menú hamburguesa -->
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <!-- Overlay para cerrar el menú -->
+        <div class="overlay" id="overlay"></div>
+        
+        <!-- Menú lateral -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Menú</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-section="conglomerados">
+                    <i class="fas fa-list"></i>
+                    <span>Conglomerados</span>
+                </li>
+                <li class="menu-item" data-section="muestras">
+                    <i class="fas fa-vial"></i>
+                    <span>Muestras</span>
+                </li>
+                <li class="menu-item" data-section="rutas">
+                    <i class="fas fa-route"></i>
+                    <span>Rutas de Muestreo</span>
+                </li>
+                <li class="menu-item" data-section="papelera">
+                    <i class="fas fa-trash"></i>
+                    <span>Papelera</span>
+                </li>
+            </ul>
+            
+            <div class="create-button" id="createButton">
+                <i class="fas fa-plus"></i> CREAR
+            </div>
         </div>
 
-        <ul class="sidebar-menu">
-          <li class="menu-item active" onclick="loadSection('visualizar')">
-            <i class="fas fa-eye"></i>
-            <span>Visualiza Conglomerados</span>
-          </li>
-          <li class="menu-item" onclick="loadSection('registro')">
-            <i class="fas fa-edit"></i>
-            <span>Registro de Muestras</span>
-          </li>
-          <li class="menu-item" onclick="loadSection('gestion')">
-            <i class="fas fa-truck"></i>
-            <span>Gestión de Envío</span>
-          </li>
-          <li class="menu-item" onclick="loadSection('historial')">
-            <i class="fas fa-history"></i>
-            <span>Historial Muestras</span>
-          </li>
-        </ul>
-      </div>
-
-      <h1>TÉCNICO DE SUELOS</h1>
-
-      <!-- Sección de Visualización de Conglomerados (predeterminada) -->
-      <div id="visualizar-section" class="content-section active">
-        <h2>Visualización de Conglomerados</h2>
-
-        <div class="filter-options">
-          <div class="filter-option active" onclick="filterByColor('all')">
-            <div class="status-circle" style="background-color: #ccc"></div>
-            TODOS
-          </div>
-          <div class="filter-option" onclick="filterByColor('red')">
-            <div class="status-circle status-red"></div>
-            ROJO
-          </div>
-          <div class="filter-option" onclick="filterByColor('green')">
-            <div class="status-circle status-green"></div>
-            VERDE
-          </div>
-          <div class="filter-option" onclick="filterByColor('blue')">
-            <div class="status-circle status-blue"></div>
-            AZUL
-          </div>
+        <!-- Modal para Crear Conglomerado -->
+        <div class="modal-overlay" id="modalCrear">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">CREAR NUEVO CONGLOMERADO</div>
+                    <button class="close-button" id="closeCrearModal">&times;</button>
+                </div>
+                
+                <form id="formCrearConglomerado">
+                    <div class="form-group">
+                        <label for="departamento">Departamento:</label>
+                        <input type="text" id="departamento" name="departamento" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="municipio">Municipio:</label>
+                        <input type="text" id="municipio" name="municipio" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="corregimiento">Corregimiento:</label>
+                        <input type="text" id="corregimiento" name="corregimiento">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="coordenadas">Coordenadas Centro:</label>
+                        <input type="text" id="coordenadas" name="coordenadas" placeholder="Ej: 6°15'00\"N 75°34'00\"W" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha de Inicio:</label>
+                        <input type="date" id="fechaInicio" name="fechaInicio" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaFin">Fecha de Finalización:</label>
+                        <input type="date" id="fechaFin" name="fechaFin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="precision">Precisión GPS:</label>
+                        <input type="text" id="precision" name="precision" placeholder="Ej: ±0.35 m" required>
+                    </div>
+                    
+                    <h3>Subparcelas</h3>
+                    <div id="subparcelasContainer">
+                        <!-- Subparcelas se agregarán dinámicamente -->
+                    </div>
+                    <button type="button" class="add-button" onclick="addSubparcela()">
+                        <i class="fas fa-plus"></i> Añadir Subparcela
+                    </button>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="action-button reject-button" id="cancelarCrear">CANCELAR</button>
+                        <button type="submit" class="action-button approve-button">GUARDAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
+        <!-- Modal para Crear Muestra -->
+        <div class="modal-overlay" id="modalCrearMuestra">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">CREAR NUEVA MUESTRA</div>
+                    <button class="close-button" id="closeCrearMuestraModal">&times;</button>
+                </div>
+                
+                <form id="formCrearMuestra">
+                    <div class="form-group">
+                        <label for="muestraConglomerado">Conglomerado:</label>
+                        <select id="muestraConglomerado" name="muestraConglomerado" required>
+                            <!-- Opciones se llenarán dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="muestraSubparcela">Subparcela:</label>
+                        <select id="muestraSubparcela" name="muestraSubparcela" required>
+                            <!-- Opciones se llenarán dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaRecoleccion">Fecha de Recolección:</label>
+                        <input type="date" id="fechaRecoleccion" name="fechaRecoleccion" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="azimutMuestra">Azimut:</label>
+                        <input type="text" id="azimutMuestra" name="azimutMuestra" placeholder="Ej: 45°">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="distanciaHorizontal">Distancia Horizontal:</label>
+                        <input type="text" id="distanciaHorizontal" name="distanciaHorizontal" placeholder="Ej: 15 m">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profundidad">Profundidad:</label>
+                        <input type="text" id="profundidad" name="profundidad" placeholder="Ej: 20 cm">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="colorSuelo">Color del Suelo:</label>
+                        <input type="text" id="colorSuelo" name="colorSuelo" placeholder="Ej: Marrón oscuro">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pesoFresco">Peso Fresco:</label>
+                        <input type="text" id="pesoFresco" name="pesoFresco" placeholder="Ej: 500 g">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones:</label>
+                        <textarea id="observaciones" name="observaciones"></textarea>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="action-button reject-button" id="cancelarCrearMuestra">CANCELAR</button>
+                        <button type="submit" class="action-button approve-button">GUARDAR</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <h1 id="mainTitle">CONGLOMERADOS</h1>
+        
+        <div class="status-tabs" id="statusTabs">
+            <div class="status-tab active" onclick="filterConglomerados('pendientes')">PENDIENTES</div>
+            <div class="status-tab" onclick="filterConglomerados('aprobados')">APROBADOS</div>
+            <div class="status-tab" onclick="filterConglomerados('rechazados')">RECHAZADOS</div>
+        </div>
+        
         <div id="conglomeradosContainer">
-          <!-- Ejemplo de conglomerado con indicador de color -->
-          <div
-            class="conglomerado conglomerado-view"
-            data-color="red"
-            onclick="showDetails('CONG_004523')"
-          >
-            <div class="color-indicator status-red"></div>
-            <div class="conglomerado-id">CONG_004523</div>
-            <div class="conglomerado-info">
-              <strong>Ubicación:</strong> Departamento: Antioquia, Municipio:
-              Medellín
-            </div>
-            <div class="conglomerado-info">
-              <strong>Coordenadas Centro:</strong> 6°15'00"N 75°34'00"W
-            </div>
-            <div class="conglomerado-info">
-              <strong>Fecha Muestreo:</strong> 15/05/2024
-            </div>
-            <div class="conglomerado-info">
-              <strong>Tipo Suelo:</strong> Arcilloso
-            </div>
-          </div>
-
-          <!-- Segundo ejemplo de conglomerado -->
-          <div
-            class="conglomerado conglomerado-view"
-            data-color="green"
-            onclick="showDetails('CONG_004524')"
-          >
-            <div class="color-indicator status-green"></div>
-            <div class="conglomerado-id">CONG_004524</div>
-            <div class="conglomerado-info">
-              <strong>Ubicación:</strong> Departamento: Cundinamarca, Municipio:
-              Bogotá
-            </div>
-            <div class="conglomerado-info">
-              <strong>Coordenadas Centro:</strong> 4°38'00"N 74°05'00"W
-            </div>
-            <div class="conglomerado-info">
-              <strong>Fecha Muestreo:</strong> 18/05/2024
-            </div>
-            <div class="conglomerado-info">
-              <strong>Tipo Suelo:</strong> Franco-arenoso
-            </div>
-          </div>
-
-          <!-- Tercer ejemplo de conglomerado -->
-          <div
-            class="conglomerado conglomerado-view"
-            data-color="blue"
-            onclick="showDetails('CONG_004525')"
-          >
-            <div class="color-indicator status-blue"></div>
-            <div class="conglomerado-id">CONG_004525</div>
-            <div class="conglomerado-info">
-              <strong>Ubicación:</strong> Departamento: Valle del Cauca,
-              Municipio: Cali
-            </div>
-            <div class="conglomerado-info">
-              <strong>Coordenadas Centro:</strong> 3°25'00"N 76°31'00"W
-            </div>
-            <div class="conglomerado-info">
-              <strong>Fecha Muestreo:</strong> 20/05/2024
-            </div>
-            <div class="conglomerado-info">
-              <strong>Tipo Suelo:</strong> Limoso
-            </div>
-          </div>
+            <!-- Los conglomerados se cargarán dinámicamente aquí -->
         </div>
-      </div>
-
-      <!-- Sección de Registro de Muestras (oculta inicialmente) -->
-      <div id="registro-section" class="content-section">
-        <h2>Registro de Muestras</h2>
-        <p>Formulario para registrar nuevas muestras de suelo...</p>
-      </div>
-
-      <!-- Sección de Gestión de Envío (oculta inicialmente) -->
-      <div id="gestion-section" class="content-section">
-        <h2>Gestión de Envío</h2>
-        <p>Interfaz para gestionar el envío de muestras al laboratorio...</p>
-      </div>
-
-      <!-- Sección de Historial de Muestras (oculta inicialmente) -->
-      <div id="historial-section" class="content-section">
-        <h2>Historial de Muestras</h2>
-        <p>Registro histórico de todas las muestras procesadas...</p>
-      </div>
     </div>
-
-    <!-- Modal de Detalles (adaptado para técnico de suelos) -->
+    
+    <!-- Modal de Detalles del Conglomerado -->
     <div class="modal-overlay" id="modalDetalles">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title" id="modalConglomeradoId">CONG_004523</div>
-          <button class="close-button" id="closeModal">&times;</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalConglomeradoId"></div>
+                <button class="close-button" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="modal-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Fecha de Inicio:</strong> <span id="fechaInicioDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Fecha de Finalización:</strong> <span id="fechaFinDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Departamento:</strong> <span id="departamentoDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Municipio:</strong> <span id="municipioDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Corregimiento:</strong> <span id="corregimientoDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Coordenadas Centro:</strong> <span id="coordenadasDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Aprobado por:</strong> <span id="aprobadoPorDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Precisión GPS:</strong> <span id="precisionDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Fecha Aprobación:</strong> <span id="fechaAprobacionDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Estado:</strong> <span id="estadoDetalle"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="modal-section">
+                <h3>Subparcelas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Subparcela</th>
+                            <th>Radio</th>
+                            <th>Azimut</th>
+                            <th>Distancia al Centro</th>
+                            <th>Materializado</th>
+                            <th>Color</th>
+                            <th>Posición</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subparcelasTable">
+                        <!-- Datos de subparcelas se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="modal-section">
+                <h3>Muestras Asociadas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Muestra</th>
+                            <th>Fecha Recolección</th>
+                            <th>Azimut</th>
+                            <th>Distancia Horizontal</th>
+                            <th>Profundidad</th>
+                            <th>Color Suelo</th>
+                            <th>Peso Fresco</th>
+                        </tr>
+                    </thead>
+                    <tbody id="muestrasTable">
+                        <!-- Datos de muestras se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="action-buttons" id="actionButtons">
+                <!-- Botones de acción se llenarán dinámicamente -->
+            </div>
         </div>
-
-        <div class="modal-section">
-          <div class="info-grid">
-            <div class="info-item">
-              <strong>Fecha de Muestreo:</strong>
-              <span id="fechaMuestreo">20240515</span>
-            </div>
-            <div class="info-item">
-              <strong>Departamento:</strong>
-              <span id="departamento">Antioquia</span>
-            </div>
-            <div class="info-item">
-              <strong>Municipio:</strong> <span id="municipio">Medellín</span>
-            </div>
-            <div class="info-item">
-              <strong>Coordenadas Centro:</strong>
-              <span id="coordenadas">6°15'00"N 75°34'00"W</span>
-            </div>
-            <div class="info-item">
-              <strong>Tipo de Suelo:</strong>
-              <span id="tipoSuelo">Arcilloso</span>
-            </div>
-            <div class="info-item">
-              <strong>Profundidad Muestra:</strong>
-              <span id="profundidad">0-30 cm</span>
-            </div>
-            <div class="info-item">
-              <strong>Color Muestra:</strong>
-              <span id="colorMuestra">Rojo (10YR 4/6)</span>
-            </div>
-            <div class="info-item">
-              <strong>Textura:</strong>
-              <span id="textura">Arcilla</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="modal-section">
-          <h3>Características Físicas</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <strong>Densidad Aparente:</strong>
-              <span id="densidad">1.25 g/cm³</span>
-            </div>
-            <div class="info-item">
-              <strong>Porosidad:</strong>
-              <span id="porosidad">45%</span>
-            </div>
-            <div class="info-item">
-              <strong>Humedad:</strong>
-              <span id="humedad">22%</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="modal-section">
-          <h3>Muestras Tomadas</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Subparcela</th>
-                <th>Profundidad</th>
-                <th>Código Muestra</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody id="muestrasTable">
-              <!-- Datos de muestras se llenarán dinámicamente -->
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </body>
-  <script src="tecnico.js"></script>
+
+    <!-- Modal de Detalles de Muestra -->
+    <div class="modal-overlay" id="modalDetallesMuestra">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalMuestraId"></div>
+                <button class="close-button" id="closeMuestraModal">&times;</button>
+            </div>
+            
+            <div class="modal-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Conglomerado:</strong> <span id="conglomeradoMuestraDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Subparcela:</strong> <span id="subparcelaMuestraDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Fecha Recolección:</strong> <span id="fechaRecoleccionDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Azimut:</strong> <span id="azimutMuestraDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Distancia Horizontal:</strong> <span id="distanciaHorizontalDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Profundidad:</strong> <span id="profundidadDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Color Suelo:</strong> <span id="colorSueloDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Peso Fresco:</strong> <span id="pesoFrescoDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Estado:</strong> <span id="estadoMuestraDetalle"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="modal-section">
+                <h3>Análisis</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Carbono:</strong> <span id="carbonoDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Densidad:</strong> <span id="densidadDetalle"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Fertilidad:</strong> <span id="fertilidadDetalle"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="modal-section">
+                <h3>Observaciones</h3>
+                <div id="observacionesDetalle"></div>
+            </div>
+            
+            <div class="action-buttons" id="muestraActionButtons">
+                <!-- Botones de acción se llenarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script src="tecnico.js"></script>
+</body>
 </html>
