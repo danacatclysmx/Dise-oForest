@@ -602,7 +602,117 @@ function deletePermanently(id, tipo) {
         loadData();
     }
 }
+// Inicializar el mapa
+let map;
+let userLocationMarker; // Marcador para la ubicación del usuario
+let routePolyline; // Polilínea para la ruta
 
+function initializeMap() {
+    // Inicializar el mapa
+    map = L.map('map').setView([6.25, -75.56], 12); // Coordenadas iniciales
+
+    // Agregar capa base del mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Datos de prueba para los conglomerados
+    const conglomerados = [
+        {
+            id: "CONG001",
+            nombre: "Conglomerado 1",
+            coordenadas: [6.25, -75.56],
+        },
+        {
+            id: "CONG002",
+            nombre: "Conglomerado 2",
+            coordenadas: [6.20, -75.60],
+        }
+    ];
+
+    // Función para obtener la ubicación del usuario
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLocation = [position.coords.latitude, position.coords.longitude];
+                    console.log("Ubicación del usuario:", userLocation);
+
+                    // Agregar marcador de la ubicación del usuario
+                    if (userLocationMarker) {
+                        map.removeLayer(userLocationMarker);
+                    }
+                    userLocationMarker = L.marker(userLocation).addTo(map);
+                    userLocationMarker.bindPopup("Tu ubicación actual");
+
+                    // Centrar el mapa en la ubicación del usuario
+                    map.setView(userLocation, 14);
+
+                    // Dibujar rutas hacia los conglomerados
+                    drawRoutes(userLocation);
+                },
+                error => {
+                    console.error("Error al obtener la ubicación del usuario:", error);
+                }
+            );
+        } else {
+            console.error("Geolocalización no soportada en este navegador.");
+        }
+    }
+
+    // Función para dibujar rutas hacia los conglomerados
+    function drawRoutes(userLocation) {
+        if (routePolyline) {
+            map.removeLayer(routePolyline);
+        }
+
+        // Dibujar rutas hacia cada conglomerado
+        routePolyline = L.polyline([], { color: 'blue', weight: 3 }).addTo(map);
+        conglomerados.forEach(conglomerado => {
+            const route = [userLocation, conglomerado.coordenadas];
+            routePolyline.addLatLngs(route);
+        });
+    }
+
+    // Obtener la ubicación del usuario al cargar el mapa
+    getUserLocation();
+}
+
+// Llamar a initializeMap cuando se seleccione la sección de rutas
+function changeSection(sectionId) {
+    // Ocultar todas las secciones
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    // Mostrar la sección seleccionada
+    const selectedSection = document.getElementById(sectionId);
+    if (selectedSection) {
+        selectedSection.style.display = 'block';
+
+        // Inicializar el mapa si es la sección de rutas
+        if (sectionId === 'rutasSection') {
+            initializeMap();
+        }
+    }
+
+    // Actualizar el título principal
+    const mainTitle = document.getElementById('mainTitle');
+    switch (sectionId) {
+        case 'conglomeradosSection':
+            mainTitle.textContent = 'CONGLOMERADOS';
+            break;
+        case 'muestrasSection':
+            mainTitle.textContent = 'MUESTRAS';
+            break;
+        case 'rutasSection':
+            mainTitle.textContent = 'RUTAS DE MUESTREO';
+            break;
+        case 'papeleraSection':
+            mainTitle.textContent = 'PAPELERA';
+            break;
+    }
+}
 // Editar un conglomerado
 function editConglomerado(id) {
     alert(`Editar conglomerado ${id}`);

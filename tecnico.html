@@ -6,6 +6,10 @@
     <title>Muestreo de Suelos</title>
     <link rel="stylesheet" href="tecnico.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
     <div class="container">
@@ -41,6 +45,11 @@
                 <li class="menu-item" data-section="papelera">
                     <i class="fas fa-trash"></i>
                     <span>Papelera</span>
+                </li>
+                 <!-- Botón para regresar a login.html -->
+                 <li class="menu-item" id="logoutButton">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span><a href="login.html" style="text-decoration: none; color: inherit;">Cerrar Sesión</a></span>
                 </li>
             </ul>
             
@@ -187,7 +196,11 @@
             <!-- Los conglomerados se cargarán dinámicamente aquí -->
         </div>
     </div>
-    
+    <!-- Sección de Rutas de Muestreo -->
+<div class="section" id="rutasSection" style="display: none;">
+    <h2>RUTAS DE MUESTREO</h2>
+    <div id="map" style="height: 400px; margin-top: 20px;"></div>
+</div>
     <!-- Modal de Detalles del Conglomerado -->
     <div class="modal-overlay" id="modalDetalles">
         <div class="modal-content">

@@ -1,11 +1,12 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>iniciar sesión</title>
-    <!-- font awesome icons -->
+
+    <!-- Iconos de Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
@@ -13,73 +14,110 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <!-- css stylesheet -->
+
+    <!-- Enlace a la hoja de estilos CSS -->
     <link rel="stylesheet" href="estilos.css" />
+
+    <!-- Ícono de la pestaña del navegador -->
     <link rel="icon" type="image/png" href="imgs/logo.png" />
   </head>
+
   <body class="class_body_login">
+    
+    <!-- Botón para volver a la página principal -->
     <button class="new-button" onclick="window.location.href='Index.html'">
       Volver
     </button>
 
+    <!-- Contenedor principal -->
     <div class="container" id="container">
+
+      <!-- Formulario para solicitar una cuenta nueva -->
       <div class="form-container sign-up-container">
         <form action="#">
           <h1>Pide Tu cuenta</h1>
 
+          <!-- Campo para el nombre -->
           <div class="infield">
             <input type="text" placeholder="Nombre" />
             <label></label>
           </div>
+
+          <!-- Campo para el cargo -->
           <div class="infield">
             <input type="text" placeholder="Cargo" />
             <label></label>
           </div>
+
+          <!-- Campo para el correo electrónico -->
           <div class="infield">
             <input type="email" placeholder="Correo" name="email" />
             <label></label>
           </div>
 
+          <!-- Botón para solicitar la cuenta -->
           <button class="styles_button">Pidela</button>
         </form>
       </div>
+
+      <!-- Formulario de inicio de sesión -->
       <div class="form-container sign-in-container">
         <form action="#" id="loginForm">
           <h1>Iniciar sesión</h1>
+
+          <!-- Campo para el usuario -->
           <div class="infield">
             <input type="text" id="usuario" placeholder="usuario" />
             <label></label>
           </div>
+
+          <!-- Campo para la contraseña -->
           <div class="infield">
             <input type="password" id="contrasena" placeholder="Contraseña" />
             <label></label>
           </div>
+
+          <!-- Enlace para recuperar contraseña -->
           <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+
+          <!-- Botón para acceder -->
           <button class="styles_button" type="submit" id="accederBtn">
             Acceder
           </button>
+
+          <!-- Mensaje de error -->
           <p id="mensajeError" class="error"></p>
         </form>
       </div>
+
+      <!-- Contenedor de superposición (overlay) -->
       <div class="overlay-container" id="overlayCon">
         <div class="overlay">
+          
+          <!-- Panel de superposición izquierdo -->
           <div class="overlay-panel overlay-left">
             <h1>FOREST TRACK</h1>
             <p><strong>Accede a tu cuenta</strong> y sigue donde lo dejaste.</p>
             <button type="submit">Acceder</button>
           </div>
-          <div class="overlay-panel overlay-right">
-            <img src="imgs/logo.png" alt="Forest Track Logo" class="logo" />
 
+          <!-- Panel de superposición derecho -->
+          <div class="overlay-panel overlay-right">
+            <!-- Logo de la aplicación -->
+            <img src="imgs/logo.png" alt="Forest Track Logo" class="logo" />
+            
             <p>¿No te han dado tu usuario?, <strong>Pídelo ahora!</strong></p>
             <button>Pídelo</button>
           </div>
+
         </div>
+
+        <!-- Botón oculto para controlar el overlay -->
         <button id="overlayBtn"></button>
       </div>
     </div>
 
-    <!-- js code -->
+    <!-- Inclusión del archivo JavaScript principal -->
     <script src="main.js"></script>
   </body>
 </html>
