@@ -1,46 +1,53 @@
-// Control del menú lateral
-const menuToggle = document.getElementById('menuToggle');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const createButton = document.getElementById('createButton');
-const statusTabs = document.getElementById('statusTabs');
-const mainTitle = document.getElementById('mainTitle');
-const conglomeradosContainer = document.getElementById('conglomeradosContainer');
-// Variables para el mapa
-let map;
-let circles = [];
-let containerCircle = null;
-// Al inicio del archivo JS
-const SUBPARCEL_RADIUS = 40;
-const CONTAINER_RADIUS = 100;  
+// ======= INICIALIZACIÓN DE VARIABLES GLOBALES =======
+// Elementos del DOM
+const menuToggle = document.getElementById('menuToggle'); // Botón hamburguesa
+const sidebar = document.getElementById('sidebar'); // Menú lateral
+const overlay = document.getElementById('overlay'); // Overlay para cerrar menú
+const createButton = document.getElementById('createButton'); // Botón CREAR
+const statusTabs = document.getElementById('statusTabs'); // Filtros de estado
+const mainTitle = document.getElementById('mainTitle'); // Título principal
+const conglomeradosContainer = document.getElementById('conglomeradosContainer'); // Contenedor de listado
 
-// Datos almacenados localmente
+// Variables para el mapa Leaflet
+let map;
+let circles = []; // Círculos de subparcelas
+let containerCircle = null; // Círculo contenedor
+
+// Configuración de radios para subparcelas
+const SUBPARCEL_RADIUS = 40; // Radio de subparcelas individuales
+const CONTAINER_RADIUS = 100; // Radio del círculo contenedor
+
+// Cargar datos desde localStorage o inicializar arrays vacíos
 let conglomerados = JSON.parse(localStorage.getItem('conglomerados')) || [];
 let papelera = JSON.parse(localStorage.getItem('papelera')) || [];
-let currentSection = 'conglomerados'; // 'conglomerados' o 'papelera'
+let currentSection = 'conglomerados'; // Sección actual activa ('conglomerados' o 'papelera')
 
-// Inicializar la aplicación
+// ======= INICIALIZACIÓN DE LA APLICACIÓN =======
 function initApp() {
-    loadConglomerados();
-    setupEventListeners();
+    loadConglomerados(); // Cargar datos iniciales
+    setupEventListeners(); // Configurar eventos
 }
 
+// ======= CARGA Y FILTRADO DE DATOS =======
 // Cargar conglomerados según la sección actual
 function loadConglomerados() {
     conglomeradosContainer.innerHTML = '';
     
     if (currentSection === 'conglomerados') {
+        // Mostrar listado normal de conglomerados
         mainTitle.textContent = 'CONGLOMERADOS';
-        statusTabs.style.display = 'flex';
+        statusTabs.style.display = 'flex'; // Mostrar filtros
         
+        // Filtrar conglomerados no eliminados
         const filteredConglomerados = conglomerados.filter(c => c.estado !== 'eliminado');
+        
         if (filteredConglomerados.length === 0) {
+            // Mostrar mensaje si no hay datos
             conglomeradosContainer.innerHTML = '<p class="no-data">No hay conglomerados registrados</p>';
-            // Mostrar todas las pestañas como inactivas
             document.querySelectorAll('.status-tab').forEach(tab => tab.classList.remove('active'));
             return;
         }
-        
+
         filteredConglomerados.forEach(conglomerado => {
             conglomeradosContainer.appendChild(createConglomeradoCard(conglomerado));
         });
@@ -62,7 +69,8 @@ function loadConglomerados() {
     }
 }
 
-// Crear tarjeta de conglomerado
+// ======= CREACIÓN DE TARJETAS =======
+// Crear tarjeta visual para cada conglomerado
 function createConglomeradoCard(conglomerado, isInTrash = false) {
     const card = document.createElement('div');
     card.className = 'conglomerado';
@@ -111,6 +119,7 @@ function createConglomeradoCard(conglomerado, isInTrash = false) {
     return card;
 }
 
+// ======= CONFIGURACIÓN DE EVENTOS =======
 // Configurar event listeners
 function setupEventListeners() {
     // Menú lateral
@@ -286,6 +295,7 @@ function setupEventListeners() {
     });
 }
 
+// ======= FUNCIONES AUXILIARES =======
 // Mostrar/ocultar menú de opciones
 function toggleOptionsMenu(button) {
     const dropdown = button.nextElementSibling;
@@ -593,7 +603,8 @@ function parseDMS(coordenadas) {
     return [lat, lng];
 }
 
-// Función para inicializar el mapa en el modal
+// ======= FUNCIONES DEL MAPA =======
+// Inicializar el mapa en el modal
 function initMapInModal(center) {
     // Limpiar mapa existente
     if (map) {

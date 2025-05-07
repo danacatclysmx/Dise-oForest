@@ -1,613 +1,709 @@
+/* Estilos generales para el cuerpo del documento */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5;
-  color: #333;
+  font-family: Arial, sans-serif; /* Fuente principal */
+  margin: 0; /* Sin margen predeterminado */
+  padding: 20px; /* Espaciado interno */
+  background-color: #f5f5f5; /* Fondo claro */
+  color: #333; /* Color de texto principal */
 }
 
 /* Botón de menú hamburguesa */
 .menu-toggle {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 21px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 60px;
-  width: 70px;
+  position: fixed; /* Posición fija en pantalla */
+  top: 15px; /* 15px desde el top */
+  left: 15px; /* 15px desde la izquierda */
+  z-index: 1000; /* Por encima de otros elementos */
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  cursor: pointer; /* Cursor de clic */
+  padding: 21px; /* Espaciado para hacerlo más clickeable */
+  display: flex; /* Usamos flexbox */
+  flex-direction: column; /* Columna vertical */
+  justify-content: space-between; /* Distribución del espacio */
+  height: 60px; /* Altura total */
+  width: 70px; /* Ancho total */
 }
 
 .menu-toggle span {
-  display: block;
-  width: 100%;
-  height: 4px;
-  background-color: #483d3d;
-  transition: all 0.3s ease;
+  display: block; /* Elemento bloque */
+  width: 100%; /* Ancho completo */
+  height: 4px; /* Grosor de las barras */
+  background-color: #483d3d; /* Color marrón oscuro */
+  transition: all 0.3s ease; /* Transición suave */
 }
 
+/* Efectos para cuando el menú está abierto */
 .menu-toggle.open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(7px) rotate(45deg); /* Primera barra rota */
 }
 
 .menu-toggle.open span:nth-child(2) {
-  opacity: 0;
+  opacity: 0; /* Segunda barra desaparece */
 }
 
 .menu-toggle.open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-7px) rotate(-45deg); /* Tercera barra rota */
 }
 
 /* Menú lateral */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100vh;
-  background-color: #ffffff;
-  color: black;
-  padding: 20px 0;
-  transition: all 0.3s ease;
-  z-index: 999;
-  text-align: center;
+  position: fixed; /* Posición fija */
+  top: 0; /* Desde arriba */
+  left: -250px; /* Oculto inicialmente */
+  width: 250px; /* Ancho del menú */
+  height: 100vh; /* Altura completa */
+  background-color: #ffffff; /* Fondo blanco */
+  color: black; /* Texto negro */
+  padding: 20px 0; /* Espaciado vertical */
+  transition: all 0.3s ease; /* Transición suave */
+  z-index: 999; /* Por encima de la mayoría */
+  text-align: center; /* Texto centrado */
 }
 
 .sidebar.open {
-  left: 0;
+  left: 0; /* Mostrar menú */
 }
 
+/* Encabezado del menú lateral */
 .sidebar-header {
-  padding: 0 20px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 20px 20px; /* Espaciado inferior */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea divisoria */
 }
 
 .sidebar-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0;
+  font-size: 20px; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  margin: 0; /* Sin margen */
 }
 
+/* Menú de navegación lateral */
 .sidebar-menu {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0;
+  list-style: none; /* Sin viñetas */
+  padding: 0; /* Sin espaciado */
+  margin: 20px 0 0; /* Margen superior */
 }
 
+/* Elementos del menú */
 .menu-item {
-  padding: 12px 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background-color 0.2s;
+  padding: 12px 20px; /* Relleno interno */
+  cursor: pointer; /* Cursor de clic */
+  display: flex; /* Usamos flexbox */
+  align-items: center; /* Alineación vertical */
+  transition: background-color 0.2s; /* Transición suave */
 }
 
 .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1); /* Fondo al pasar el ratón */
 }
 
 .menu-item i {
-  margin-right: 10px;
-  font-size: 18px;
+  margin-right: 10px; /* Espaciado entre ícono y texto */
+  font-size: 18px; /* Tamaño del ícono */
 }
 
 .menu-item.active {
-  background-color: #3498db;
+  background-color: #3498db; /* Fondo azul para elemento activo */
 }
 
+/* Botón crear */
 .create-button {
-  color: white;
-  background-color: #2ecc71;
-  border-radius: 5px;
-  margin: 20px;
-  padding: 12px;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  color: white; /* Texto blanco */
+  background-color: #2ecc71; /* Fondo verde */
+  border-radius: 5px; /* Bordes redondeados */
+  margin: 20px; /* Margen */
+  padding: 12px; /* Relleno */
+  text-align: center; /* Texto centrado */
+  cursor: pointer; /* Cursor de clic */
+  font-weight: bold; /* Negrita */
+  transition: background-color 0.2s; /* Transición suave */
 }
 
 .create-button:hover {
-  background-color: #27ae60;
+  background-color: #27ae60; /* Verde más oscuro al pasar el ratón */
 }
 
-/* Overlay para cerrar el menú */
+/* Overlay para cerrar menú */
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-  display: none;
+  position: fixed; /* Posición fija */
+  top: 0; /* Desde arriba */
+  left: 0; /* Desde la izquierda */
+  width: 100%; /* Ancho completo */
+  height: 100%; /* Altura completa */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+  z-index: 998; /* Debajo del menú */
+  display: none; /* Oculto por defecto */
 }
 
 .overlay.open {
-  display: block;
+  display: block; /* Mostrar overlay */
 }
 
+/* Contenedor principal */
 .container {
-  max-width: 1000px;
-  margin: 0 auto;
+  max-width: 1000px; /* Ancho máximo */
+  margin: 0 auto; /* Centrado horizontal */
 }
 
+/* Título principal */
 h1 {
-  color: #2c3e50;
-  font-size: 24px;
-  margin-bottom: 20px;
-  text-transform: uppercase;
+  color: #2c3e50; /* Azul oscuro */
+  font-size: 24px; /* Tamaño de fuente */
+  margin-bottom: 20px; /* Espacio inferior */
+  text-transform: uppercase; /* Todo mayúsculas */
 }
 
+/* Pestañas de estado */
 .status-tabs {
-  display: flex;
-  margin-bottom: 30px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
+  display: flex; /* Flexbox */
+  margin-bottom: 30px; /* Espacio inferior */
+  border-bottom: 1px solid #ddd; /* Línea inferior */
+  padding-bottom: 10px; /* Espaciado inferior */
 }
 
 .status-tab {
-  margin-right: 20px;
-  font-weight: bold;
-  color: #7f8c8d;
-  cursor: pointer;
-  padding: 5px 10px;
+  margin-right: 20px; /* Espacio entre pestañas */
+  font-weight: bold; /* Negrita */
+  color: #7f8c8d; /* Gris claro */
+  cursor: pointer; /* Cursor de clic */
+  padding: 5px 10px; /* Relleno */
 }
 
 .status-tab:hover {
-  color: #2c3e50;
+  color: #2c3e50; /* Cambiar color al pasar el ratón */
 }
 
 .status-tab.active {
-  color: #2c3e50;
-  border-bottom: 2px solid #2c3e50;
+  color: #2c3e50; /* Color activo */
+  border-bottom: 2px solid #2c3e50; /* Borde inferior */
 }
 
+/* Tarjetas de conglomerado */
 .conglomerado {
-  background-color: white;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: white; /* Fondo blanco */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 20px; /* Relleno interno */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra */
+  margin-bottom: 20px; /* Espacio inferior */
+  position: relative; /* Posición relativa */
+  cursor: pointer; /* Cursor de clic */
+  transition: transform 0.2s, box-shadow 0.2s; /* Transiciones */
 }
 
 .conglomerado:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px); /* Levantar ligeramente */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra más intensa */
 }
 
+/* ID de conglomerado */
 .conglomerado-id {
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #2c3e50;
+  font-weight: bold; /* Negrita */
+  font-size: 18px; /* Tamaño de fuente */
+  margin-bottom: 15px; /* Espacio inferior */
+  color: #2c3e50; /* Color azul oscuro */
 }
 
+/* Información de conglomerado */
 .conglomerado-info {
-  margin-bottom: 10px;
-  font-size: 14px;
+  margin-bottom: 10px; /* Espacio entre filas */
+  font-size: 14px; /* Tamaño de fuente */
 }
 
 .conglomerado-info strong {
-  color: #7f8c8d;
+  color: #7f8c8d; /* Etiquetas en gris */
 }
 
-/* Menú de tres puntos */
+/* ========================
+   MENÚ DE TRES PUNTOS
+   ======================== */
+
+/* Contenedor del menú de tres puntos */
 .options-menu {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 2;
+  position: absolute; /* Posición absoluta respecto al padre */
+  top: 15px; /* 15px desde el top */
+  right: 15px; /* 15px desde la derecha */
+  z-index: 2; /* Capa media */
 }
 
+/* Botón que muestra el menú */
 .options-button {
-  background: none;
-  border: none;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  cursor: pointer;
-  padding: 0;
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  width: 24px; /* Tamaño fijo */
+  height: 24px; /* Tamaño fijo */
+  display: flex; /* Flexbox */
+  flex-direction: column; /* Columna vertical */
+  justify-content: space-around; /* Distribución del espacio */
+  align-items: center; /* Centrado horizontal */
+  cursor: pointer; /* Cursor de clic */
+  padding: 0; /* Sin relleno */
 }
 
+/* Puntos individuales del menú */
 .dot {
-  width: 4px;
-  height: 4px;
-  background-color: #7f8c8d;
-  border-radius: 50%;
+  width: 4px; /* Tamaño pequeño */
+  height: 4px; /* Tamaño pequeño */
+  background-color: #7f8c8d; /* Gris medio */
+  border-radius: 50%; /* Forma circular */
 }
 
+/* Menú desplegable */
 .options-dropdown {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 30px;
-  background-color: white;
-  min-width: 150px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  z-index: 10;
-  overflow: hidden;
+  display: none; /* Oculto por defecto */
+  position: absolute; /* Posición relativa al botón */
+  right: 0; /* Alineado a la derecha */
+  top: 30px; /* 30px debajo del botón */
+  background-color: white; /* Fondo blanco */
+  min-width: 150px; /* Ancho mínimo */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  border-radius: 5px; /* Bordes redondeados */
+  z-index: 10; /* Por encima de otros elementos */
+  overflow: hidden; /* Recortar contenido que exceda */
 }
 
+/* Clase activa para mostrar el menú */
 .options-dropdown.show {
-  display: block;
-  animation: fadeIn 0.2s;
+  display: block; /* Mostrar menú */
+  animation: fadeIn 0.2s; /* Animación de entrada */
 }
 
+/* Elementos del menú */
 .option-item {
-  padding: 10px 15px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  white-space: nowrap;
+  padding: 10px 15px; /* Relleno interno */
+  font-size: 14px; /* Tamaño de fuente */
+  color: #333; /* Color de texto */
+  cursor: pointer; /* Cursor de clic */
+  white-space: nowrap; /* No permitir salto de línea */
 }
 
+/* Efecto hover en elementos */
 .option-item:hover {
-  background-color: #f5f5f5;
+  background-color: #f5f5f5; /* Fondo claro al pasar el ratón */
 }
 
+/* Animación de entrada */
 @keyframes fadeIn {
   from {
-    opacity: 0;
-    transform: translateY(-5px);
+    opacity: 0; /* Opacidad inicial */
+    transform: translateY(-5px); /* Levantado 5px */
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1; /* Opacidad completa */
+    transform: translateY(0); /* Posición original */
   }
 }
 
-/* Estilos para el modal */
+/* ========================
+   MODALES Y OVERLAYS
+   ======================== */
+
+/* Overlay de modal */
 .modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
+  display: none; /* Oculto por defecto */
+  position: fixed; /* Posición fija */
+  top: 0; /* Desde arriba */
+  left: 0; /* Desde la izquierda */
+  width: 100%; /* Ancho completo */
+  height: 100%; /* Altura completa */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+  z-index: 1000; /* Capa superior */
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
 }
 
+/* Contenido del modal */
 .modal-content {
-  background-color: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 25px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s;
+  background-color: white; /* Fondo blanco */
+  border-radius: 8px; /* Bordes redondeados */
+  width: 90%; /* Ancho responsivo */
+  max-width: 800px; /* Ancho máximo */
+  max-height: 90vh; /* Altura máxima */
+  overflow-y: auto; /* Scroll vertical si es necesario */
+  padding: 25px; /* Relleno interno */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra */
+  animation: fadeIn 0.3s; /* Animación de entrada */
 }
 
+/* Encabezado del modal */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  display: flex; /* Flexbox */
+  justify-content: space-between; /* Espacio entre elementos */
+  align-items: center; /* Alineación vertical */
+  margin-bottom: 20px; /* Espaciado inferior */
 }
 
+/* Título del modal */
 .modal-title {
-  font-size: 22px;
-  font-weight: bold;
-  color: #2c3e50;
+  font-size: 22px; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  color: #2c3e50; /* Azul oscuro */
 }
 
+/* Botón de cierre */
 .close-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #7f8c8d;
+  background: none; /* Sin fondo */
+  border: none; /* Sin borde */
+  font-size: 24px; /* Tamaño grande */
+  cursor: pointer; /* Cursor de clic */
+  color: #7f8c8d; /* Gris claro */
 }
 
+/* Secciones dentro del modal */
 .modal-section {
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Espaciado inferior */
 }
 
+/* Subtítulos de secciones */
 .modal-section h3 {
-  font-size: 16px;
-  color: #2c3e50;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+  font-size: 16px; /* Tamaño de fuente */
+  color: #2c3e50; /* Azul oscuro */
+  margin-bottom: 10px; /* Espaciado inferior */
+  border-bottom: 1px solid #eee; /* Línea divisoria */
+  padding-bottom: 5px; /* Espaciado bajo el subtítulo */
 }
 
+/* ========================
+   CONTENIDO GENERAL
+   ======================== */
+
+/* Cuadrícula de información */
 .info-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  display: grid; /* Grid layout */
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+  gap: 15px; /* Espacio entre celdas */
 }
 
+/* Elementos de información */
 .info-item {
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Espaciado inferior */
 }
 
+/* Etiquetas de información */
 .info-item strong {
-  color: #7f8c8d;
+  color: #7f8c8d; /* Gris claro */
 }
 
+/* Tablas */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 15px 0;
+  width: 100%; /* Ancho completo */
+  border-collapse: collapse; /* Sin espacio entre bordes */
+  margin: 15px 0; /* Espaciado superior e inferior */
 }
 
-th,
-td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+/* Celdas y cabeceras */
+th, td {
+  padding: 10px; /* Relleno interno */
+  text-align: left; /* Texto alineado a la izquierda */
+  border-bottom: 1px solid #ddd; /* Línea inferior */
 }
 
+/* Cabeceras de tabla */
 th {
-  background-color: #f2f2f2;
-  font-weight: bold;
+  background-color: #f2f2f2; /* Fondo claro */
+  font-weight: bold; /* Negrita */
 }
 
+/* Botones de acción */
 .action-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 25px;
+  display: flex; /* Flexbox */
+  justify-content: flex-end; /* Alineación a la derecha */
+  gap: 15px; /* Espacio entre botones */
+  margin-top: 25px; /* Espaciado superior */
 }
 
+/* Estilo base de botones */
 .action-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 10px 20px; /* Relleno interno */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-weight: bold; /* Negrita */
+  cursor: pointer; /* Cursor de clic */
+  transition: background-color 0.2s; /* Transición suave */
 }
 
+/* Botón de rechazar */
 .reject-button {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #e74c3c; /* Rojo */
+  color: white; /* Texto blanco */
 }
 
+/* Botón de aprobar */
 .approve-button {
-  background-color: #2ecc71;
-  color: white;
+  background-color: #2ecc71; /* Verde */
+  color: white; /* Texto blanco */
 }
 
+/* Botón de corregir */
 .correct-button {
-  background-color: #f39c12;
-  color: white;
+  background-color: #f39c12; /* Naranja */
+  color: white; /* Texto blanco */
 }
 
+/* Efecto hover en botones */
 .action-button:hover {
-  opacity: 0.9;
+  opacity: 0.9; /* Reducir opacidad al pasar el ratón */
 }
 
+/* Divisor visual */
 .divider {
-  border-top: 1px solid #eee;
-  margin: 20px 0;
+  border-top: 1px solid #eee; /* Línea horizontal */
+  margin: 20px 0; /* Espaciado superior e inferior */
 }
 
+/* Detalles de subparcela */
 .subparcela-details {
-  margin-top: 10px;
-  padding-left: 15px;
-  border-left: 2px solid #eee;
+  margin-top: 10px; /* Espaciado superior */
+  padding-left: 15px; /* Indentación */
+  border-left: 2px solid #eee; /* Línea lateral */
 }
 
+/* Punto de referencia */
 .punto-referencia {
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 10px;
+  background-color: #f9f9f9; /* Fondo muy claro */
+  padding: 10px; /* Relleno interno */
+  border-radius: 5px; /* Bordes redondeados */
+  margin-top: 10px; /* Espaciado superior */
 }
 
-/* Estilos para el formulario de creación */
+/* ========================
+   ESTILOS PARA FORMULARIOS
+   ======================== */
+
+/* Grupo de formulario base */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* Espaciado inferior entre campos */
 }
 
+/* Etiquetas de formulario */
 .form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #2c3e50;
+  display: block; /* Mostrar como bloque */
+  margin-bottom: 5px; /* Espaciado inferior */
+  font-weight: bold; /* Negrita */
+  color: #2c3e50; /* Azul oscuro */
 }
 
+/* Campos de formulario (input, select, textarea) */
 .form-group input,
 .form-group select,
 .form-group textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-family: Arial, sans-serif;
+  width: 100%; /* Ancho completo */
+  padding: 8px; /* Relleno interno */
+  border: 1px solid #ddd; /* Borde gris claro */
+  border-radius: 4px; /* Bordes redondeados */
+  font-family: Arial, sans-serif; /* Fuente consistente */
 }
 
+/* Estado focus de campos */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+  outline: none; /* Quitar outline predeterminado */
+  border-color: #3498db; /* Borde azul al enfocar */
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Sombra suave */
 }
 
+/* Subtítulos en formularios */
 #formCrearConglomerado h3 {
-  margin-top: 20px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
-  color: #2c3e50;
+  margin-top: 20px; /* Espaciado superior */
+  padding-bottom: 5px; /* Relleno bajo título */
+  border-bottom: 1px solid #eee; /* Línea divisoria */
+  color: #2c3e50; /* Azul oscuro */
 }
 
-/* Agregar al final del archivo CSS existente */
+/* ========================
+   ESTILOS GENERALES
+   ======================== */
 
+/* Mensaje cuando no hay datos */
 .no-data {
-  text-align: center;
-  padding: 20px;
-  color: #7f8c8d;
-  font-style: italic;
+  text-align: center; /* Centrado */
+  padding: 20px; /* Relleno */
+  color: #7f8c8d; /* Gris medio */
+  font-style: italic; /* Texto cursiva */
 }
 
+/* Badges de estado */
 .estado-badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
+  display: inline-block; /* Bloque en línea */
+  padding: 3px 8px; /* Relleno interno */
+  border-radius: 12px; /* Bordes redondeados */
+  font-size: 12px; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  text-transform: uppercase; /* Todo mayúsculas */
 }
 
+/* Estados específicos */
 .estado-badge.pendientes {
-  background-color: #f39c12;
-  color: white;
+  background-color: #f39c12; /* Naranja */
+  color: white; /* Texto blanco */
 }
 
 .estado-badge.aprobados {
-  background-color: #2ecc71;
-  color: white;
+  background-color: #2ecc71; /* Verde */
+  color: white; /* Texto blanco */
 }
 
 .estado-badge.rechazados {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #e74c3c; /* Rojo */
+  color: white; /* Texto blanco */
 }
 
+/* Estilo especial para eliminar permanentemente */
 .delete-permanently {
-  color: #e74c3c !important;
+  color: #e74c3c !important; /* Rojo intenso */
 }
 
 .delete-permanently:hover {
-  background-color: #ffebee !important;
+  background-color: #ffebee !important; /* Fondo rojo muy claro */
 }
 
-/* Asegurarse de que los botones de acción se vean bien */
+/* ========================
+   BOTONES DE ACCIÓN
+   ======================== */
+
+/* Contenedor de botones */
 .action-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 25px;
+  display: flex; /* Flexbox */
+  justify-content: flex-end; /* Alineación a la derecha */
+  gap: 15px; /* Espacio entre botones */
+  margin-top: 25px; /* Espaciado superior */
 }
 
+/* Estilo base de botones */
 .action-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  padding: 10px 20px; /* Relleno */
+  border: none; /* Sin borde */
+  border-radius: 5px; /* Bordes redondeados */
+  font-weight: bold; /* Negrita */
+  cursor: pointer; /* Cursor de clic */
+  transition: background-color 0.2s; /* Transición suave */
 }
 
+/* Botón de rechazar */
 .reject-button {
-  background-color: #e74c3c;
-  color: white;
+  background-color: #e74c3c; /* Rojo */
+  color: white; /* Texto blanco */
 }
 
+/* Botón de aprobar */
 .approve-button {
-  background-color: #2ecc71;
-  color: white;
+  background-color: #2ecc71; /* Verde */
+  color: white; /* Texto blanco */
 }
 
+/* Botón de corregir */
 .correct-button {
-  background-color: #f39c12;
-  color: white;
+  background-color: #f39c12; /* Naranja */
+  color: white; /* Texto blanco */
 }
 
+/* Efecto hover en botones */
 .action-button:hover {
-  opacity: 0.9;
+  opacity: 0.9; /* Reducir opacidad al pasar el ratón */
 }
 
-/* Estilos para el mapa */
+/* ========================
+   ESTILOS DE MAPA
+   ======================== */
+
+/* Contenedor del mapa */
 #map-container {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  margin: 15px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-  background-color: #f8f9fa;
+  position: relative; /* Posición relativa */
+  width: 100%; /* Ancho completo */
+  height: 400px; /* Altura fija */
+  margin: 15px 0; /* Espaciado vertical */
+  border: 1px solid #ddd; /* Borde gris claro */
+  border-radius: 4px; /* Bordes redondeados */
+  overflow: hidden; /* Recortar contenido que exceda */
+  background-color: #f8f9fa; /* Fondo gris muy claro */
 }
 
+/* Mapa Leaflet */
 #map {
-  width: 100%;
-  height: 100%;
-  background-color: #f0f0f0;
-  border: 2px solid #ccc;
+  width: 100%; /* Ancho completo */
+  height: 100%; /* Altura completa */
+  background-color: #f0f0f0; /* Fondo gris claro */
+  border: 2px solid #ccc; /* Borde gris */
 }
 
-/* Estilo para mensajes de carga */
+/* ========================
+   ESTILOS PARA EL MAPA
+   ======================== */
+
+/* Mensaje de carga del mapa */
 .map-loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: #666;
-  font-style: italic;
+  display: flex; /* Centrado con flexbox */
+  justify-content: center; /* Horizontal */
+  align-items: center; /* Vertical */
+  height: 100%; /* Altura completa */
+  color: #666; /* Gris medio */
+  font-style: italic; /* Texto cursiva */
 }
 
+/* Ajustes generales de controles Leaflet */
 .leaflet-control-container {
-  font-size: 12px;
+  font-size: 12px; /* Tamaño de fuente reducido */
 }
 
-/* Estilos para los controles del mapa */
+/* Estilos para el control de zoom */
 .leaflet-control-zoom {
-  margin-right: 10px !important;
+  margin-right: 10px !important; /* Márgenes personalizados */
   margin-top: 10px !important;
-  border: 1px solid #ccc !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  border: 1px solid #ccc !important; /* Borde gris claro */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; /* Sombra sutil */
 }
 
+/* Estilo para la atribución (copyright) */
 .leaflet-control-attribution {
-  background-color: rgba(255, 255, 255, 0.7) !important;
-  padding: 2px 5px !important;
-  font-size: 11px !important;
+  background-color: rgba(255, 255, 255, 0.7) !important; /* Fondo semi-transparente */
+  padding: 2px 5px !important; /* Relleno reducido */
+  font-size: 11px !important; /* Fuente muy pequeña */
 }
 
-/* Mejorar visibilidad de tooltips */
+/* ========================
+   MEJORA DE TOOLTIPS
+   ======================== */
+
+/* Estilo personalizado para tooltips */
 .leaflet-tooltip {
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid #333;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  font-weight: bold; /* Negrita */
+  background: rgba(255, 255, 255, 0.9); /* Fondo blanco casi opaco */
+  border: 1px solid #333; /* Borde oscuro */
+  border-radius: 4px; /* Bordes redondeados */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Sombra */
 }
 
-/* Estilos para mensajes de error del mapa */
+/* ========================
+   MENSAJES DE ERROR
+   ======================== */
+
+/* Contenedor de mensaje de error */
 .map-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px;
-  text-align: center;
-  color: #666;
+  display: flex; /* Flexbox */
+  flex-direction: column; /* Columna vertical */
+  align-items: center; /* Centrado horizontal */
+  justify-content: center; /* Centrado vertical */
+  height: 100%; /* Altura completa */
+  padding: 20px; /* Relleno */
+  text-align: center; /* Texto centrado */
+  color: #666; /* Color gris */
 }
 
+/* Icono de error */
 .map-error i {
-  font-size: 48px;
-  margin-bottom: 15px;
-  color: #dc3545;
+  font-size: 48px; /* Tamaño grande */
+  margin-bottom: 15px; /* Espacio inferior */
+  color: #dc3545; /* Rojo intenso */
 }
 
+/* Mensaje principal de error */
 .map-error p {
-  font-size: 16px;
-  margin: 5px 0;
-  font-weight: bold;
+  font-size: 16px; /* Tamaño base */
+  margin: 5px 0; /* Espaciado */
+  font-weight: bold; /* Negrita */
 }
 
+/* Detalle adicional del error */
 .map-error small {
-  font-size: 12px;
-  color: #999;
+  font-size: 12px; /* Tamaño pequeño */
+  color: #999; /* Gris claro */
 }
