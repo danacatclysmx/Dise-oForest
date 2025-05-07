@@ -1,26 +1,62 @@
-// Variables globales
+// Referencias a elementos del DOM utilizados en varias partes del código
+
+// Sección donde se mostrarán las muestras
 const muestrasSection = document.getElementById("muestrasSection");
+
+// Botón para alternar el menú lateral
 const menuToggle = document.getElementById("menuToggle");
+
+// Menú lateral (sidebar)
 const sidebar = document.getElementById("sidebar");
+
+// Capa oscura que cubre la pantalla cuando el menú está abierto
 const overlay = document.getElementById("overlay");
+
+// Botón para crear nuevos registros
 const createButton = document.getElementById("createButton");
+
+// Contenedor de pestañas de estado (por ejemplo: 'activos', 'inactivos')
 const statusTabs = document.getElementById("statusTabs");
+
+// Título principal de la aplicación
 const mainTitle = document.getElementById("mainTitle");
+
+// Contenedor donde se mostrarán los conglomerados
 const conglomeradosContainer = document.getElementById("conglomeradosContainer");
+
+// Sección completa de rutas
 const rutasSection = document.getElementById("rutasSection");
+
+// Contenedor dentro de la sección de rutas donde se mostrarán las rutas dinámicamente
 const rutasContainer = document.getElementById("rutasContainer");
 
-// Datos almacenados localmente
+// Carga datos almacenados localmente o inicializa arreglos vacíos si no existen
+
+// Lista de conglomerados
 let conglomerados = JSON.parse(localStorage.getItem("conglomerados")) || [];
+
+// Lista de muestras
 let muestras = JSON.parse(localStorage.getItem("muestras")) || [];
+
+// Lista de rutas
 let rutas = JSON.parse(localStorage.getItem("rutas")) || [];
+
+// Papelera para elementos eliminados
 let papelera = JSON.parse(localStorage.getItem("papelera")) || [];
+
+// Variable para saber qué sección está activa actualmente
 let currentSection = "conglomerados";
 
 // Asegurarse que al iniciar solo se muestra la sección correcta
+// Asegura que solo se muestre la sección correcta al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
+  // Muestra la sección de conglomerados
   conglomeradosContainer.style.display = "block";
+
+  // Oculta la sección de rutas
   rutasSection.style.display = "none";
+
+  // Oculta la sección de muestras
   muestrasSection.style.display = "none";
 });
 
@@ -54,7 +90,7 @@ function initApp() {
   loadData();
   setupEventListeners();
 }
-
+//verifica si el arreglo rutas está vacío
 function loadData() {
   // Primero ocultamos todas las secciones posibles
   conglomeradosContainer.style.display = "none";
@@ -64,7 +100,7 @@ function loadData() {
   // Limpiamos los contenedores
   conglomeradosContainer.innerHTML = "";
   rutasContainer.innerHTML = "";
-
+//controla la representación dinámica de contenido en pantalla , según la sección actual
   switch (currentSection) {
     case "conglomerados":
       mainTitle.textContent = "CONGLOMERADOS";
@@ -126,6 +162,13 @@ function loadData() {
   }
 }
 
+/**
+ * Crea un elemento HTML (div) que representa una tarjeta de conglomerado.
+ *
+ * Objeto que contiene los datos del conglomerado.
+ * Indica si el conglomerado está en la papelera.
+ * Tarjeta del conglomerado lista para insertar en el DOM.
+ */
 function createConglomeradoCard(c, isTrash = false) {
   const card = document.createElement("div");
   card.classList.add("card");
@@ -140,7 +183,13 @@ function createConglomeradoCard(c, isTrash = false) {
   `;
   return card;
 }
-
+/**
+ * Crea un elemento HTML (div) que representa una tarjeta de muestra.
+ *
+ * - Objeto que contiene los datos de la muestra.
+ * - Indica si la muestra está en la papelera.
+ *  Tarjeta de la muestra lista para insertar en el DOM.
+ */
 function createMuestraCard(m, isTrash = false) {
   const card = document.createElement("div");
   card.classList.add("card");
@@ -154,7 +203,12 @@ function createMuestraCard(m, isTrash = false) {
   `;
   return card;
 }
-
+/**
+ * Crea un elemento HTML (div) que representa una tarjeta de ruta.
+ *- Objeto que contiene los datos de la ruta.
+ * - Indica si la ruta está en la papelera.
+ *  Tarjeta de la ruta lista para insertar en el DOM.
+ */
 function createRutaCard(r, isTrash = false) {
   const card = document.createElement("div");
   card.classList.add("card");
@@ -169,45 +223,75 @@ function createRutaCard(r, isTrash = false) {
   return card;
 }
 
+/**
+ * Configura todos los eventos necesarios para la interacción del usuario.
+ * - Menú lateral (toggle y overlay)
+ * - Selección de secciones desde el menú
+ * - Acción del botón "Crear"
+ */
 function setupEventListeners() {
+  // Alternar menú lateral al hacer clic en el botón hamburguesa
   menuToggle.addEventListener("click", (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Evita que el evento afecte a otros elementos
     sidebar.classList.toggle("open");
     overlay.classList.toggle("open");
     menuToggle.classList.toggle("open");
   });
 
+  // Cerrar el menú al hacer clic en el overlay (fondo oscuro)
   overlay.addEventListener("click", () => {
     sidebar.classList.remove("open");
     overlay.classList.remove("open");
     menuToggle.classList.remove("open");
   });
 
+  // Manejar selección de secciones desde el menú lateral
   document.querySelectorAll(".menu-item").forEach((item) => {
     item.addEventListener("click", () => {
+      // Remover clase 'active' de todos los ítems
       document.querySelectorAll(".menu-item").forEach((i) => i.classList.remove("active"));
+      
+      // Agregar clase 'active' al ítem seleccionado
       item.classList.add("active");
+
+      // Actualizar la sección actual
       currentSection = item.dataset.section;
+
+      // Volver a cargar contenido según la nueva sección
       loadData();
+
+      // Cerrar el menú después de seleccionar una opción
       sidebar.classList.remove("open");
       overlay.classList.remove("open");
       menuToggle.classList.remove("open");
     });
   });
 
+  // Acción del botón "Crear" dependiendo de la sección activa
   createButton.addEventListener("click", () => {
     if (currentSection === "muestras") {
-      document.getElementById("formularioRegistroMuestra").scrollIntoView();
+      // Si está en muestras, desplazar hacia el formulario
+      document.getElementById("formularioRegistroMuestra").scrollIntoView({ behavior: "smooth" });
     } else {
+      // Para otras secciones, mostrar un mensaje temporal
       alert(`Implementar modal para crear ${currentSection}`);
     }
 
+    // Cerrar el menú lateral si estaba abierto
     sidebar.classList.remove("open");
     overlay.classList.remove("open");
     menuToggle.classList.remove("open");
   });
 }
 
+/**
+ * Guarda los datos actuales en localStorage para persistencia entre sesiones.
+ * Se guardan las listas de:
+ * - Conglomerados
+ * - Muestras
+ * - Rutas
+ * - Papelera
+ */
 function saveToLocalStorage() {
   localStorage.setItem("conglomerados", JSON.stringify(conglomerados));
   localStorage.setItem("muestras", JSON.stringify(muestras));
@@ -215,10 +299,18 @@ function saveToLocalStorage() {
   localStorage.setItem("papelera", JSON.stringify(papelera));
 }
 
+/**
+ * Restaura un elemento desde la papelera a su lista original (conglomerados, muestras o rutas).
+ *
+ * - ID del elemento que se va a restaurar.
+ * - Se expone en el objeto `window` para ser usada desde HTML (ej: onclick).
+ */
 window.restoreItem = function (id) {
+  // Busca el elemento en la papelera por su ID
   const item = papelera.find((i) => i.id === id);
-  if (!item) return;
+  if (!item) return; // Si no existe, salir
 
+  // Lo agrega a la lista correspondiente según su tipo
   if (item.tipo === "conglomerado") {
     conglomerados.push(item);
   } else if (item.tipo === "muestra") {
@@ -227,15 +319,26 @@ window.restoreItem = function (id) {
     rutas.push(item);
   }
 
+  // Elimina el elemento de la papelera
   papelera = papelera.filter((i) => i.id !== id);
+
+  // Guarda los cambios en localStorage y actualiza la interfaz
   saveToLocalStorage();
   loadData();
 };
-
+/**
+ * Mueve un elemento a la papelera después de confirmar con el usuario.
+ *
+ * - ID del elemento que se desea eliminar/mover a papelera.
+ * - Tipo de elemento: 'conglomerado', 'muestra' o 'ruta'.
+ * - Se expone en el objeto `window` para ser usada desde HTML.
+ */
 window.deleteItem = function (id, type) {
+  // Confirmar acción con el usuario
   if (!confirm(`¿Estás seguro de eliminar este ${type}?`)) return;
 
   let item;
+  // Busca el elemento y lo elimina de su lista original
   if (type === "conglomerado") {
     item = conglomerados.find((c) => c.id === id);
     conglomerados = conglomerados.filter((c) => c.id !== id);
@@ -247,37 +350,58 @@ window.deleteItem = function (id, type) {
     rutas = rutas.filter((r) => r.id !== id);
   }
 
+  // Si se encontró el elemento, lo agrega a la papelera con su tipo asociado
   if (item) {
     item.tipo = type;
     papelera.push(item);
-    saveToLocalStorage();
-    loadData();
+    saveToLocalStorage(); // Guarda cambios
+    loadData(); // Actualiza interfaz
   }
 };
 
+/**
+ * Muestra los detalles de un elemento seleccionado (simulado con alert).
+ *
+ *  - ID del elemento del cual se quiere ver detalle.
+ * - Tipo de elemento: 'conglomerado', 'muestra' o 'ruta'.
+ *  - Se expone en el objeto `window` para ser usada desde HTML.
+ */
 window.viewDetails = function (id, type) {
   alert(`Mostrar detalles del ${type} con ID: ${id}`);
 };
 
+/**
+ * Inicializa el formulario de registro de muestras.
+ * - Asigna un código único a la muestra.
+ * - Configura el evento submit del formulario.
+ * - Rellena automáticamente campos si vienen parámetros por URL.
+ */
 function inicializarFormularioMuestras() {
+  // Obtener referencia al formulario
   const formulario = document.getElementById("formularioRegistroMuestra");
-  if (!formulario) return;
+  if (!formulario) return; // Si no existe, salir
 
+  // Manejar el envío del formulario sin recargar la página
   formulario.addEventListener("submit", function (e) {
-    e.preventDefault();
-    guardarMuestra();
+    e.preventDefault(); // Evita que el formulario recargue la página
+    guardarMuestra();   // Llama a la función que guarda los datos
   });
 
+  // Generar un código único aleatorio para la muestra
   document.getElementById("codigoMuestra").value =
     "MUES_" + Math.random().toString(36).substr(2, 8).toUpperCase();
 
+  // Verificar si hay un ID de conglomerado en la URL para rellenar campo
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get("conglomerado");
   if (id) {
     document.getElementById("subparcela").value = id;
   }
 }
-
+/**
+ * Guarda una nueva muestra recolectada desde el formulario.
+ * Recoge todos los valores del formulario y los almacena en el arreglo global `muestras`.
+ */
 function guardarMuestra() {
   const nueva = {
     id: Date.now().toString(),
@@ -325,11 +449,18 @@ function cargarListadoMuestras() {
     contenedor.appendChild(card);
   });
 }
-
+/**
+ * Elimina una muestra del listado y actualiza la interfaz.
+ *
+ *  ID de la muestra a eliminar.
+ *  Se expone en el objeto `window` para ser usada desde HTML.
+ */
 window.eliminarMuestra = function (id) {
   if (confirm("¿Estás seguro de eliminar esta muestra?")) {
     muestras = muestras.filter((m) => m.id !== id);
+    // Guardar cambios en localStorage
     saveToLocalStorage();
+    // Volver a cargar el listado actualizado
     cargarListadoMuestras();
   }
 };
