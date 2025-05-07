@@ -215,22 +215,6 @@ function saveToLocalStorage() {
   localStorage.setItem("papelera", JSON.stringify(papelera));
 }
 
-function filterConglomerados(status) {
-  document.querySelectorAll(".status-tab").forEach((tab) => tab.classList.remove("active"));
-  event.target.classList.add("active");
-
-  const filtrados = conglomerados.filter((c) => c.estado === status);
-  conglomeradosContainer.innerHTML = "";
-
-  if (filtrados.length === 0) {
-    conglomeradosContainer.innerHTML = '<p class="no-data">No hay conglomerados con este estado</p>';
-  } else {
-    filtrados.forEach((c) => {
-      conglomeradosContainer.appendChild(createConglomeradoCard(c));
-    });
-  }
-}
-
 window.restoreItem = function (id) {
   const item = papelera.find((i) => i.id === id);
   if (!item) return;
