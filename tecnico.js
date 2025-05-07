@@ -17,6 +17,13 @@ let rutas = JSON.parse(localStorage.getItem("rutas")) || [];
 let papelera = JSON.parse(localStorage.getItem("papelera")) || [];
 let currentSection = "conglomerados";
 
+// Asegurarse que al iniciar solo se muestra la sección correcta
+document.addEventListener('DOMContentLoaded', function() {
+  conglomeradosContainer.style.display = "block";
+  rutasSection.style.display = "none";
+  muestrasSection.style.display = "none";
+});
+
 if (rutas.length === 0) {
   rutas = [
     {
@@ -49,10 +56,12 @@ function initApp() {
 }
 
 function loadData() {
+  // Primero ocultamos todas las secciones posibles
   conglomeradosContainer.style.display = "none";
   rutasSection.style.display = "none";
   muestrasSection.style.display = "none";
-
+  
+  // Limpiamos los contenedores
   conglomeradosContainer.innerHTML = "";
   rutasContainer.innerHTML = "";
 

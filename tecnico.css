@@ -169,23 +169,6 @@ h1, h2 {
   background-color: #3498db;
   color: white;
 }
-
-.create-button {
-  color: white;
-  background-color: #2ecc71;
-  border-radius: 5px;
-  margin: 20px;
-  padding: 12px;
-  text-align: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
-}
-
-.create-button:hover {
-  background-color: #27ae60;
-}
-
 .overlay {
   position: fixed;
   top: 0;
