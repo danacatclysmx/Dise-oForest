@@ -1,28 +1,40 @@
+/* ===================== */
+/* Variables CSS globales */
+/* ===================== */
 :root {
-  --line-color: #d3d3d3;
-  --active-color: #6c3cf8;
+  --line-color: #d3d3d3;        /* Color para líneas divisorias o decorativas */
+  --active-color: #6c3cf8;      /* Color para elementos activos o destacados */
 }
 
+/* ============ */
+/* Estilos base */
+/* ============ */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f5f5f5;
-  color: #333;
+  font-family: Arial, sans-serif; /* Fuente principal del sitio */
+  margin: 0;                      /* Sin margen exterior */
+  padding: 20px;                  /* Espaciado interno alrededor del contenido */
+  background-color: #f5f5f5;      /* Color de fondo general */
+  color: #333;                    /* Color de texto predeterminado */
 }
 
+/* ============================== */
+/* Contenedor principal del sitio */
+/* ============================== */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
+  max-width: 1200px;                              /* Ancho máximo del contenedor */
+  margin: 0 auto;                                 /* Centrado horizontal */
+  padding: 20px;                                  /* Espaciado interno */
+  background: white;                              /* Fondo blanco */
+  border-radius: 10px;                            /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);      /* Sombra sutil */
+  position: relative;                             /* Posición relativa para elementos internos */
 }
 
+/* ============================ */
+/* Secciones de contenido ocultas */
+/* ============================ */
 .section {
-  display: none;
+  display: none;                                  /* Ocultas por defecto */
   padding: 20px;
   background: white;
   border-radius: 10px;
@@ -30,55 +42,71 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* =============================== */
+/* Sección activa (visible) */
+/* =============================== */
 .section.active {
-  display: block;
+  display: block;                                 /* Se muestra cuando está activa */
 }
 
+/* ========================== */
+/* Encabezados principales */
+/* ========================== */
 h1, h2 {
-  color: #2c3e50;
-  font-size: 24px;
+  color: #2c3e50;               /* Color azul oscuro */
+  font-size: 24px;              /* Tamaño de fuente */
   margin-bottom: 20px;
-  text-transform: uppercase;
+  text-transform: uppercase;   /* Texto en mayúsculas */
 }
 
+/* ========================= */
+/* Pestañas de estado */
+/* ========================= */
 .status-tabs {
-  display: flex;
+  display: flex;                       /* Distribución en fila */
   margin-bottom: 30px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;      /* Línea divisoria inferior */
   padding-bottom: 10px;
 }
 
 .status-tab {
   margin-right: 20px;
   font-weight: bold;
-  color: #7f8c8d;
+  color: #7f8c8d;                     /* Gris claro */
   cursor: pointer;
   padding: 5px 10px;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;          /* Animación al pasar el mouse */
 }
 
+/* Al pasar el cursor o si está activa */
 .status-tab:hover,
 .status-tab.active {
-  color: #2c3e50;
+  color: #2c3e50;                     /* Azul oscuro */
 }
 
+/* Línea activa en la pestaña seleccionada */
 .status-tab.active {
   border-bottom: 2px solid #2c3e50;
 }
 
+/* ========================== */
+/* Mensaje cuando no hay datos */
+/* ========================== */
 .no-data {
   text-align: center;
   padding: 20px;
-  color: #7f8c8d;
-  font-style: italic;
+  color: #7f8c8d;                     /* Gris claro */
+  font-style: italic;                /* Texto en cursiva */
 }
 
-/* Menú Hamburguesa */
+/* ======================== */
+/* Botón de menú hamburguesa */
+/* ======================== */
 .menu-toggle {
-  position: fixed;
+  position: fixed;                   /* Posición fija en pantalla */
   top: 15px;
   left: 15px;
-  z-index: 1000;
+  z-index: 1000;                     /* Aparece encima de otros elementos */
   background: none;
   border: none;
   cursor: pointer;
@@ -90,13 +118,15 @@ h1, h2 {
   width: 70px;
 }
 
+/* Barras del ícono de menú */
 .menu-toggle span {
   display: block;
   width: 100%;
   height: 4px;
-  background-color: #483d3d;
-  transition: all 0.3s ease;
+  background-color: #483d3d;         /* Marrón oscuro */
+  transition: all 0.3s ease;         /* Transición suave */
 }
+
 
 .menu-toggle.open span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
@@ -110,31 +140,53 @@ h1, h2 {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Sidebar */
+/* ======================================= */
+/* Animación del botón hamburguesa al abrir */
+/* ======================================= */
+.menu-toggle.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg); /* Primera barra se mueve y rota en cruz */
+}
+
+.menu-toggle.open span:nth-child(2) {
+  opacity: 0; /* Segunda barra se oculta */
+}
+
+.menu-toggle.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg); /* Tercera barra se mueve y rota en cruz */
+}
+
+/* =================== */
+/* Menú lateral (sidebar) */
+/* =================== */
 .sidebar {
-  position: fixed;
+  position: fixed;                        /* Posición fija en la pantalla */
   top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100vh;
-  background-color: #ffffff;
-  color: black;
+  left: -250px;                           /* Oculto a la izquierda inicialmente */
+  width: 250px;                           /* Ancho del sidebar */
+  height: 100vh;                          /* Altura total de la ventana */
+  background-color: #ffffff;             /* Fondo blanco */
+  color: black;                           /* Texto en negro */
   padding: 20px 0;
-  transition: all 0.3s ease;
-  z-index: 999;
+  transition: all 0.3s ease;              /* Transición suave al mostrar/ocultar */
+  z-index: 999;                           /* Encima de otros elementos */
   text-align: center;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil en el borde derecho */
 }
 
+/* Sidebar visible */
 .sidebar.open {
-  left: 0;
+  left: 0; /* Se muestra moviéndolo a la izquierda 0 */
 }
 
+/* ====================== */
+/* Encabezado del sidebar */
+/* ====================== */
 .sidebar-header {
   padding: 0 20px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea decorativa inferior */
 }
 
+/* Título del menú lateral */
 .sidebar-title {
   padding-top: 12px;
   font-size: 25px;
@@ -142,42 +194,53 @@ h1, h2 {
   margin: 0;
 }
 
+/* ===================== */
+/* Lista del menú lateral */
+/* ===================== */
 .sidebar-menu {
-  list-style: none;
+  list-style: none;  /* Quita viñetas */
   padding: 0;
   margin: 20px 0 0;
 }
 
+/* Elementos del menú */
 .menu-item {
   padding: 12px 20px;
-  cursor: pointer;
-  display: flex;
+  cursor: pointer;                     /* Cursor tipo mano */
+  display: flex;                       /* Alineación horizontal */
   align-items: center;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s;   /* Cambio de fondo suave al pasar el mouse */
 }
 
+/* Hover sobre ítem del menú */
 .menu-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05); /* Fondo gris claro al pasar el cursor */
 }
 
+/* Ícono del menú (opcional con font-awesome o similar) */
 .menu-item i {
   margin-right: 10px;
   font-size: 18px;
 }
 
+/* Ítem de menú activo */
 .menu-item.active {
-  background-color: #3498db;
+  background-color: #3498db; /* Azul */
   color: white;
 }
+
+/* ===================== */
+/* Capa de fondo (overlay) */
+/* ===================== */
 .overlay {
-  position: fixed;
+  position: fixed;                          /* Cubre toda la pantalla */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-  display: none;
+  background-color: rgba(0, 0, 0, 0.5);     /* Fondo semitransparente negro */
+  z-index: 998;                             /* Justo debajo del sidebar */
+  display: none;                            /* Oculto por defecto */
 }
 
 .overlay.open {
@@ -186,53 +249,54 @@ h1, h2 {
 
 /* Tarjetas */
 .card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;                            /* Fondo blanco */
+  border-radius: 8px;                          /* Bordes redondeados */
+  padding: 20px;                               /* Espaciado interno */
+  margin-bottom: 20px;                         /* Separación entre tarjetas */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);    /* Sombra sutil para profundidad */
 }
 .card .info {
-  text-align: center;
-  margin-bottom: 30px;
+  text-align: center;     /* Texto centrado */
+  margin-bottom: 30px;    /* Margen inferior */
 }
-
 .order-code {
-  color: #3d58f0;
-  font-weight: bold;
+  color: #3d58f0;         /* Color azul para destacar */
+  font-weight: bold;      /* Texto en negrita */
 }
 
-/* Barra de progreso */
+
 .progress-container {
   position: relative;
-  margin: 30px 0;
+  margin: 30px 0;               /* Separación vertical */
 }
 
 #progress {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Distribuye los pasos de forma uniforme */
   position: relative;
   margin-bottom: 20px;
 }
 
+/* Línea base detrás de los pasos */
 #progress::before {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 50%;                         /* Centrado vertical */
   left: 0;
   width: 100%;
-  height: 4px;
-  background: var(--line-color);
+  height: 4px;                      /* Grosor de la línea */
+  background: var(--line-color);   /* Color de la línea (usando variable CSS) */
   z-index: 0;
   border-radius: 4px;
   transform: translateY(-50%);
 }
 
+/* Estilo de cada círculo (paso) */
 #progress .step {
   width: 30px;
   height: 30px;
   background: var(--line-color);
-  border-radius: 50%;
+  border-radius: 50%;                  /* Círculo perfecto */
   z-index: 1;
   display: flex;
   justify-content: center;
@@ -241,16 +305,19 @@ h1, h2 {
   transition: all 0.3s ease;
 }
 
+/* Paso activo (resaltado) */
 #progress .step.active {
-  background: var(--active-color);
-  transform: scale(1.1);
+  background: var(--active-color);    /* Color activo */
+  transform: scale(1.1);              /* Ligeramente más grande */
 }
 
+/* Ícono dentro del paso */
 #progress .step i {
   font-size: 14px;
   color: white;
 }
 
+/* Etiquetas debajo de los pasos */
 .labels {
   display: flex;
   justify-content: space-between;
@@ -261,68 +328,74 @@ h1, h2 {
 
 .buttons {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  justify-content: center;   /* Centrado horizontal */
+  gap: 20px;                 /* Espacio entre botones */
   margin-top: 30px;
 }
 
 button {
   padding: 10px 20px;
-  background-color: #3d58f0;
+  background-color: #3d58f0;  /* Color azul */
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 5px;         /* Bordes redondeados */
   cursor: pointer;
   transition: background-color 0.3s;
   font-size: 14px;
 }
 
+/* Efecto hover */
 button:hover {
-  background-color: #304ffe;
+  background-color: #304ffe;  /* Azul más oscuro al pasar el mouse */
 }
 
+/* Botón deshabilitado */
 button:disabled {
-  background-color: #aaa;
-  cursor: not-allowed;
+  background-color: #aaa;     /* Gris claro */
+  cursor: not-allowed;        /* Cursor de prohibido */
 }
+
 
 /* Proceso de envío en rutas */
 .ruta-card {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: white;                                /* Fondo blanco */
+  border-radius: 8px;                                /* Bordes redondeados */
+  padding: 20px;                                     /* Espacio interno */
+  margin-bottom: 20px;                               /* Separación inferior */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);          /* Sombra ligera */
 }
 
+
 .ruta-info {
-  margin-bottom: 20px;
+  margin-bottom: 20px;           /* Separación inferior */
 }
 
 .ruta-info h3 {
-  color: #2c3e50;
+  color: #2c3e50;                /* Azul oscuro */
   margin-bottom: 10px;
 }
 
 .codigo {
-  color: #3d58f0;
-  font-weight: bold;
+  color: #3d58f0;                /* Azul brillante */
+  font-weight: bold;             /* Negrita */
 }
 
 .proceso-envio h4 {
   color: #2c3e50;
   margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;   /* Línea separadora */
+  padding-bottom: 8px;             /* Espacio debajo del texto */
 }
+
 
 .etapas {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Distribuye las etapas equitativamente */
   position: relative;
   margin: 20px 0;
 }
 
+/* Línea gris que conecta las etapas */
 .etapas::before {
   content: "";
   position: absolute;
@@ -336,18 +409,19 @@ button:disabled {
 
 .etapa {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: column;       /* Ícono encima del texto */
+  align-items: center;          /* Centrado horizontal */
   position: relative;
-  z-index: 2;
-  width: 25%;
+  z-index: 2;                   /* Encima de la línea de fondo */
+  width: 25%;                   /* Ancho proporcional */
 }
 
+/* Círculo con ícono */
 .etapa .icono {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #e0e0e0;
+  background: #e0e0e0;          /* Gris claro por defecto */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -355,21 +429,25 @@ button:disabled {
   color: white;
 }
 
+/* Etapa activa (resaltada) */
 .etapa.activa .icono {
-  background: #6c3cf8;
+  background: #6c3cf8;          /* Morado */
 }
 
+/* Texto debajo del ícono */
 .etapa .texto {
   font-size: 12px;
   text-align: center;
   color: #777;
 }
 
+/* Texto de etapa activa */
 .etapa.activa .texto {
   color: #333;
   font-weight: bold;
 }
 
+/* Fecha debajo del texto */
 .etapa .fecha {
   font-size: 10px;
   color: #999;
@@ -382,64 +460,69 @@ button:disabled {
 }
 
 .btn-actualizar {
-  background: #3d58f0;
+  background: #3d58f0;           /* Azul */
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 5px;            /* Bordes redondeados */
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s;   /* Transición al pasar el mouse */
 }
 
+
 .btn-actualizar:hover {
-  background: #304ffe;
+  background: #304ffe;             /* Azul más oscuro al pasar el mouse */
 }
 
 .btn-actualizar:disabled {
-  background: #aaa;
-  cursor: not-allowed;
+  background: #aaa;                /* Gris claro si está deshabilitado */
+  cursor: not-allowed;            /* Cursor de prohibido */
 }
+
 
 /* Formulario de muestras */
 .form-container {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 800px;                /* Ancho máximo del formulario */
+  margin: 0 auto;                  /* Centrado horizontal */
   padding: 20px;
-  background: #f9f9f9;
+  background: #f9f9f9;            /* Fondo gris muy claro */
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Sombra ligera */
 }
 
+
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 15px;            /* Espaciado entre campos */
 }
 
 .form-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
+  color: #333;                    /* Gris oscuro */
 }
+
 
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group input[type="date"],
 .form-group select,
 .form-group textarea {
-  width: 100%;
+  width: 100%;                    /* Ancho completo */
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #ddd;         /* Borde gris claro */
   border-radius: 4px;
-  box-sizing: border-box;
+  box-sizing: border-box;         /* Incluye padding en el ancho total */
 }
 
 .form-group input[type="checkbox"] {
-  margin-right: 8px;
+  margin-right: 8px;              /* Espacio a la derecha */
 }
+
 
 .form-actions {
   margin-top: 20px;
-  text-align: right;
+  text-align: right;              /* Botones alineados a la derecha */
 }
 
 /* Listado de muestras */
@@ -448,9 +531,9 @@ button:disabled {
 }
 
 .muestra-card {
-  background: white;
+  background: white;              /* Fondo blanco */
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
 }
