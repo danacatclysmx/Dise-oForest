@@ -6,6 +6,13 @@ const createButton = document.getElementById('createButton');
 const statusTabs = document.getElementById('statusTabs');
 const mainTitle = document.getElementById('mainTitle');
 const conglomeradosContainer = document.getElementById('conglomeradosContainer');
+// Variables para el mapa
+let map;
+let circles = [];
+let containerCircle = null;
+// Al inicio del archivo JS
+const SUBPARCEL_RADIUS = 40;
+const CONTAINER_RADIUS = 100;  
 
 // Datos almacenados localmente
 let conglomerados = JSON.parse(localStorage.getItem('conglomerados')) || [];
@@ -29,6 +36,8 @@ function loadConglomerados() {
         const filteredConglomerados = conglomerados.filter(c => c.estado !== 'eliminado');
         if (filteredConglomerados.length === 0) {
             conglomeradosContainer.innerHTML = '<p class="no-data">No hay conglomerados registrados</p>';
+            // Mostrar todas las pestañas como inactivas
+            document.querySelectorAll('.status-tab').forEach(tab => tab.classList.remove('active'));
             return;
         }
         
@@ -36,7 +45,7 @@ function loadConglomerados() {
             conglomeradosContainer.appendChild(createConglomeradoCard(conglomerado));
         });
         
-        // Activar el primer filtro por defecto
+        // Activar el filtro por defecto sin depender del evento
         filterConglomerados('pendientes');
     } else {
         mainTitle.textContent = 'PAPELERA';
@@ -171,6 +180,13 @@ function setupEventListeners() {
         
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
+
+        // Validar coordenadas antes de continuar
+        const coordenadas = parseDMS(data.coordenadas);
+        if (!coordenadas) {
+            alert('Por favor ingrese coordenadas válidas en el formato: 04°32\'15.67"N 74°12\'45.89"W');
+            return;
+        }   
         
         // Generar un ID único para el nuevo conglomerado
         const nuevoId = 'CONG_' + Math.floor(10000 + Math.random() * 90000);
@@ -336,6 +352,25 @@ function showDetails(conglomeradoId) {
         tableBody.appendChild(row);
     });
     
+    // Mostrar el mapa con las subparcelas
+    const coordenadas = parseDMS(data.coordenadas_centro);
+    if (coordenadas && coordenadas.length === 2) {
+        // Inicializar mapa y luego generar subparcelas
+        initMapInModal(coordenadas);
+        
+        // Pequeño retardo para asegurar que el mapa está listo
+        setTimeout(() => {
+            generateSubparcelsOnMap(coordenadas, data.subparcelas);
+        }, 200);
+    } else {
+        document.getElementById('map').innerHTML = `
+            <div class="map-error">
+                <p>No se pudo mostrar el mapa</p>
+                <small>Coordenadas inválidas: ${data.coordenadas_centro || 'No proporcionadas'}</small>
+            </div>
+        `;
+    }
+    
     // Configurar botones de acción según el estado
     const actionButtons = document.getElementById('actionButtons');
     actionButtons.innerHTML = '';
@@ -450,17 +485,30 @@ function deletePermanently(id) {
 }
 
 // Filtrar conglomerados por estado
-function filterConglomerados(status) {
+function filterConglomerados(status, event = null) {
+    // Prevenir comportamiento por defecto si hay evento
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
     // Actualizar pestañas activas
     document.querySelectorAll('.status-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    event.target.classList.add('active');
+    
+    // Activar la pestaña clickeada si hay evento
+    if (event) {
+        event.target.classList.add('active');
+    } else {
+        // Activar la pestaña correspondiente al status si no hay evento
+        document.querySelector(`.status-tab[data-status="${status}"]`).classList.add('active');
+    }
     
     // Filtrar conglomerados
     const cards = document.querySelectorAll('.conglomerado');
     cards.forEach(card => {
-        if (card.dataset.status === status) {
+        if (status === 'all' || card.dataset.status === status) {
             card.style.display = 'block';
         } else {
             card.style.display = 'none';
@@ -472,6 +520,226 @@ function filterConglomerados(status) {
 function saveToLocalStorage() {
     localStorage.setItem('conglomerados', JSON.stringify(conglomerados));
     localStorage.setItem('papelera', JSON.stringify(papelera));
+}
+
+// Función para convertir coordenadas DMS a decimales
+function parseDMS(coordenadas) {
+    if (!coordenadas) return null;
+    
+    // Limpiar la cadena de coordenadas
+    coordenadas = coordenadas.toString()
+        .trim()
+        .replace(/\s+/g, ' ')  // Reemplazar múltiples espacios por uno solo
+        .replace(/’’/g, '"')   // Reemplazar comillas dobles especiales por comillas normales
+        .replace(/’/g, "'")     // Reemplazar comillas simples especiales por comillas normales
+        .replace(/""/g, '"');   // Reemplazar comillas dobles duplicadas
+    
+    // Mostrar en consola para depuración
+    console.log('Coordenadas a parsear:', coordenadas);
+    
+    // Patrones para diferentes formatos
+    const patterns = [
+        // Formato 1: 04°32'15.67"N 74°12'45.89"W (con segundos decimales)
+        /^(\d+)°(\d+)'([\d.]+)"([NS])\s+(\d+)°(\d+)'([\d.]+)"([EW])$/i,
+        // Formato 2: 6°15'00"N 75°34'00"W (segundos enteros)
+        /^(\d+)°(\d+)'(\d+)"([NS])\s+(\d+)°(\d+)'(\d+)"([EW])$/i,
+        // Formato 3: 6.25N 75.5666W (decimal)
+        /^([\d.]+)([NS])\s+([\d.]+)([EW])$/i,
+        // Formato 4: -6.25, -75.5666 (decimal con coma)
+        /^(-?\d+\.?\d*)\s*,\s*(-?\d+\.?\d*)$/
+    ];
+    
+    let matches;
+    for (const pattern of patterns) {
+        matches = coordenadas.match(pattern);
+        if (matches) break;
+    }
+    
+    if (!matches) {
+        console.error('No se encontró patrón para:', coordenadas);
+        return null;
+    }
+    
+    let lat, lng;
+    
+    // Procesar según el patrón que coincidió
+    if (matches.length === 9) {
+        // Formatos DMS (con o sin decimales en segundos)
+        lat = parseFloat(matches[1]) + (parseFloat(matches[2]) / 60) + (parseFloat(matches[3]) / 3600);
+        if (matches[4].toUpperCase() === 'S') lat = -lat;
+        
+        lng = parseFloat(matches[5]) + (parseFloat(matches[6]) / 60) + (parseFloat(matches[7]) / 3600);
+        if (matches[8].toUpperCase() === 'W') lng = -lng;
+    } else if (matches.length === 5) {
+        // Formato decimal con N/S E/W
+        lat = parseFloat(matches[1]);
+        if (matches[2].toUpperCase() === 'S') lat = -lat;
+        
+        lng = parseFloat(matches[3]);
+        if (matches[4].toUpperCase() === 'W') lng = -lng;
+    } else if (matches.length === 3) {
+        // Formato decimal simple
+        lat = parseFloat(matches[1]);
+        lng = parseFloat(matches[2]);
+    }
+    
+    // Validar que las coordenadas están dentro de rangos válidos
+    if (isNaN(lat) || isNaN(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+        console.error('Coordenadas fuera de rango o inválidas:', lat, lng);
+        return null;
+    }
+    
+    console.log('Coordenadas parseadas:', lat, lng);
+    return [lat, lng];
+}
+
+// Función para inicializar el mapa en el modal
+function initMapInModal(center) {
+    // Limpiar mapa existente
+    if (map) {
+        map.remove();
+        circles = [];
+        containerCircle = null;
+    }
+
+    // Crear nuevo mapa con renderizador Canvas
+    map = L.map('map', {
+        preferCanvas: true,
+        center: center,
+        zoom: 15,
+        zoomControl: true,
+        renderer: L.canvas()
+    });
+
+    // Capa base con mejor rendimiento
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        updateWhenIdle: true,
+        maxZoom: 19
+    }).addTo(map);
+
+    // Forzar actualización de tamaño
+    setTimeout(() => map.invalidateSize(true), 100);
+    
+    return map;
+}
+
+// Función para generar las subparcelas en el mapa
+function generateSubparcelsOnMap(center, subparcelas) {
+    // Limpiar elementos anteriores
+    clearMap();
+    
+    // 1. Crear círculo del conglomerado (fondo grande)
+    containerCircle = L.circle(center, {
+        color: '#FFD700',  // Amarillo oro
+        fillColor: '#FFD700',
+        fillOpacity: 0.2,  // Muy transparente
+        radius: 120,       // 100 metros de radio
+        weight: 2         // Grosor del borde
+    }).addTo(map).bindTooltip("Área del Conglomerado", {permanent: false});
+
+    // 2. Crear las 5 subparcelas en la disposición específica
+    const subparcelPositions = [
+        { id: "SPF1", position: "Centro", color: "#FF0000", distance: 0, azimuth: 0 },
+        { id: "SPN", position: "Norte", color: "#0000FF", distance: 80, azimuth: 0 },
+        { id: "SPE", position: "Este", color: "#00FF00", distance: 80, azimuth: 90 },
+        { id: "SPS", position: "Sur", color: "#FFFF00", distance: 80, azimuth: 180 },
+        { id: "SPO", position: "Oeste", color: "#FFFFFF", distance: 80, azimuth: 270 }
+    ];
+
+    subparcelPositions.forEach(sp => {
+        const position = sp.distance > 0 ? 
+            calculateOffset(center, sp.distance, sp.azimuth) : 
+            center;
+            
+        L.circle(position, {
+            color: sp.color,
+            fillColor: sp.color,
+            fillOpacity: 0.6,
+            radius: 40,  // 40 metros de radio
+            weight: 1
+        }).addTo(map)
+        .bindTooltip(`${sp.id} (${sp.position})`, {permanent: false});
+    });
+
+    // 3. Ajustar la vista para mostrar todo correctamente
+    const allCircles = L.featureGroup([containerCircle, ...circles]);
+    map.fitBounds(allCircles.getBounds(), {
+        padding: [30, 30],
+        maxZoom: 17
+    });
+
+    // Forzar redibujado para evitar artefactos
+    setTimeout(() => map.invalidateSize(true), 100);
+}
+
+// Función auxiliar para obtener color según posición
+function getColorForSubparcela(posicion) {
+    const COLOR_MAP = {
+        'Centro': '#FF0000',  // Rojo
+        'Norte': '#1E90FF',   // Azul brillante
+        'Este': '#32CD32',    // Verde lima
+        'Sur': '#FFD700',     // Amarillo oro
+        'Oeste': '#FFFFFF'    // Blanco
+    };
+    return COLOR_MAP[posicion] || '#AAAAAA';
+}
+
+// Función para crear un círculo en el mapa
+function createCircle(center, color, tooltip, style = {}) {
+    const defaultStyle = {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.5,
+        radius: SUBPARCEL_RADIUS,
+        weight: 1
+    };
+    
+    const finalStyle = {...defaultStyle, ...style};
+    
+    const circle = L.circle(center, finalStyle)
+        .addTo(map)
+        .bindTooltip(tooltip, {
+            permanent: false,
+            direction: 'top'
+        });
+    
+    circles.push(circle);
+    return circle;
+}
+
+// Función para calcular offset desde el centro
+function calculateOffset(center, distance, bearing) {
+    const earthRadius = 6378137; // Radio terrestre en metros
+    const latRad = center[0] * Math.PI / 180;
+    const angularDist = distance / earthRadius;
+    const bearingRad = bearing * Math.PI / 180;
+    
+    const newLat = Math.asin(
+        Math.sin(latRad) * Math.cos(angularDist) + 
+        Math.cos(latRad) * Math.sin(angularDist) * Math.cos(bearingRad)
+    );
+    
+    const newLng = center[1] * Math.PI / 180 + Math.atan2(
+        Math.sin(bearingRad) * Math.sin(angularDist) * Math.cos(latRad),
+        Math.cos(angularDist) - Math.sin(latRad) * Math.sin(newLat)
+    );
+    
+    return [
+        newLat * 180 / Math.PI,
+        ((newLng * 180 / Math.PI) + 540) % 360 - 180 // Normalizar longitud
+    ];
+}
+
+// Función para limpiar el mapa
+function clearMap() {
+    circles.forEach(circle => map && map.removeLayer(circle));
+    circles = [];
+    
+    if (containerCircle && map) {
+        map.removeLayer(containerCircle);
+        containerCircle = null;
+    }
 }
 
 // Inicializar la aplicación cuando el DOM esté listo
