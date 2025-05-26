@@ -39,6 +39,10 @@
                     <i class="fas fa-trash"></i>
                     <span>Papelera</span>
                 </li>
+                <li class="menu-item" data-section="calculadora">
+                    <i class="fas fa-calculator"></i>
+                    <span>Calculadora de Áreas</span>
+                </li>
             </ul>
             <!-- Botón para crear nuevo conglomerado -->
             <div class="create-button" id="createButton">
@@ -112,8 +116,73 @@
             </div>
         </div>
 
+        <!-- Modal de calculadora de áreas -->
+        <div class="modal-overlay" id="modalCalculadora">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">CALCULADORA DE ÁREAS</div>
+                    <button class="close-button" id="closeCalculadoraModal">&times;</button>
+                </div>
+                <div class="calculator-container">
+                    <div class="calculator-tabs">
+                        <div class="calculator-tab active" data-figure="circulo">Círculo</div>
+                        <div class="calculator-tab" data-figure="cuadrado">Cuadrado</div>
+                        <div class="calculator-tab" data-figure="triangulo">Triángulo</div>
+                    </div>
+                    
+                    <div class="calculator-content">
+                        <!-- Formulario para círculo -->
+                        <div class="calculator-form" id="formCirculo">
+                            <div class="form-group">
+                                <label for="radio">Radio (metros):</label>
+                                <input type="number" id="radio" step="0.01" min="0">
+                            </div>
+                            <button class="action-button calculate-button" data-figure="circulo">CALCULAR ÁREA</button>
+                            <div class="result-container">
+                                <h4>Resultado:</h4>
+                                <p id="resultadoCirculo">-</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulario para cuadrado -->
+                        <div class="calculator-form" id="formCuadrado" style="display: none;">
+                            <div class="form-group">
+                                <label for="lado">Lado (metros):</label>
+                                <input type="number" id="lado" step="0.01" min="0">
+                            </div>
+                            <button class="action-button calculate-button" data-figure="cuadrado">CALCULAR ÁREA</button>
+                            <div class="result-container">
+                                <h4>Resultado:</h4>
+                                <p id="resultadoCuadrado">-</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulario para triángulo -->
+                        <div class="calculator-form" id="formTriangulo" style="display: none;">
+                            <div class="form-group">
+                                <label for="base">Base (metros):</label>
+                                <input type="number" id="base" step="0.01" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="altura">Altura (metros):</label>
+                                <input type="number" id="altura" step="0.01" min="0">
+                            </div>
+                            <button class="action-button calculate-button" data-figure="triangulo">CALCULAR ÁREA</button>
+                            <div class="result-container">
+                                <h4>Resultado:</h4>
+                                <p id="resultadoTriangulo">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Título principal -->
         <h1 id="mainTitle">CONGLOMERADOS</h1>
+        
+        <!-- Mensaje de bienvenida personalizado -->
+        <div id="welcomeMessage" class="welcome-message"></div>
         
         <!-- Filtros por estado -->
         <div class="status-tabs" id="statusTabs">

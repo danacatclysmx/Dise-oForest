@@ -7,7 +7,6 @@ const createButton = document.getElementById('createButton'); // Botón CREAR
 const statusTabs = document.getElementById('statusTabs'); // Filtros de estado
 const mainTitle = document.getElementById('mainTitle'); // Título principal
 const conglomeradosContainer = document.getElementById('conglomeradosContainer'); // Contenedor de listado
-const welcomeMessage = document.getElementById('welcomeMessage'); // Mensaje de bienvenida
 
 // Variables para el mapa Leaflet
 let map;
@@ -27,151 +26,6 @@ let currentSection = 'conglomerados'; // Sección actual activa ('conglomerados'
 function initApp() {
     loadConglomerados(); // Cargar datos iniciales
     setupEventListeners(); // Configurar eventos
-    checkCookieConsent(); // Verificar consentimiento de cookies
-}
-
-// ======= FUNCIONALIDADES DE COOKIES Y USUARIO =======
-// Verificar consentimiento de cookies
-// Verificar consentimiento de cookies
-function checkCookieConsent() {
-    if (!localStorage.getItem('cookieConsent')) {
-        showCookieConsent();
-    }
-}
-
-// Mostrar aviso de cookies como modal
-function showCookieConsent() {
-    const modal = document.createElement('div');
-    modal.className = 'cookie-modal';
-    modal.innerHTML = `
-        <div class="cookie-modal-content">
-            <h3>Configuración de Cookies</h3>
-            <div class="form-group">
-                <label for="cookieUserName">Tu nombre:</label>
-                <input type="text" id="cookieUserName" placeholder="Ingresa tu nombre">
-            </div>
-            <p>Utilizamos cookies para mejorar tu experiencia. ¿Aceptas su uso?</p>
-            <div class="cookie-buttons">
-                <button class="cookie-button accept">Aceptar</button>
-                <button class="cookie-button reject">Rechazar</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    // Configurar eventos de los botones
-    modal.querySelector('.cookie-button.accept').addEventListener('click', () => {
-        const userName = document.getElementById('cookieUserName').value.trim();
-        if (userName) {
-            localStorage.setItem('userName', userName);
-            welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-            welcomeMessage.style.display = 'block';
-        }
-        localStorage.setItem('cookieConsent', 'true');
-        modal.remove();
-    });
-    
-    modal.querySelector('.cookie-button.reject').addEventListener('click', () => {
-        localStorage.clear();
-        modal.remove();
-    });
-}
-
-// Cargar nombre de usuario guardado
-function loadUserName() {
-    const userName = localStorage.getItem('userName');
-    if (userName) {
-        document.getElementById('userName').value = userName;
-        welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-        welcomeMessage.style.display = 'block';
-    }
-}
-
-// Guardar nombre de usuario
-function saveUserName() {
-    const userName = document.getElementById('userName').value.trim();
-    if (userName) {
-        localStorage.setItem('userName', userName);
-        welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-        welcomeMessage.style.display = 'block';
-        alert('Nombre guardado correctamente');
-    } else {
-        alert('Por favor ingresa un nombre válido');
-    }
-}
-
-// ======= CALCULADORA DE ÁREAS =======
-// Mostrar calculadora de áreas
-function showCalculator() {
-    document.getElementById('modalCalculadora').classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-
-// Ocultar calculadora de áreas
-function hideCalculator() {
-    document.getElementById('modalCalculadora').classList.remove('open');
-    document.body.style.overflow = 'auto';
-}
-
-// Cambiar entre pestañas de la calculadora
-function changeCalculatorTab(figure, element) {
-    // Actualizar pestañas activas
-    document.querySelectorAll('.calculator-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    element.classList.add('active');
-    
-    // Mostrar el formulario correspondiente
-    document.querySelectorAll('.calculator-form').forEach(form => {
-        form.style.display = 'none';
-    });
-    document.getElementById(`form${figure.charAt(0).toUpperCase() + figure.slice(1)}`).style.display = 'block';
-}
-
-// Calcular área según la figura seleccionada
-function calculateArea(figure) {
-    let area = 0;
-    let resultElement = '';
-    let unit = 'm²';
-    
-    switch (figure) {
-        case 'circulo':
-            const radio = parseFloat(document.getElementById('radio').value);
-            if (isNaN(radio)) {
-                alert('Por favor ingresa un valor válido para el radio');
-                return;
-            }
-            area = Math.PI * Math.pow(radio, 2);
-            resultElement = 'resultadoCirculo';
-            break;
-            
-        case 'cuadrado':
-            const lado = parseFloat(document.getElementById('lado').value);
-            if (isNaN(lado)) {
-                alert('Por favor ingresa un valor válido para el lado');
-                return;
-            }
-            area = Math.pow(lado, 2);
-            resultElement = 'resultadoCuadrado';
-            break;
-            
-        case 'triangulo':
-            const base = parseFloat(document.getElementById('base').value);
-            const altura = parseFloat(document.getElementById('altura').value);
-            if (isNaN(base) || isNaN(altura)) {
-                alert('Por favor ingresa valores válidos para base y altura');
-                return;
-            }
-            area = (base * altura) / 2;
-            resultElement = 'resultadoTriangulo';
-            break;
-    }
-    
-    // Mostrar resultado formateado
-    document.getElementById(resultElement).textContent = `${area.toFixed(2)} ${unit}`;
-    
-    // Guardar último cálculo en localStorage
-    localStorage.setItem(`lastAreaCalculation_${figure}`, area);
 }
 
 // ======= CARGA Y FILTRADO DE DATOS =======
@@ -200,7 +54,7 @@ function loadConglomerados() {
         
         // Activar el filtro por defecto sin depender del evento
         filterConglomerados('pendientes');
-    } else if (currentSection === 'papelera') {
+    } else {
         mainTitle.textContent = 'PAPELERA';
         statusTabs.style.display = 'none';
         
@@ -212,10 +66,6 @@ function loadConglomerados() {
         papelera.forEach(conglomerado => {
             conglomeradosContainer.appendChild(createConglomeradoCard(conglomerado, true));
         });
-    } else if (currentSection === 'calculadora') {
-        mainTitle.textContent = 'CALCULADORA DE ÁREAS';
-        statusTabs.style.display = 'none';
-        showCalculator();
     }
 }
 
@@ -307,7 +157,7 @@ function setupEventListeners() {
     
     // Botón CREAR
     createButton.addEventListener('click', function() {
-        document.getElementById('modalCrear').classList.add('open');
+        document.getElementById('modalCrear').style.display = 'flex';
         document.body.style.overflow = 'hidden';
         sidebar.classList.remove('open');
         overlay.classList.remove('open');
@@ -316,12 +166,12 @@ function setupEventListeners() {
     
     // Cerrar modal de creación
     document.getElementById('closeCrearModal').addEventListener('click', function() {
-        document.getElementById('modalCrear').classList.remove('open');
+        document.getElementById('modalCrear').style.display = 'none';
         document.body.style.overflow = 'auto';
     });
     
     document.getElementById('cancelarCrear').addEventListener('click', function() {
-        document.getElementById('modalCrear').classList.remove('open');
+        document.getElementById('modalCrear').style.display = 'none';
         document.body.style.overflow = 'auto';
     });
     
@@ -330,15 +180,6 @@ function setupEventListeners() {
         if (e.target === this) {
             this.style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
-    });
-    
-    // Cerrar modal de calculadora
-    document.getElementById('closeCalculadoraModal').addEventListener('click', hideCalculator);
-    
-    document.getElementById('modalCalculadora').addEventListener('click', function(e) {
-        if (e.target === this) {
-            hideCalculator();
         }
     });
     
@@ -430,7 +271,7 @@ function setupEventListeners() {
         saveToLocalStorage();
         
         // Cerrar el modal y limpiar el formulario
-        document.getElementById('modalCrear').classList.remove('open');
+        document.getElementById('modalCrear').style.display = 'none';
         document.body.style.overflow = 'auto';
         this.reset();
         
@@ -452,56 +293,8 @@ function setupEventListeners() {
             document.body.style.overflow = 'auto';
         }
     });
-    
-    // Eventos para la calculadora de áreas
-    document.querySelectorAll('.calculator-tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            changeCalculatorTab(this.dataset.figure, this);
-        });
-    });
-    
-    document.querySelectorAll('.calculate-button').forEach(button => {
-        button.addEventListener('click', function() {
-            calculateArea(this.dataset.figure);
-        });
-    });
-    
-    // Eventos para animaciones hover
-    setupHoverEffects();
 }
 
-// Configurar efectos hover
-function setupHoverEffects() {
-    // Efectos para botones
-    document.querySelectorAll('.action-button').forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-            this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-        });
-        
-        button.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-            this.style.boxShadow = 'none';
-        });
-    });
-    
-    // Efectos para tarjetas de conglomerado
-    document.addEventListener('mouseover', function(e) {
-        if (e.target.closest('.conglomerado')) {
-            const card = e.target.closest('.conglomerado');
-            card.style.transform = 'translateY(-5px)';
-            card.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.15)';
-        }
-    }, true);
-    
-    document.addEventListener('mouseout', function(e) {
-        if (e.target.closest('.conglomerado')) {
-            const card = e.target.closest('.conglomerado');
-            card.style.transform = 'translateY(0)';
-            card.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.1)';
-        }
-    }, true);
-}
 // ======= FUNCIONES AUXILIARES =======
 // Mostrar/ocultar menú de opciones
 function toggleOptionsMenu(button) {

@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Diccionario de credenciales válidas (normalmente esto vendría de una base de datos o servidor)
         const validCredentials = {
-          1: { password: "1", redirect: "jefe.html" },     // Usuario 1 se redirige a "jefe.html"
-          2: { password: "2", redirect: "tecnico.html" },  // Usuario 2 se redirige a "tecnico.html"
+          Arlec_Mohamed: { password: "Arlec_Mohamed", redirect: "jefe.html" },     // Usuario 1 se redirige a "jefe.html"
+          Larita_Garcia: { password: "Larita_Garcia", redirect: "tecnico.html" },  // Usuario 2 se redirige a "tecnico.html"
         };
 
         // Verifica si el usuario existe en el diccionario y si la contraseña coincide
