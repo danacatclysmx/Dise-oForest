@@ -39,10 +39,6 @@
                     <i class="fas fa-trash"></i>
                     <span>Papelera</span>
                 </li>
-                <li class="menu-item" data-section="calculadora">
-                    <i class="fas fa-calculator"></i>
-                    <span>Calculadora de Áreas</span>
-                </li>
             </ul>
             <!-- Botón para crear nuevo conglomerado -->
             <div class="create-button" id="createButton">
@@ -50,37 +46,26 @@
             </div>
         </div>
 
-        <!-- Modal para crear nuevos conglomerados -->
         <div class="modal-overlay" id="modalCrear">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="modal-title">CREAR NUEVO CONGLOMERADO</div>
                     <button class="close-button" id="closeCrearModal">&times;</button>
                 </div>
-                <!-- Formulario de creación con validación -->
+                <!-- Contenedor del mapa para seleccionar ubicación -->
+                <div class="form-group">
+                    <label>Seleccione la ubicación en el mapa:</label>
+                    <div id="map-container-crear" style="height: 400px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px;"></div>
+                    <div id="selected-coordinates" style="font-style: italic; margin-bottom: 15px;"></div>
+                    <div id="location-details" style="margin-bottom: 20px;">
+                        <div><strong>Departamento:</strong> <span id="auto-departamento">-</span></div>
+                        <div><strong>Municipio:</strong> <span id="auto-municipio">-</span></div>
+                        <div><strong>Corregimiento:</strong> <span id="auto-corregimiento">-</span></div>
+                    </div>
+                </div>
+                
+                <!-- Resto de campos -->
                 <form id="formCrearConglomerado">
-                    <!-- Campos de formulario -->
-                    <div class="form-group">
-                        <label for="departamento">Departamento:</label>
-                        <input type="text" id="departamento" name="departamento" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="municipio">Municipio:</label>
-                        <input type="text" id="municipio" name="municipio" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="corregimiento">Corregimiento:</label>
-                        <input type="text" id="corregimiento" name="corregimiento">
-                    </div>
-                    <div class="form-group">
-                        <label for="coordenadas">Coordenadas Centro:</label>
-                        <!-- Validación de formato de coordenadas -->
-                        <input type="text" id="coordenadas" name="coordenadas" 
-                               placeholder="Ej: 04°32'15.67\"N 74°12'45.89\"W" required
-                               pattern="\d+°\d+['’]\d+(\.\d+)?['’][\"”][NS]\s+\d+°\d+['’]\d+(\.\d+)?['’][\"”][EW]"
-                               title="Formato: DD°MM'SS.SS\"N DD°MM'SS.SS\"W">
-                    </div>
-                    <!-- Fechas de inicio y fin -->
                     <div class="form-group">
                         <label for="fechaInicio">Fecha de Inicio:</label>
                         <input type="date" id="fechaInicio" name="fechaInicio" required>
@@ -93,7 +78,6 @@
                         <label for="precision">Precisión GPS:</label>
                         <input type="text" id="precision" name="precision" placeholder="Ej: ±0.35 m" required>
                     </div>
-                    <!-- Punto de referencia -->
                     <h3>Punto de Referencia</h3>
                     <div class="form-group">
                         <label for="puntoTipo">Tipo:</label>
@@ -107,74 +91,11 @@
                         <label for="puntoDistancia">Distancia horizontal:</label>
                         <input type="text" id="puntoDistancia" name="puntoDistancia" placeholder="Ej: 15 m">
                     </div>
-                    <!-- Botones de acción -->
                     <div class="action-buttons">
                         <button type="button" class="action-button reject-button" id="cancelarCrear">CANCELAR</button>
                         <button type="submit" class="action-button approve-button">GUARDAR</button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Modal de calculadora de áreas -->
-        <div class="modal-overlay" id="modalCalculadora">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">CALCULADORA DE ÁREAS</div>
-                    <button class="close-button" id="closeCalculadoraModal">&times;</button>
-                </div>
-                <div class="calculator-container">
-                    <div class="calculator-tabs">
-                        <div class="calculator-tab active" data-figure="circulo">Círculo</div>
-                        <div class="calculator-tab" data-figure="cuadrado">Cuadrado</div>
-                        <div class="calculator-tab" data-figure="triangulo">Triángulo</div>
-                    </div>
-                    
-                    <div class="calculator-content">
-                        <!-- Formulario para círculo -->
-                        <div class="calculator-form" id="formCirculo">
-                            <div class="form-group">
-                                <label for="radio">Radio (metros):</label>
-                                <input type="number" id="radio" step="0.01" min="0">
-                            </div>
-                            <button class="action-button calculate-button" data-figure="circulo">CALCULAR ÁREA</button>
-                            <div class="result-container">
-                                <h4>Resultado:</h4>
-                                <p id="resultadoCirculo">-</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Formulario para cuadrado -->
-                        <div class="calculator-form" id="formCuadrado" style="display: none;">
-                            <div class="form-group">
-                                <label for="lado">Lado (metros):</label>
-                                <input type="number" id="lado" step="0.01" min="0">
-                            </div>
-                            <button class="action-button calculate-button" data-figure="cuadrado">CALCULAR ÁREA</button>
-                            <div class="result-container">
-                                <h4>Resultado:</h4>
-                                <p id="resultadoCuadrado">-</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Formulario para triángulo -->
-                        <div class="calculator-form" id="formTriangulo" style="display: none;">
-                            <div class="form-group">
-                                <label for="base">Base (metros):</label>
-                                <input type="number" id="base" step="0.01" min="0">
-                            </div>
-                            <div class="form-group">
-                                <label for="altura">Altura (metros):</label>
-                                <input type="number" id="altura" step="0.01" min="0">
-                            </div>
-                            <button class="action-button calculate-button" data-figure="triangulo">CALCULAR ÁREA</button>
-                            <div class="result-container">
-                                <h4>Resultado:</h4>
-                                <p id="resultadoTriangulo">-</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

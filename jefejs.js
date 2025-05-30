@@ -15,6 +15,10 @@ const welcomeMessage = document.getElementById("welcomeMessage"); // Mensaje de 
 let map;
 let circles = []; // Círculos de subparcelas
 let containerCircle = null; // Círculo contenedor
+let createMap; // Mapa para creación
+let createMarker; // Marcador en el mapa de creación
+let selectedCoords = null; // Coordenadas seleccionadas
+let locationData = {}; // Datos de geolocalización
 
 // Configuración de radios para subparcelas
 const SUBPARCEL_RADIUS = 40; // Radio de subparcelas individuales
@@ -29,156 +33,78 @@ let currentSection = "conglomerados"; // Sección actual activa ('conglomerados'
 function initApp() {
   loadConglomerados(); // Cargar datos iniciales
   setupEventListeners(); // Configurar eventos
-  checkCookieConsent(); // Verificar consentimiento de cookies
 }
 
-// ======= FUNCIONALIDADES DE COOKIES Y USUARIO =======
-// Verificar consentimiento de cookies
-// Verificar consentimiento de cookies
-function checkCookieConsent() {
-  if (!localStorage.getItem("cookieConsent")) {
-    showCookieConsent();
-  }
-}
-
-// Mostrar aviso de cookies como modal
-function showCookieConsent() {
-  const modal = document.createElement("div");
-  modal.className = "cookie-modal";
-  modal.innerHTML = `
-        <div class="cookie-modal-content">
-            <h3>Configuración de Cookies</h3>
-            <div class="form-group">
-                <label for="cookieUserName">Tu nombre:</label>
-                <input type="text" id="cookieUserName" placeholder="Ingresa tu nombre">
-            </div>
-            <p>Utilizamos cookies para mejorar tu experiencia. ¿Aceptas su uso?</p>
-            <div class="cookie-buttons">
-                <button class="cookie-button accept">Aceptar</button>
-                <button class="cookie-button reject">Rechazar</button>
-            </div>
-        </div>
-    `;
-  document.body.appendChild(modal);
-
-  // Configurar eventos de los botones
-  modal.querySelector(".cookie-button.accept").addEventListener("click", () => {
-    const userName = document.getElementById("cookieUserName").value.trim();
-    if (userName) {
-      localStorage.setItem("userName", userName);
-      welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-      welcomeMessage.style.display = "block";
+// ======= FUNCIONES DE MAPA PARA CREACIÓN =======
+function initCreateMap() {
+    // Eliminar mapa existente si hay uno
+    if (createMap) {
+        createMap.remove();
     }
-    localStorage.setItem("cookieConsent", "true");
-    modal.remove();
-  });
+    
+    // Crear nuevo mapa
+    createMap = L.map('map-container-crear', {
+        preferCanvas: true,
+        zoomControl: true,
+        renderer: L.canvas()
+    }).setView([4.570868, -74.297333], 7); // Centro en Colombia
 
-  modal.querySelector(".cookie-button.reject").addEventListener("click", () => {
-    localStorage.clear();
-    modal.remove();
-  });
+    // Capa base
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(createMap);
+
+    // Evento de clic en el mapa
+    createMap.on('click', function(e) {
+        // Eliminar marcador anterior si existe
+        if (createMarker) {
+            createMap.removeLayer(createMarker);
+        }
+        
+        // Crear nuevo marcador
+        createMarker = L.marker(e.latlng).addTo(createMap);
+        selectedCoords = e.latlng;
+        
+        // Mostrar coordenadas seleccionadas
+        document.getElementById('selected-coordinates').innerHTML = 
+            `<strong>Coordenadas seleccionadas:</strong> ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        
+        // Obtener datos de geolocalización
+        reverseGeocode(e.latlng);
+    });
+    
+    // Forzar actualización de tamaño
+    setTimeout(() => createMap.invalidateSize(true), 100);
 }
 
-// Cargar nombre de usuario guardado
-function loadUserName() {
-  const userName = localStorage.getItem("userName");
-  if (userName) {
-    document.getElementById("userName").value = userName;
-    welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-    welcomeMessage.style.display = "block";
-  }
+// Función para obtener datos de ubicación usando geocodificación inversa
+function reverseGeocode(latlng) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.address) {
+                locationData = {
+                    departamento: data.address.state || '',
+                    municipio: data.address.city || data.address.town || data.address.village || '',
+                    corregimiento: data.address.suburb || data.address.county || ''
+                };
+                
+                // Actualizar UI con datos obtenidos
+                document.getElementById('auto-departamento').textContent = locationData.departamento;
+                document.getElementById('auto-municipio').textContent = locationData.municipio;
+                document.getElementById('auto-corregimiento').textContent = locationData.corregimiento;
+            }
+        })
+        .catch(error => {
+            console.error('Error en geocodificación inversa:', error);
+            document.getElementById('selected-coordinates').innerHTML += 
+                '<br><span style="color:red">Error obteniendo datos de ubicación</span>';
+        });
 }
 
-// Guardar nombre de usuario
-function saveUserName() {
-  const userName = document.getElementById("userName").value.trim();
-  if (userName) {
-    localStorage.setItem("userName", userName);
-    welcomeMessage.textContent = `Bienvenido, ${userName}!`;
-    welcomeMessage.style.display = "block";
-    alert("Nombre guardado correctamente");
-  } else {
-    alert("Por favor ingresa un nombre válido");
-  }
-}
-
-// ======= CALCULADORA DE ÁREAS =======
-// Mostrar calculadora de áreas
-function showCalculator() {
-  document.getElementById("modalCalculadora").classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-
-// Ocultar calculadora de áreas
-function hideCalculator() {
-  document.getElementById("modalCalculadora").classList.remove("open");
-  document.body.style.overflow = "auto";
-}
-
-// Cambiar entre pestañas de la calculadora
-function changeCalculatorTab(figure, element) {
-  // Actualizar pestañas activas
-  document.querySelectorAll(".calculator-tab").forEach((tab) => {
-    tab.classList.remove("active");
-  });
-  element.classList.add("active");
-
-  // Mostrar el formulario correspondiente
-  document.querySelectorAll(".calculator-form").forEach((form) => {
-    form.style.display = "none";
-  });
-  document.getElementById(
-    `form${figure.charAt(0).toUpperCase() + figure.slice(1)}`
-  ).style.display = "block";
-}
-
-// Calcular área según la figura seleccionada
-function calculateArea(figure) {
-  let area = 0;
-  let resultElement = "";
-  let unit = "m²";
-
-  switch (figure) {
-    case "circulo":
-      const radio = parseFloat(document.getElementById("radio").value);
-      if (isNaN(radio)) {
-        alert("Por favor ingresa un valor válido para el radio");
-        return;
-      }
-      area = Math.PI * Math.pow(radio, 2);
-      resultElement = "resultadoCirculo";
-      break;
-
-    case "cuadrado":
-      const lado = parseFloat(document.getElementById("lado").value);
-      if (isNaN(lado)) {
-        alert("Por favor ingresa un valor válido para el lado");
-        return;
-      }
-      area = Math.pow(lado, 2);
-      resultElement = "resultadoCuadrado";
-      break;
-
-    case "triangulo":
-      const base = parseFloat(document.getElementById("base").value);
-      const altura = parseFloat(document.getElementById("altura").value);
-      if (isNaN(base) || isNaN(altura)) {
-        alert("Por favor ingresa valores válidos para base y altura");
-        return;
-      }
-      area = (base * altura) / 2;
-      resultElement = "resultadoTriangulo";
-      break;
-  }
-
-  // Mostrar resultado formateado
-  document.getElementById(resultElement).textContent = `${area.toFixed(
-    2
-  )} ${unit}`;
-
-  // Guardar último cálculo en localStorage
-  localStorage.setItem(`lastAreaCalculation_${figure}`, area);
-}
 
 // ======= CARGA Y FILTRADO DE DATOS =======
 // Cargar conglomerados según la sección actual
@@ -226,10 +152,6 @@ function loadConglomerados() {
         createConglomeradoCard(conglomerado, true)
       );
     });
-  } else if (currentSection === "calculadora") {
-    mainTitle.textContent = "CALCULADORA DE ÁREAS";
-    statusTabs.style.display = "none";
-    showCalculator();
   }
 }
 
@@ -340,28 +262,36 @@ function setupEventListeners() {
   });
 
   // Botón CREAR
-  createButton.addEventListener("click", function () {
-    document.getElementById("modalCrear").classList.add("open");
-    document.body.style.overflow = "hidden";
-    sidebar.classList.remove("open");
-    overlay.classList.remove("open");
-    menuToggle.classList.remove("open");
+  createButton.addEventListener('click', function() {
+      document.getElementById("modalCrear").classList.add("open");
+      document.body.style.overflow = "hidden";
+      
+      // Inicializar mapa de creación
+      setTimeout(() => {
+          initCreateMap();
+          // Resetear datos de ubicación
+          locationData = {};
+          selectedCoords = null;
+          document.getElementById('selected-coordinates').textContent = '';
+          document.getElementById('auto-departamento').textContent = '-';
+          document.getElementById('auto-municipio').textContent = '-';
+          document.getElementById('auto-corregimiento').textContent = '-';
+      }, 300);
   });
 
-  // Cerrar modal de creación
-  document
-    .getElementById("closeCrearModal")
-    .addEventListener("click", function () {
-      document.getElementById("modalCrear").classList.remove("open");
-      document.body.style.overflow = "auto";
-    });
 
-  document
-    .getElementById("cancelarCrear")
-    .addEventListener("click", function () {
+  // Cerrar modal de creación
+  document.getElementById("closeCrearModal").addEventListener("click", function() {
       document.getElementById("modalCrear").classList.remove("open");
       document.body.style.overflow = "auto";
-    });
+      if (createMap) createMap.remove();
+  });
+
+  document.getElementById("cancelarCrear").addEventListener("click", function() {
+      document.getElementById("modalCrear").classList.remove("open");
+      document.body.style.overflow = "auto";
+      if (createMap) createMap.remove();
+  });
 
   // Cerrar modal al hacer clic fuera del contenido
   document.getElementById("modalCrear").addEventListener("click", function (e) {
@@ -370,48 +300,29 @@ function setupEventListeners() {
       document.body.style.overflow = "auto";
     }
   });
-
-  // Cerrar modal de calculadora
-  document
-    .getElementById("closeCalculadoraModal")
-    .addEventListener("click", hideCalculator);
-
-  document
-    .getElementById("modalCalculadora")
-    .addEventListener("click", function (e) {
-      if (e.target === this) {
-        hideCalculator();
-      }
-    });
-
   // Manejar envío del formulario
-  document
-    .getElementById("formCrearConglomerado")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+  document.getElementById("formCrearConglomerado").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData.entries());
-
-      // Validar coordenadas antes de continuar
-      const coordenadas = parseDMS(data.coordenadas);
-      if (!coordenadas) {
-        alert(
-          "Por favor ingrese coordenadas válidas en el formato: 04°32'15.67\"N 74°12'45.89\"W"
-        );
+    // Validar que se haya seleccionado una ubicación
+    if (!selectedCoords) {
+        alert("Por favor seleccione una ubicación en el mapa");
         return;
-      }
+    }
 
-      // Generar un ID único para el nuevo conglomerado
-      const nuevoId = "CONG_" + Math.floor(10000 + Math.random() * 90000);
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
 
-      // Crear el nuevo conglomerado
-      const nuevoConglomerado = {
+    // Crear nuevo conglomerado con datos del mapa
+    const nuevoId = "CONG_" + Math.floor(10000 + Math.random() * 90000);
+    const coordenadasFormatted = `${selectedCoords.lat.toFixed(6)}, ${selectedCoords.lng.toFixed(6)}`;
+
+    const nuevoConglomerado = {
         id: nuevoId,
-        coordenadas_centro: data.coordenadas,
-        departamento: data.departamento,
-        municipio: data.municipio,
-        corregimiento: data.corregimiento,
+        coordenadas_centro: coordenadasFormatted,
+        departamento: locationData.departamento || 'No identificado',
+        municipio: locationData.municipio || 'No identificado',
+        corregimiento: locationData.corregimiento || '',
         fecha_inicio: data.fechaInicio,
         fecha_finalizacion: data.fechaFin,
         aprobado_por: "",
@@ -488,7 +399,7 @@ function setupEventListeners() {
 
   // Cerrar modal de detalles
   document.getElementById("closeModal").addEventListener("click", function () {
-    document.getElementById("modalDetalles").style.display = "none";
+    document.getElementById("modalDetalles").classList.remove("open");
     document.body.style.overflow = "auto";
   });
 
@@ -500,19 +411,6 @@ function setupEventListeners() {
         document.body.style.overflow = "auto";
       }
     });
-
-  // Eventos para la calculadora de áreas
-  document.querySelectorAll(".calculator-tab").forEach((tab) => {
-    tab.addEventListener("click", function () {
-      changeCalculatorTab(this.dataset.figure, this);
-    });
-  });
-
-  document.querySelectorAll(".calculate-button").forEach((button) => {
-    button.addEventListener("click", function () {
-      calculateArea(this.dataset.figure);
-    });
-  });
 
   // Eventos para animaciones hover
   setupHoverEffects();

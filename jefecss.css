@@ -35,90 +35,6 @@
     border-radius: 4px;
 }
 
-/* Estilos para la calculadora */
-/* Específico para la calculadora */
-#modalCalculadora .modal-content {
-    width: 90%;
-    max-width: 500px;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-}
-
-.calculator-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-.calculator-tabs {
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-}
-
-.calculator-tab {
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-right: 5px;
-    border-radius: 5px 5px 0 0;
-    background-color: #f5f5f5;
-    transition: all 0.3s ease;
-}
-
-.calculator-tab:hover {
-    background-color: #e0e0e0;
-}
-
-.calculator-tab.active {
-    background-color: #3498db;
-    color: white;
-}
-
-.calculator-form {
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-}
-
-.result-container {
-    margin-top: 15px;
-    padding: 10px;
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.result-container h4 {
-    margin-top: 0;
-    color: #2c3e50;
-}
-
-/* Botón de calcular */
-.calculate-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-    font-weight: bold;
-}
-
-.calculate-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Animaciones */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 /* Estilos generales para el cuerpo del documento */
 body {
   font-family: Arial, sans-serif; /* Fuente principal */
@@ -219,58 +135,6 @@ body {
     color: #2c3e50;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
-}
-
-/* Ajustes para la calculadora */
-.calculator-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 15px;
-}
-
-.calculator-tabs {
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-}
-
-.calculator-tab {
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-right: 5px;
-    border-radius: 5px 5px 0 0;
-    background-color: #f5f5f5;
-    transition: all 0.3s ease;
-}
-
-.calculator-tab:hover {
-    background-color: #e0e0e0;
-}
-
-.calculator-tab.active {
-    background-color: #3498db;
-    color: white;
-}
-
-.calculator-form {
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.result-container {
-    margin-top: 15px;
-    padding: 10px;
-    background-color: white;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-.result-container h4 {
-    margin-top: 0;
-    color: #2c3e50;
 }
 
 /* Botón de menú hamburguesa */
@@ -1079,4 +943,28 @@ th {
 .map-error small {
   font-size: 12px; /* Tamaño pequeño */
   color: #999; /* Gris claro */
+}
+
+/* Agregar al final del archivo */
+#map-container-crear {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#location-details {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+    margin-bottom: 20px;
+}
+
+#selected-coordinates {
+    padding: 8px;
+    background-color: #e8f4fd;
+    border-radius: 4px;
+    margin-bottom: 15px;
 }
