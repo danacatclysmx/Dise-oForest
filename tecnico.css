@@ -1,135 +1,101 @@
-/* ===================== */
-/* Variables CSS globales */
-/* ===================== */
+/* Variables CSS */
 :root {
-  --line-color: #d3d3d3;        /* Color para líneas divisorias o decorativas */
-  --active-color: #6c3cf8;      /* Color para elementos activos o destacados */
+  --primary-color: #16a34a;
+  --primary-hover: #15803d;
+  --secondary-color: #6b7280;
+  --background-color: #f9fafb;
+  --card-background: #ffffff;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
 }
 
-/* ============ */
-/* Estilos base */
-/* ============ */
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif; /* Fuente principal del sitio */
-  margin: 0;                      /* Sin margen exterior */
-  padding: 20px;                  /* Espaciado interno alrededor del contenido */
-  background-color: #f5f5f5;      /* Color de fondo general */
-  color: #333;                    /* Color de texto predeterminado */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
-/* ============================== */
-/* Contenedor principal del sitio */
-/* ============================== */
-.container {
-  max-width: 1200px;                              /* Ancho máximo del contenedor */
-  margin: 0 auto;                                 /* Centrado horizontal */
-  padding: 20px;                                  /* Espaciado interno */
-  background: white;                              /* Fondo blanco */
-  border-radius: 10px;                            /* Bordes redondeados */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);      /* Sombra sutil */
-  position: relative;                             /* Posición relativa para elementos internos */
+/* Header */
+.header {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-lg);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 64px;
 }
 
-/* ============================ */
-/* Secciones de contenido ocultas */
-/* ============================ */
-.section {
-  display: none;                                  /* Ocultas por defecto */
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
 }
 
-/* =============================== */
-/* Sección activa (visible) */
-/* =============================== */
-.section.active {
-  display: block;                                 /* Se muestra cuando está activa */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.logo-circle {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px; /* Espacio interno para que el logo no toque los bordes */
 }
 
-/* ========================== */
-/* Encabezados principales */
-/* ========================== */
-h1, h2 {
-  color: #2c3e50;               /* Color azul oscuro */
-  font-size: 24px;              /* Tamaño de fuente */
-  margin-bottom: 20px;
-  text-transform: uppercase;   /* Texto en mayúsculas */
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Mantiene las proporciones del logo */
+  border-radius: 50%; /* Por si quieres que el logo también sea circular */
 }
-
-/* ========================= */
-/* Pestañas de estado */
-/* ========================= */
-.status-tabs {
-  display: flex;                       /* Distribución en fila */
-  margin-bottom: 30px;
-  border-bottom: 1px solid #ddd;      /* Línea divisoria inferior */
-  padding-bottom: 10px;
-}
-
-.status-tab {
-  margin-right: 20px;
-  font-weight: bold;
-  color: #7f8c8d;                     /* Gris claro */
-  cursor: pointer;
-  padding: 5px 10px;
-  transition: all 0.3s ease;          /* Animación al pasar el mouse */
-}
-
-/* Al pasar el cursor o si está activa */
-.status-tab:hover,
-.status-tab.active {
-  color: #2c3e50;                     /* Azul oscuro */
-}
-
-/* Línea activa en la pestaña seleccionada */
-.status-tab.active {
-  border-bottom: 2px solid #2c3e50;
-}
-
-/* ========================== */
-/* Mensaje cuando no hay datos */
-/* ========================== */
-.no-data {
-  text-align: center;
-  padding: 20px;
-  color: #7f8c8d;                     /* Gris claro */
-  font-style: italic;                /* Texto en cursiva */
-}
-
-/* ======================== */
-/* Botón de menú hamburguesa */
-/* ======================== */
 .menu-toggle {
-  position: fixed;                   /* Posición fija en pantalla */
-  top: 15px;
-  left: 15px;
-  z-index: 1000;                     /* Aparece encima de otros elementos */
   background: none;
   border: none;
   cursor: pointer;
-  padding: 21px;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 60px;
-  width: 70px;
+  width: 24px;
+  height: 18px;
 }
 
-/* Barras del ícono de menú */
 .menu-toggle span {
   display: block;
   width: 100%;
-  height: 4px;
-  background-color: #483d3d;         /* Marrón oscuro */
-  transition: all 0.3s ease;         /* Transición suave */
+  height: 2px;
+  background-color: white;
+  transition: var(--transition);
 }
 
-
 .menu-toggle.open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(8px) rotate(45deg);
 }
 
 .menu-toggle.open span:nth-child(2) {
@@ -137,403 +103,627 @@ h1, h2 {
 }
 
 .menu-toggle.open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-8px) rotate(-45deg);
 }
 
-/* ======================================= */
-/* Animación del botón hamburguesa al abrir */
-/* ======================================= */
-.menu-toggle.open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg); /* Primera barra se mueve y rota en cruz */
-}
-
-.menu-toggle.open span:nth-child(2) {
-  opacity: 0; /* Segunda barra se oculta */
-}
-
-.menu-toggle.open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg); /* Tercera barra se mueve y rota en cruz */
-}
-
-/* =================== */
-/* Menú lateral (sidebar) */
-/* =================== */
-.sidebar {
-  position: fixed;                        /* Posición fija en la pantalla */
-  top: 0;
-  left: -250px;                           /* Oculto a la izquierda inicialmente */
-  width: 250px;                           /* Ancho del sidebar */
-  height: 100vh;                          /* Altura total de la ventana */
-  background-color: #ffffff;             /* Fondo blanco */
-  color: black;                           /* Texto en negro */
-  padding: 20px 0;
-  transition: all 0.3s ease;              /* Transición suave al mostrar/ocultar */
-  z-index: 999;                           /* Encima de otros elementos */
-  text-align: center;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Sombra sutil en el borde derecho */
-}
-
-/* Sidebar visible */
-.sidebar.open {
-  left: 0; /* Se muestra moviéndolo a la izquierda 0 */
-}
-
-/* ====================== */
-/* Encabezado del sidebar */
-/* ====================== */
-.sidebar-header {
-  padding: 0 20px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Línea decorativa inferior */
-}
-
-/* Título del menú lateral */
-.sidebar-title {
-  padding-top: 12px;
-  font-size: 25px;
-  font-weight: bold;
-  margin: 0;
-}
-
-/* ===================== */
-/* Lista del menú lateral */
-/* ===================== */
-.sidebar-menu {
-  list-style: none;  /* Quita viñetas */
-  padding: 0;
-  margin: 20px 0 0;
-}
-
-/* Elementos del menú */
-.menu-item {
-  padding: 12px 20px;
-  cursor: pointer;                     /* Cursor tipo mano */
-  display: flex;                       /* Alineación horizontal */
+.logo-section {
+  display: flex;
   align-items: center;
-  transition: background-color 0.2s;   /* Cambio de fondo suave al pasar el mouse */
+  gap: 0.75rem;
 }
 
-/* Hover sobre ítem del menú */
-.menu-item:hover {
-  background-color: rgba(0, 0, 0, 0.05); /* Fondo gris claro al pasar el cursor */
+.logo-circle {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Ícono del menú (opcional con font-awesome o similar) */
-.menu-item i {
-  margin-right: 10px;
-  font-size: 18px;
+.logo-circle span {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 0.875rem;
 }
 
-/* Ítem de menú activo */
-.menu-item.active {
-  background-color: #3498db; /* Azul */
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-role {
+  font-size: 0.875rem;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
   color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: var(--transition);
 }
 
-/* ===================== */
-/* Capa de fondo (overlay) */
-/* ===================== */
+.logout-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 64px;
+  left: -256px;
+  width: 256px;
+  height: calc(100vh - 64px);
+  background-color: var(--card-background);
+  box-shadow: var(--shadow-lg);
+  transition: var(--transition);
+  z-index: 999;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-content {
+  padding: 1.5rem 1rem;
+  height: 100%;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  width: 100%;
+  color: var(--text-primary);
+}
+
+.nav-item:hover {
+  background-color: #f3f4f6;
+}
+
+.nav-item.active {
+  background-color: #dcfce7;
+  color: var(--primary-color);
+}
+
+.nav-item i {
+  width: 20px;
+  height: 20px;
+}
+
+/* Overlay */
 .overlay {
-  position: fixed;                          /* Cubre toda la pantalla */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);     /* Fondo semitransparente negro */
-  z-index: 998;                             /* Justo debajo del sidebar */
-  display: none;                            /* Oculto por defecto */
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
 }
 
 .overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Main Content */
+.main-content {
+  margin-top: 64px;
+  padding: 1.5rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Sections */
+.section {
+  display: none;
+}
+
+.section.active {
   display: block;
 }
 
-/* Tarjetas */
-.card {
-  background: #fff;                            /* Fondo blanco */
-  border-radius: 8px;                          /* Bordes redondeados */
-  padding: 20px;                               /* Espaciado interno */
-  margin-bottom: 20px;                         /* Separación entre tarjetas */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);    /* Sombra sutil para profundidad */
-}
-.card .info {
-  text-align: center;     /* Texto centrado */
-  margin-bottom: 30px;    /* Margen inferior */
-}
-.order-code {
-  color: #3d58f0;         /* Color azul para destacar */
-  font-weight: bold;      /* Texto en negrita */
+.section-header {
+  margin-bottom: 1.5rem;
 }
 
-
-.progress-container {
-  position: relative;
-  margin: 30px 0;               /* Separación vertical */
+.section-header h2 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
 }
 
-#progress {
-  display: flex;
-  justify-content: space-between; /* Distribuye los pasos de forma uniforme */
-  position: relative;
-  margin-bottom: 20px;
+.section-description {
+  color: var(--text-secondary);
 }
 
-/* Línea base detrás de los pasos */
-#progress::before {
-  content: "";
-  position: absolute;
-  top: 50%;                         /* Centrado vertical */
-  left: 0;
+/* Tabs */
+.tabs {
   width: 100%;
-  height: 4px;                      /* Grosor de la línea */
-  background: var(--line-color);   /* Color de la línea (usando variable CSS) */
-  z-index: 0;
-  border-radius: 4px;
-  transform: translateY(-50%);
 }
 
-/* Estilo de cada círculo (paso) */
-#progress .step {
-  width: 30px;
-  height: 30px;
-  background: var(--line-color);
-  border-radius: 50%;                  /* Círculo perfecto */
-  z-index: 1;
+.tab-list {
   display: flex;
-  justify-content: center;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+/* Cards */
+.card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  display: flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  opacity: 0.5;
+}
+
+.empty-subtitle {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-row-3 {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: var(--transition);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.form-input.readonly {
+  background-color: #f9fafb;
+  color: var(--text-secondary);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
   color: white;
-  transition: all 0.3s ease;
 }
 
-/* Paso activo (resaltado) */
-#progress .step.active {
-  background: var(--active-color);    /* Color activo */
-  transform: scale(1.1);              /* Ligeramente más grande */
+.btn-primary:hover {
+  background-color: var(--primary-hover);
 }
 
-/* Ícono dentro del paso */
-#progress .step i {
-  font-size: 14px;
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+.btn-destructive {
+  background-color: #dc2626;
   color: white;
 }
 
-/* Etiquetas debajo de los pasos */
-.labels {
+.btn-destructive:hover {
+  background-color: #b91c1c;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-actions .btn {
+  flex: 1;
+}
+
+/* Muestras Layout */
+.muestras-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+.muestras-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.muestra-item {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  background-color: var(--card-background);
+}
+
+.muestra-header {
+  display: flex;
+  justify-content: between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.muestra-info h4 {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.muestra-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.muestra-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  background-color: #f3f4f6;
+  color: var(--text-secondary);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-destructive {
+  background-color: #fecaca;
+  color: #dc2626;
+}
+
+/* Rutas */
+.ruta-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  transition: var(--transition);
+}
+
+.ruta-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.ruta-header {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8em;
-  color: #555;
-  padding: 0 10px;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;   /* Centrado horizontal */
-  gap: 20px;                 /* Espacio entre botones */
-  margin-top: 30px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #3d58f0;  /* Color azul */
-  color: white;
-  border: none;
-  border-radius: 5px;         /* Bordes redondeados */
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-size: 14px;
-}
-
-/* Efecto hover */
-button:hover {
-  background-color: #304ffe;  /* Azul más oscuro al pasar el mouse */
-}
-
-/* Botón deshabilitado */
-button:disabled {
-  background-color: #aaa;     /* Gris claro */
-  cursor: not-allowed;        /* Cursor de prohibido */
-}
-
-
-/* Proceso de envío en rutas */
-.ruta-card {
-  background: white;                                /* Fondo blanco */
-  border-radius: 8px;                                /* Bordes redondeados */
-  padding: 20px;                                     /* Espacio interno */
-  margin-bottom: 20px;                               /* Separación inferior */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);          /* Sombra ligera */
-}
-
-
-.ruta-info {
-  margin-bottom: 20px;           /* Separación inferior */
+  align-items: flex-start;
+  margin-bottom: 1rem;
 }
 
 .ruta-info h3 {
-  color: #2c3e50;                /* Azul oscuro */
-  margin-bottom: 10px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
-.codigo {
-  color: #3d58f0;                /* Azul brillante */
-  font-weight: bold;             /* Negrita */
+.ruta-info p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.ruta-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+}
+
+.status-recolectada {
+  background-color: #3b82f6;
+}
+.status-empacada {
+  background-color: #eab308;
+}
+.status-en-ruta {
+  background-color: #f97316;
+}
+.status-entregada {
+  background-color: #22c55e;
+}
+
+.proceso-envio {
+  margin: 1rem 0;
 }
 
 .proceso-envio h4 {
-  color: #2c3e50;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;   /* Línea separadora */
-  padding-bottom: 8px;             /* Espacio debajo del texto */
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
-
-.etapas {
-  display: flex;
-  justify-content: space-between; /* Distribuye las etapas equitativamente */
+.etapas-container {
   position: relative;
-  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
 }
 
-/* Línea gris que conecta las etapas */
-.etapas::before {
-  content: "";
+.etapas-line {
   position: absolute;
   top: 20px;
   left: 0;
   right: 0;
-  height: 3px;
-  background: #e0e0e0;
+  height: 2px;
+  background-color: #e5e7eb;
   z-index: 1;
 }
 
 .etapa {
   display: flex;
-  flex-direction: column;       /* Ícono encima del texto */
-  align-items: center;          /* Centrado horizontal */
+  flex-direction: column;
+  align-items: center;
   position: relative;
-  z-index: 2;                   /* Encima de la línea de fondo */
-  width: 25%;                   /* Ancho proporcional */
+  z-index: 2;
+  flex: 1;
+  max-width: 80px;
 }
 
-/* Círculo con ícono */
-.etapa .icono {
+.etapa-circulo {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #e0e0e0;          /* Gris claro por defecto */
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
-  color: white;
-}
-
-/* Etapa activa (resaltada) */
-.etapa.activa .icono {
-  background: #6c3cf8;          /* Morado */
-}
-
-/* Texto debajo del ícono */
-.etapa .texto {
-  font-size: 12px;
-  text-align: center;
-  color: #777;
-}
-
-/* Texto de etapa activa */
-.etapa.activa .texto {
-  color: #333;
+  justify-content: center;
+  font-size: 0.75rem;
   font-weight: bold;
-}
-
-/* Fecha debajo del texto */
-.etapa .fecha {
-  font-size: 10px;
-  color: #999;
-  margin-top: 4px;
-}
-
-.ruta-acciones {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.btn-actualizar {
-  background: #3d58f0;           /* Azul */
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;            /* Bordes redondeados */
-  cursor: pointer;
-  transition: background 0.3s;   /* Transición al pasar el mouse */
+  margin-bottom: 0.5rem;
 }
 
-
-.btn-actualizar:hover {
-  background: #304ffe;             /* Azul más oscuro al pasar el mouse */
+.etapa-circulo.activa {
+  background-color: var(--primary-color);
 }
 
-.btn-actualizar:disabled {
-  background: #aaa;                /* Gris claro si está deshabilitado */
-  cursor: not-allowed;            /* Cursor de prohibido */
+.etapa-circulo.inactiva {
+  background-color: #d1d5db;
 }
 
-
-/* Formulario de muestras */
-.form-container {
-  max-width: 800px;                /* Ancho máximo del formulario */
-  margin: 0 auto;                  /* Centrado horizontal */
-  padding: 20px;
-  background: #f9f9f9;            /* Fondo gris muy claro */
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* Sombra ligera */
+.etapa-texto {
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
 }
 
-
-.form-group {
-  margin-bottom: 15px;            /* Espaciado entre campos */
+.etapa-fecha {
+  font-size: 0.625rem;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;                    /* Gris oscuro */
+.ruta-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row,
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="date"],
-.form-group select,
-.form-group textarea {
-  width: 100%;                    /* Ancho completo */
-  padding: 8px;
-  border: 1px solid #ddd;         /* Borde gris claro */
-  border-radius: 4px;
-  box-sizing: border-box;         /* Incluye padding en el ancho total */
+  .muestras-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-container {
+    padding: 0 0.5rem;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .etapas-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .etapas-line {
+    display: none;
+  }
 }
 
-.form-group input[type="checkbox"] {
-  margin-right: 8px;              /* Espacio a la derecha */
-}
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1rem;
+  }
 
+  .user-role {
+    display: none;
+  }
 
-.form-actions {
-  margin-top: 20px;
-  text-align: right;              /* Botones alineados a la derecha */
-}
-
-/* Listado de muestras */
-#listadoMuestras {
-  margin-top: 30px;
-}
-
-.muestra-card {
-  background: white;              /* Fondo blanco */
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);  /* Sombra sutil */
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
 }

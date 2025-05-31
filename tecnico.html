@@ -3,237 +3,328 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tecnico de suelos</title>
+    <title>ForestTrack Colombia - Técnico de Suelos</title>
     <link rel="stylesheet" href="tecnico.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css"
     />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   </head>
   <body>
-    <div class="container">
-      <!-- Botón de menú hamburguesa -->
-      <button class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <!-- Overlay para cerrar el menú -->
-      <div class="overlay" id="overlay"></div>
-
-      <!-- Menú lateral -->
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Menú</h2>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-container">
+        <div class="header-left">
+          <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="logo-section">
+            <div class="logo-circle">
+              <img src="imgs/logo.png" alt="Logo" class="logo-img" />
+            </div>
+            <h1>ForestTrack Colombia</h1>
+          </div>
         </div>
-        <ul class="sidebar-menu">
-          <li class="menu-item active" data-section="conglomerados">
-            <i class="fas fa-list"></i>
+        <div class="header-right">
+          <span class="user-role">Técnico de Suelos</span>
+          <button class="logout-btn" id="logout-btn">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-content">
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-section="conglomerados">
+            <i data-lucide="list"></i>
             <span>Conglomerados</span>
-          </li>
-          <li class="menu-item" data-section="muestras">
-            <i class="fas fa-vial"></i>
+          </button>
+          <button class="nav-item" data-section="muestras">
+            <i data-lucide="test-tube"></i>
             <span>Muestras</span>
-          </li>
-          <li class="menu-item" data-section="rutas">
-            <i class="fas fa-route"></i>
+          </button>
+          <button class="nav-item" data-section="rutas">
+            <i data-lucide="route"></i>
             <span>Rutas de Muestreo</span>
-          </li>
-          <li class="menu-item" data-section="papelera">
-            <i class="fas fa-trash"></i>
+          </button>
+          <button class="nav-item" data-section="papelera">
+            <i data-lucide="trash-2"></i>
             <span>Papelera</span>
-          </li>
-          <li class="menu-item" id="logoutButton">
-            <i class="fas fa-sign-out-alt"></i>
-            <span
-              ><a
-                href="login.html"
-                style="text-decoration: none; color: inherit"
-                >Cerrar Sesión</a
-              ></span
-            >
-          </li>
-        </ul>
+          </button>
+        </nav>
       </div>
+    </div>
 
-      <h1 id="mainTitle">CONGLOMERADOS</h1>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
 
-      <div class="status-tabs" id="statusTabs">
-        <div class="status-tab" onclick="filterConglomerados('aprobados')">
-          APROBADOS
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <!-- Sección Conglomerados -->
+        <div class="section active" id="conglomerados-section">
+          <div class="section-header">
+            <h2>CONGLOMERADOS</h2>
+            <p class="section-description">
+              Conglomerados aprobados para muestreo
+            </p>
+          </div>
+
+          <div class="tabs">
+            <div class="tab-list">
+              <button class="tab active">APROBADOS</button>
+            </div>
+            <div class="tab-content">
+              <div class="empty-state" id="conglomerados-empty">
+                <i data-lucide="map-pin" class="empty-icon"></i>
+                <p>No hay conglomerados aprobados disponibles</p>
+                <p class="empty-subtitle">
+                  Los conglomerados son creados y aprobados por el jefe de
+                  brigada
+                </p>
+              </div>
+              <div
+                class="cards-grid"
+                id="conglomerados-grid"
+                style="display: none"
+              >
+                <!-- Los conglomerados se cargarán aquí dinámicamente -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección Muestras -->
+        <div class="section" id="muestras-section">
+          <div class="section-header">
+            <h2>REGISTRO DE MUESTRAS</h2>
+          </div>
+
+          <div class="muestras-layout">
+            <!-- Formulario -->
+            <div class="card">
+              <div class="card-header">
+                <h3><i data-lucide="test-tube"></i> Nueva Muestra</h3>
+              </div>
+              <div class="card-content">
+                <form id="formulario-muestra" class="form">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="codigoMuestra">Código de la Muestra</label>
+                      <input
+                        type="text"
+                        id="codigoMuestra"
+                        readonly
+                        class="form-input readonly"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="conglomeradoAsociado"
+                        >Conglomerado Asociado</label
+                      >
+                      <input
+                        type="text"
+                        id="conglomeradoAsociado"
+                        class="form-input"
+                        placeholder="Ingrese el conglomerado"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="subparcela">Subparcela</label>
+                      <select id="subparcela" class="form-select">
+                        <option value="">Seleccionar Subparcela</option>
+                        <option value="SPF1">SPF1</option>
+                        <option value="SPF2">SPF2</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="fechaRecoleccion">Fecha de Recolección</label>
+                      <input
+                        type="date"
+                        id="fechaRecoleccion"
+                        class="form-input"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-row-3">
+                    <div class="form-group">
+                      <label for="azimut">Azimut (°)</label>
+                      <input
+                        type="number"
+                        id="azimut"
+                        class="form-input"
+                        min="0"
+                        max="360"
+                        placeholder="45"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="distancia">Distancia (m)</label>
+                      <input
+                        type="number"
+                        id="distancia"
+                        class="form-input"
+                        min="0"
+                        max="7"
+                        step="0.1"
+                        placeholder="2"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="profundidad">Profundidad (cm)</label>
+                      <input
+                        type="number"
+                        id="profundidad"
+                        class="form-input"
+                        min="0"
+                        max="50"
+                        placeholder="30"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="colorSuelo">Color del Suelo</label>
+                      <input
+                        type="text"
+                        id="colorSuelo"
+                        class="form-input"
+                        placeholder="Ej: Marrón claro"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="pesoFresco">Peso Fresco (g)</label>
+                      <input
+                        type="number"
+                        id="pesoFresco"
+                        class="form-input"
+                        min="0"
+                        placeholder="1000"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Tipo de Análisis</label>
+                    <div class="checkbox-group">
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="analisis"
+                          value="carbono"
+                        />
+                        <span class="checkmark"></span>
+                        Carbono Orgánico
+                      </label>
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="analisis"
+                          value="densidad"
+                        />
+                        <span class="checkmark"></span>
+                        Densidad Aparente
+                      </label>
+                      <label class="checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="analisis"
+                          value="fertilidad"
+                        />
+                        <span class="checkmark"></span>
+                        Fertilidad
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea
+                      id="observaciones"
+                      class="form-textarea"
+                      rows="3"
+                      placeholder="Ej: Presencia de raíces, textura arenosa, etc."
+                    ></textarea>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                      <i data-lucide="save"></i>
+                      Guardar Registro
+                    </button>
+                    <button type="button" class="btn btn-secondary">
+                      <i data-lucide="x-circle"></i>
+                      Cancelar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Lista de Muestras -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Muestras Registradas</h3>
+              </div>
+              <div class="card-content">
+                <div class="muestras-list" id="muestras-list">
+                  <div class="empty-state">
+                    <i data-lucide="test-tube" class="empty-icon"></i>
+                    <p>No hay muestras registradas</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección Rutas -->
+        <div class="section" id="rutas-section">
+          <div class="section-header">
+            <h2>RUTAS DE MUESTREO</h2>
+          </div>
+
+          <div class="empty-state" id="rutas-empty">
+            <i data-lucide="route" class="empty-icon"></i>
+            <p>No hay rutas registradas</p>
+          </div>
+          <div class="cards-grid" id="rutas-grid" style="display: none">
+            <!-- Las rutas se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Sección Papelera -->
+        <div class="section" id="papelera-section">
+          <div class="section-header">
+            <h2>PAPELERA</h2>
+          </div>
+
+          <div class="empty-state" id="papelera-empty">
+            <i data-lucide="trash-2" class="empty-icon"></i>
+            <p>La papelera está vacía</p>
+          </div>
+          <div class="cards-grid" id="papelera-grid" style="display: none">
+            <!-- Los elementos de la papelera se cargarán aquí dinámicamente -->
+          </div>
         </div>
       </div>
-
-      <div id="conglomeradosContainer">
-        <!-- Los conglomerados se cargarán dinámicamente aquí -->
-      </div>
-    </div>
-
-    <!-- Sección de Muestras (nueva) -->
-    <div class="section" id="muestrasSection" style="display: none">
-      <h2>REGISTRO DE MUESTRAS</h2>
-      <div class="form-container">
-        <form id="formularioRegistroMuestra">
-          <div class="form-group">
-            <label for="conglomeradoAsociado">Conglomerado Asociado:</label>
-            <input
-              type="text"
-              id="conglomeradoAsociado"
-              readonly
-              class="form-control"
-            />
-          </div>
-          <!-- Código Único de la Muestra -->
-          <div class="form-group">
-            <label for="codigoMuestra">Código de la Muestra:</label>
-            <input
-              type="text"
-              id="codigoMuestra"
-              placeholder="MUES_XXXX"
-              readonly
-              required
-            />
-          </div>
-
-          <!-- Asociación con Subparcela -->
-          <div class="form-group">
-            <label for="subparcela">Subparcela:</label>
-            <select id="subparcela" required>
-              <option value="">Seleccionar Subparcela</option>
-              <option value="SPF1">SPF1</option>
-              <option value="SPF2">SPF2</option>
-              <!-- Opciones dinámicas según las subparcelas registradas -->
-            </select>
-          </div>
-
-          <!-- Fecha de Recolección -->
-          <div class="form-group">
-            <label for="fechaRecoleccion"
-              >Fecha de Recolección (AAAAMMDD):</label
-            >
-            <input type="date" id="fechaRecoleccion" required />
-          </div>
-
-          <!-- Azimut y Distancia Horizontal -->
-          <div class="form-group">
-            <label for="azimut">Azimut (°):</label>
-            <input
-              type="number"
-              id="azimut"
-              placeholder="45"
-              min="0"
-              max="360"
-              step="1"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="distancia">Distancia Horizontal (metros):</label>
-            <input
-              type="number"
-              id="distancia"
-              placeholder="2"
-              min="0"
-              max="7"
-              step="0.1"
-              required
-            />
-          </div>
-
-          <!-- Profundidad del Muestreo -->
-          <div class="form-group">
-            <label for="profundidad">Profundidad (cm):</label>
-            <input
-              type="number"
-              id="profundidad"
-              placeholder="30"
-              min="0"
-              max="50"
-              step="1"
-              required
-            />
-          </div>
-
-          <!-- Color del Suelo (Opcional) -->
-          <div class="form-group">
-            <label for="colorSuelo">Color del Suelo:</label>
-            <input
-              type="text"
-              id="colorSuelo"
-              placeholder="Ejemplo: Marrón claro"
-            />
-          </div>
-
-          <!-- Peso Fresco de la Muestra -->
-          <div class="form-group">
-            <label for="pesoFresco">Peso Fresco (gramos):</label>
-            <input
-              type="number"
-              id="pesoFresco"
-              placeholder="1000"
-              min="0"
-              step="1"
-              required
-            />
-          </div>
-
-          <!-- Tipos de Análisis -->
-          <div class="form-group">
-            <label>Tipo de Análisis:</label>
-            <div>
-              <input
-                type="checkbox"
-                id="carbono"
-                name="analisis"
-                value="carbono"
-              />
-              <label for="carbono">Carbono Orgánico</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="densidad"
-                name="analisis"
-                value="densidad"
-              />
-              <label for="densidad">Densidad Aparente</label>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                id="fertilidad"
-                name="analisis"
-                value="fertilidad"
-              />
-              <label for="fertilidad">Fertilidad</label>
-            </div>
-          </div>
-
-          <!-- Observaciones (Opcionales) -->
-          <div class="form-group">
-            <label for="observaciones">Observaciones:</label>
-            <textarea
-              id="observaciones"
-              rows="3"
-              placeholder="Ejemplo: Presencia de raíces, textura arenosa, etc."
-            ></textarea>
-          </div>
-          <div class="form-actions">
-            <button type="submit" id="guardarMuestra">Guardar Registro</button>
-            <button type="reset" id="cancelar">Cancelar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <!-- Sección de Rutas de Muestreo -->
-    <div class="section" id="rutasSection" style="display: none">
-      <h2>RUTAS DE MUESTREO</h2>
-      <div class="rutas-container" id="rutasContainer">
-        <!-- Las tarjetas de ruta se insertarán aquí dinámicamente -->
-      </div>
-    </div>
+    </main>
 
     <script src="tecnico.js"></script>
   </body>
