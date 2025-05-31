@@ -197,6 +197,18 @@ function createConglomeradoCard(conglomerado, isInTrash = false) {
 // ======= CONFIGURACIÓN DE EVENTOS =======
 // Configurar event listeners
 function setupEventListeners() {
+
+    // Evento para cerrar sesión
+    document.getElementById('logoutButton').addEventListener('click', function() {
+        // Cerrar menú si está abierto
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        menuToggle.classList.remove('open');
+    
+        // Redirigir a la página de login
+        window.location.href = 'Login.html';
+    });
+
     // Menú lateral
     menuToggle.addEventListener('click', function(e) {
         e.stopPropagation();

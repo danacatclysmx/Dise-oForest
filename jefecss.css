@@ -731,3 +731,31 @@ tr:nth-child(even) {
         padding: 15px;
     }
 }
+/* Estilos para el botón de cerrar sesión */
+.logout-button {
+    position: absolute;
+    bottom: 65px;
+    left: 20px;
+    right: 20px;
+    background-color: #c62828; /* Rojo */
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow);
+    
+}
+
+.logout-button:hover {
+    background-color: #b71c1c; /* Rojo más oscuro */
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    
+}
