@@ -144,6 +144,43 @@ function loadConglomerados() {
     }
 }
 
+// ======= FUNCIÓN PARA EDITAR CONGLOMERADO =======
+// ======= FUNCIÓN PARA EDITAR CONGLOMERADO =======
+function editConglomerado(id) {
+    const conglomerado = conglomerados.find(c => c.id === id);
+    if (!conglomerado) return;
+
+    // Función para formatear fecha a YYYY-MM-DD
+    function formatDateForInput(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        if (isNaN(date)) return dateString; // Si no es una fecha válida, devolver original
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Llenar el modal de edición
+    document.getElementById('editConglomeradoId').textContent = conglomerado.id;
+    document.getElementById('editConglomeradoOriginalId').value = conglomerado.id;
+    document.getElementById('editCoordenadas').value = conglomerado.coordenadas_centro;
+    document.getElementById('editDepartamento').value = conglomerado.departamento;
+    document.getElementById('editMunicipio').value = conglomerado.municipio;
+    document.getElementById('editCorregimiento').value = conglomerado.corregimiento || '';
+    document.getElementById('editFechaInicio').value = formatDateForInput(conglomerado.fecha_inicio);
+    document.getElementById('editFechaFin').value = formatDateForInput(conglomerado.fecha_finalizacion);
+    document.getElementById('editPrecision').value = conglomerado.precision;
+    document.getElementById('editPuntoTipo').value = conglomerado.punto_referencia.tipo || '';
+    document.getElementById('editPuntoAzimut').value = conglomerado.punto_referencia.azimut || '';
+    document.getElementById('editPuntoDistancia').value = conglomerado.punto_referencia.distancia_horizontal || '';
+
+    // Abrir modal
+    document.getElementById('modalEditar').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
 // ======= CREACIÓN DE TARJETAS =======
 // Crear tarjeta visual para cada conglomerado
 function createConglomeradoCard(conglomerado, isInTrash = false) {
@@ -197,6 +234,51 @@ function createConglomeradoCard(conglomerado, isInTrash = false) {
 // ======= CONFIGURACIÓN DE EVENTOS =======
 // Configurar event listeners
 function setupEventListeners() {
+
+    // Cerrar modal edición
+    document.getElementById('closeEditarModal').addEventListener('click', function() {
+        document.getElementById('modalEditar').classList.remove('open');
+        document.body.style.overflow = 'auto';
+    });
+
+    document.getElementById('cancelarEditar').addEventListener('click', function() {
+        document.getElementById('modalEditar').classList.remove('open');
+        document.body.style.overflow = 'auto';
+    });
+
+    // Manejar envío del formulario de edición
+    document.getElementById('formEditarConglomerado').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const originalId = document.getElementById('editConglomeradoOriginalId').value;
+        const index = conglomerados.findIndex(c => c.id === originalId);
+        
+        if (index === -1) {
+            alert('Conglomerado no encontrado');
+            return;
+        }
+        
+        // Recoger datos del formulario
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Actualizar solo campos editables
+        conglomerados[index].fecha_inicio = data.fechaInicio;
+        conglomerados[index].fecha_finalizacion = data.fechaFin;
+        conglomerados[index].precision = data.precision;
+        conglomerados[index].punto_referencia.tipo = data.puntoTipo;
+        conglomerados[index].punto_referencia.azimut = data.puntoAzimut;
+        conglomerados[index].punto_referencia.distancia_horizontal = data.puntoDistancia;
+        
+        saveToLocalStorage();
+        loadConglomerados();
+        
+        // Cerrar modal
+        document.getElementById('modalEditar').classList.remove('open');
+        document.body.style.overflow = 'auto';
+        
+        alert('Cambios guardados exitosamente!');
+    });
 
     // Evento para cerrar sesión
     document.getElementById('logoutButton').addEventListener('click', function() {
@@ -398,6 +480,7 @@ function setupEventListeners() {
     });
         // Eventos para animaciones hover
         setupHoverEffects();
+        
     }
 
 // Cerrar modal de detalles y limpiar mapa
@@ -422,6 +505,7 @@ function closeDetailsModal() {
     const mapContainer = document.getElementById('map');
     mapContainer.innerHTML = '';
 }
+
 
 // Configurar efectos hover
 function setupHoverEffects() {
@@ -596,11 +680,6 @@ function changeStatus(id, newStatus) {
         loadConglomerados();
         closeDetailsModal(); // Usar la nueva función de cierre
     }
-}
-
-// Editar conglomerado
-function editConglomerado(id) {
-    alert(`Editando conglomerado ${id} - Implementar lógica de edición`);
 }
 
 // Eliminar conglomerado (mover a papelera)

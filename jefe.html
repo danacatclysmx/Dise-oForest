@@ -102,6 +102,68 @@
             </div>
         </div>
 
+        <!-- Modal de Edición -->
+        <div class="modal-overlay" id="modalEditar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">EDITAR CONGLOMERADO <span id="editConglomeradoId"></span></div>
+                    <button class="close-button" id="closeEditarModal">&times;</button>
+                </div>
+                <form id="formEditarConglomerado">
+                    <input type="hidden" id="editConglomeradoOriginalId">
+                    
+                    <!-- Ubicación fija (solo lectura) -->
+                    <div class="form-group">
+                        <label>Coordenadas Centro:</label>
+                        <input type="text" id="editCoordenadas" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Departamento:</label>
+                        <input type="text" id="editDepartamento" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Municipio:</label>
+                        <input type="text" id="editMunicipio" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Corregimiento:</label>
+                        <input type="text" id="editCorregimiento" readonly>
+                    </div>
+                    
+                    <!-- Campos editables -->
+                    <div class="form-group">
+                        <label for="editFechaInicio">Fecha de Inicio:</label>
+                        <input type="date" id="editFechaInicio" name="fechaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFechaFin">Fecha de Finalización:</label>
+                        <input type="date" id="editFechaFin" name="fechaFin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrecision">Precisión GPS:</label>
+                        <input type="text" id="editPrecision" name="precision" placeholder="Ej: ±0.35 m" required>
+                    </div>
+                    <h3>Punto de Referencia</h3>
+                    <div class="form-group">
+                        <label for="editPuntoTipo">Tipo:</label>
+                        <input type="text" id="editPuntoTipo" name="puntoTipo" placeholder="Ej: Árbol destacado">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPuntoAzimut">Azimut:</label>
+                        <input type="text" id="editPuntoAzimut" name="puntoAzimut" placeholder="Ej: 45°">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPuntoDistancia">Distancia horizontal:</label>
+                        <input type="text" id="editPuntoDistancia" name="puntoDistancia" placeholder="Ej: 15 m">
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" class="action-button reject-button" id="cancelarEditar">CANCELAR</button>
+                        <button type="submit" class="action-button approve-button">GUARDAR CAMBIOS</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Título principal -->
         <h1 id="mainTitle">CONGLOMERADOS</h1>
         
