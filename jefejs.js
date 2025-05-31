@@ -1,4 +1,5 @@
 // ======= INICIALIZACIÓN DE VARIABLES GLOBALES =======
+const API_BASE_URL = "http://localhost:8080/ms_Conglomerado"; // Ajustar según tu entorno
 // Elementos del DOM
 const menuToggle = document.getElementById("menuToggle"); // Botón hamburguesa
 const sidebar = document.getElementById("sidebar"); // Menú lateral
@@ -33,6 +34,52 @@ let currentSection = "conglomerados"; // Sección actual activa ('conglomerados'
 function initApp() {
   loadConglomerados(); // Cargar datos iniciales
   setupEventListeners(); // Configurar eventos
+}
+
+
+// ======= FUNCIONES DE COMUNICACIÓN CON EL API =======
+async function fetchConglomerados() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/getAll`);
+        const data = await response.json();
+        return data.objetoRta || [];
+    } catch (error) {
+        console.error("Error cargando conglomerados:", error);
+        return [];
+    }
+}
+
+async function createConglomeradoAPI(conglomeradoData) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/save`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(conglomeradoData)
+        });
+        
+        if (!response.ok) {
+            throw new Error("Error en la respuesta del servidor");
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error("Error creando conglomerado:", error);
+        throw error;
+    }
+}
+
+async function deleteConglomeradoAPI(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/delete/${id}`, {
+            method: "DELETE"
+        });
+        return response.ok;
+    } catch (error) {
+        console.error("Error eliminando conglomerado:", error);
+        return false;
+    }
 }
 
 // ======= FUNCIONES DE MAPA PARA CREACIÓN =======
@@ -108,51 +155,24 @@ function reverseGeocode(latlng) {
 
 // ======= CARGA Y FILTRADO DE DATOS =======
 // Cargar conglomerados según la sección actual
-function loadConglomerados() {
-  conglomeradosContainer.innerHTML = "";
+async function loadConglomerados() {
+    conglomeradosContainer.innerHTML = '<p class="no-data">Cargando conglomerados...</p>';
+    
+    try {
+        const data = await fetchConglomerados();
+        
+        if (data.length === 0) {
+            conglomeradosContainer.innerHTML = '<p class="no-data">No hay conglomerados registrados</p>';
+            return;
+        }
 
-  if (currentSection === "conglomerados") {
-    // Mostrar listado normal de conglomerados
-    mainTitle.textContent = "CONGLOMERADOS";
-    statusTabs.style.display = "flex"; // Mostrar filtros
-
-    // Filtrar conglomerados no eliminados
-    const filteredConglomerados = conglomerados.filter(
-      (c) => c.estado !== "eliminado"
-    );
-
-    if (filteredConglomerados.length === 0) {
-      // Mostrar mensaje si no hay datos
-      conglomeradosContainer.innerHTML =
-        '<p class="no-data">No hay conglomerados registrados</p>';
-      document
-        .querySelectorAll(".status-tab")
-        .forEach((tab) => tab.classList.remove("active"));
-      return;
+        conglomeradosContainer.innerHTML = "";
+        data.forEach(conglomerado => {
+            conglomeradosContainer.appendChild(createConglomeradoCard(conglomerado));
+        });
+    } catch (error) {
+        conglomeradosContainer.innerHTML = `<p class="no-data">Error al cargar: ${error.message}</p>`;
     }
-
-    filteredConglomerados.forEach((conglomerado) => {
-      conglomeradosContainer.appendChild(createConglomeradoCard(conglomerado));
-    });
-
-    // Activar el filtro por defecto sin depender del evento
-    filterConglomerados("pendientes");
-  } else if (currentSection === "papelera") {
-    mainTitle.textContent = "PAPELERA";
-    statusTabs.style.display = "none";
-
-    if (papelera.length === 0) {
-      conglomeradosContainer.innerHTML =
-        '<p class="no-data">La papelera está vacía</p>';
-      return;
-    }
-
-    papelera.forEach((conglomerado) => {
-      conglomeradosContainer.appendChild(
-        createConglomeradoCard(conglomerado, true)
-      );
-    });
-  }
 }
 
 // ======= CREACIÓN DE TARJETAS =======
@@ -166,9 +186,7 @@ function createConglomeradoCard(conglomerado, isInTrash = false) {
 
   // Formatear fechas
   const fechaInicio = new Date(conglomerado.fecha_inicio).toLocaleDateString();
-  const fechaFin = new Date(
-    conglomerado.fecha_finalizacion
-  ).toLocaleDateString();
+  const fechaFin = new Date(conglomerado.fecha_finalizacion).toLocaleDateString();
 
   card.innerHTML = `
         <div class="options-menu">
@@ -195,20 +213,12 @@ function createConglomeradoCard(conglomerado, isInTrash = false) {
             </div>
         </div>
         
-        <div class="conglomerado-id">${conglomerado.id}</div>
+        <div class="conglomerado-id">${conglomerado.idConglomerado}</div>
         <div class="conglomerado-info">
-            <strong>Ubicación:</strong> Departamento: ${
-              conglomerado.departamento
-            }, Municipio: ${conglomerado.municipio}${
-    conglomerado.corregimiento
-      ? ", Corregimiento: " + conglomerado.corregimiento
-      : ""
-  }
+            <strong>Ubicación:</strong> ${conglomerado.departamento}, ${conglomerado.municipio}
         </div>
         <div class="conglomerado-info">
-            <strong>Coordenadas Centro:</strong> ${
-              conglomerado.coordenadas_centro
-            }
+            <strong>Coordenadas:</strong> ${conglomerado.coordenadas_centro}
         </div>
         <div class="conglomerado-info">
             <strong>Fecha Inicio:</strong> ${fechaInicio} - <strong>Fecha Fin:</strong> ${fechaFin}
@@ -301,10 +311,9 @@ function setupEventListeners() {
     }
   });
   // Manejar envío del formulario
-  document.getElementById("formCrearConglomerado").addEventListener("submit", function(e) {
+  document.getElementById("formCrearConglomerado").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    // Validar que se haya seleccionado una ubicación
     if (!selectedCoords) {
         alert("Por favor seleccione una ubicación en el mapa");
         return;
@@ -313,89 +322,36 @@ function setupEventListeners() {
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    // Crear nuevo conglomerado con datos del mapa
-    const nuevoId = "CONG_" + Math.floor(10000 + Math.random() * 90000);
-    const coordenadasFormatted = `${selectedCoords.lat.toFixed(6)}, ${selectedCoords.lng.toFixed(6)}`;
-
-    const nuevoConglomerado = {
-        id: nuevoId,
-        coordenadas_centro: coordenadasFormatted,
+    // Construir objeto para el API
+    const conglomeradoData = {
+        coordenadas_centro: `${selectedCoords.lat},${selectedCoords.lng}`,
         departamento: locationData.departamento || 'No identificado',
         municipio: locationData.municipio || 'No identificado',
         corregimiento: locationData.corregimiento || '',
-        fecha_inicio: data.fechaInicio,
-        fecha_finalizacion: data.fechaFin,
-        aprobado_por: "",
-        precision: data.precision,
-        fecha_aprobacion: "",
-        estado: "pendientes",
-        punto_referencia: {
-          tipo: data.puntoTipo,
-          azimut: data.puntoAzimut,
-          distancia_horizontal: data.puntoDistancia,
-        },
-        subparcelas: [
-          {
-            id: "SPF1",
-            radio: "40 m",
-            azimut: "0°",
-            distancia_centro: "0 m",
-            materializado: "Sí",
-            color: "Rojo",
-            posicion: "Centro",
-          },
-          {
-            id: "SPN",
-            radio: "40 m",
-            azimut: "0°",
-            distancia_centro: "80 m",
-            materializado: "Sí",
-            color: "Azul",
-            posicion: "Norte",
-          },
-          {
-            id: "SPE",
-            radio: "40 m",
-            azimut: "90°",
-            distancia_centro: "80 m",
-            materializado: "Sí",
-            color: "Verde",
-            posicion: "Este",
-          },
-          {
-            id: "SPS",
-            radio: "40 m",
-            azimut: "180°",
-            distancia_centro: "80 m",
-            materializado: "Sí",
-            color: "Amarillo",
-            posicion: "Sur",
-          },
-          {
-            id: "SPO",
-            radio: "40 m",
-            azimut: "270°",
-            distancia_centro: "80 m",
-            materializado: "Sí",
-            color: "Blanco",
-            posicion: "Oeste",
-          },
-        ],
-      };
+        
+        // Conversión de fechas a formato ISO
+        fecha_inicio: new Date(data.fechaInicio).toISOString(),
+        fecha_finalizacion: new Date(data.fechaFin).toISOString(),
+        
+        precision: parseFloat(data.precision),
+        aprobadoPor: null,
+        fecha_aprobacion: null
+    };
 
-      conglomerados.push(nuevoConglomerado);
-      saveToLocalStorage();
-
-      // Cerrar el modal y limpiar el formulario
-      document.getElementById("modalCrear").classList.remove("open");
-      document.body.style.overflow = "auto";
-      this.reset();
-
-      // Recargar la lista
-      if (currentSection === "conglomerados") {
+    try {
+        await createConglomeradoAPI(conglomeradoData);
+        
+        // Cerrar modal y recargar
+        document.getElementById("modalCrear").classList.remove("open");
+        document.body.style.overflow = "auto";
+        if (createMap) createMap.remove();
+        
         loadConglomerados();
-      }
-    });
+        alert("Conglomerado creado exitosamente!");
+    } catch (error) {
+        alert(`Error al crear conglomerado: ${error.message}`);
+    }
+});
 
   // Cerrar modal de detalles
   document.getElementById("closeModal").addEventListener("click", function () {
@@ -477,118 +433,131 @@ document.addEventListener("click", function () {
 });
 
 // Mostrar detalles del conglomerado
-function showDetails(conglomeradoId) {
-  let data;
-  if (currentSection === "conglomerados") {
-    data = conglomerados.find((c) => c.id === conglomeradoId);
-  } else {
-    data = papelera.find((c) => c.id === conglomeradoId);
-  }
-
-  if (!data) return;
-
-  // Llenar información general
-  document.getElementById("modalConglomeradoId").textContent = data.id;
-  document.getElementById("fechaInicioDetalle").textContent = new Date(
-    data.fecha_inicio
-  ).toLocaleDateString();
-  document.getElementById("fechaFinDetalle").textContent = new Date(
-    data.fecha_finalizacion
-  ).toLocaleDateString();
-  document.getElementById("departamentoDetalle").textContent =
-    data.departamento;
-  document.getElementById("municipioDetalle").textContent = data.municipio;
-  document.getElementById("corregimientoDetalle").textContent =
-    data.corregimiento || "N/A";
-  document.getElementById("coordenadasDetalle").textContent =
-    data.coordenadas_centro;
-  document.getElementById("aprobadoPorDetalle").textContent =
-    data.aprobado_por || "N/A";
-  document.getElementById("precisionDetalle").textContent = data.precision;
-  document.getElementById("fechaAprobacionDetalle").textContent =
-    data.fecha_aprobacion || "N/A";
-  document.getElementById("estadoDetalle").textContent =
-    data.estado.toUpperCase();
-
-  // Llenar punto de referencia
-  document.getElementById("puntoTipoDetalle").textContent =
-    data.punto_referencia.tipo || "N/A";
-  document.getElementById("puntoAzimutDetalle").textContent =
-    data.punto_referencia.azimut || "N/A";
-  document.getElementById("puntoDistanciaDetalle").textContent =
-    data.punto_referencia.distancia_horizontal || "N/A";
-
-  // Llenar tabla de subparcelas
-  const tableBody = document.getElementById("subparcelasTable");
-  tableBody.innerHTML = "";
-
-  data.subparcelas.forEach((subparcela) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${subparcela.id}</td>
-            <td>${subparcela.radio}</td>
-            <td>${subparcela.azimut}</td>
-            <td>${subparcela.distancia_centro}</td>
-            <td>${subparcela.materializado}</td>
-            <td>${subparcela.color}</td>
-            <td>${subparcela.posicion}</td>
-        `;
-    tableBody.appendChild(row);
-  });
-
-  // Mostrar el mapa con las subparcelas
-  const coordenadas = parseDMS(data.coordenadas_centro);
-  if (coordenadas && coordenadas.length === 2) {
-    // Inicializar mapa y luego generar subparcelas
-    initMapInModal(coordenadas);
-
-    // Pequeño retardo para asegurar que el mapa está listo
-    setTimeout(() => {
-      generateSubparcelsOnMap(coordenadas, data.subparcelas);
-    }, 200);
-  } else {
-    document.getElementById("map").innerHTML = `
-            <div class="map-error">
-                <p>No se pudo mostrar el mapa</p>
-                <small>Coordenadas inválidas: ${
-                  data.coordenadas_centro || "No proporcionadas"
-                }</small>
-            </div>
-        `;
-  }
-
-  // Configurar botones de acción según el estado
-  const actionButtons = document.getElementById("actionButtons");
-  actionButtons.innerHTML = "";
-
-  if (currentSection === "conglomerados") {
-    if (data.estado === "pendientes") {
-      actionButtons.innerHTML = `
-                <button class="action-button reject-button" onclick="changeStatus('${data.id}', 'rechazados')">RECHAZAR</button>
-                <button class="action-button correct-button" onclick="changeStatus('${data.id}', 'corregir')">CORREGIR</button>
-                <button class="action-button approve-button" onclick="changeStatus('${data.id}', 'aprobados')">APROBAR</button>
-            `;
-    } else if (data.estado === "rechazados") {
-      actionButtons.innerHTML = `
-                <button class="action-button correct-button" onclick="changeStatus('${data.id}', 'pendientes')">REVISAR</button>
-                <button class="action-button approve-button" onclick="changeStatus('${data.id}', 'aprobados')">APROBAR</button>
-            `;
-    } else if (data.estado === "aprobados") {
-      actionButtons.innerHTML = `
-                <button class="action-button reject-button" onclick="changeStatus('${data.id}', 'rechazados')">RECHAZAR</button>
-            `;
+async function showDetails(conglomeradoId) {
+  try {
+    // Llamar a la API para obtener el conglomerado por ID
+    const response = await fetch(`${API_BASE_URL}/conglomerados/${conglomeradoId}`);
+    
+    if (!response.ok) {
+      throw new Error("No se pudo cargar el conglomerado");
     }
-  } else {
-    // En la papelera solo mostramos opciones de restaurar o eliminar permanentemente
-    actionButtons.innerHTML = `
-            <button class="action-button approve-button" onclick="restoreConglomerado('${data.id}')">RESTAURAR</button>
-            <button class="action-button reject-button" onclick="deletePermanently('${data.id}')">ELIMINAR PERMANENTEMENTE</button>
-        `;
-  }
 
-  // Mostrar modal
-  document.getElementById("modalDetalles").classList.add("open");
-  document.body.style.overflow = "hidden";
+    const data = await response.json();
+
+    // Llenar información general
+    document.getElementById("modalConglomeradoId").textContent = data.id || "N/A";
+    document.getElementById("fechaInicioDetalle").textContent = new Date(conglomerado.fecha_inicio).toLocaleDateString();
+        document.getElementById("fechaFinDetalle").textContent = new Date(conglomerado.fecha_finalizacion).toLocaleDateString();
+    document.getElementById("departamentoDetalle").textContent =
+      data.departamento || "N/A";
+    document.getElementById("municipioDetalle").textContent =
+      data.municipio || "N/A";
+    document.getElementById("corregimientoDetalle").textContent =
+      data.corregimiento || "N/A";
+    document.getElementById("coordenadasDetalle").textContent =
+      data.coordenadas_centro || "N/A";
+    document.getElementById("aprobadoPorDetalle").textContent =
+      data.aprobado_por || "N/A";
+    document.getElementById("precisionDetalle").textContent =
+      data.precision || "N/A";
+    document.getElementById("fechaAprobacionDetalle").textContent =
+      data.fecha_aprobacion
+        ? new Date(data.fecha_aprobacion).toLocaleDateString()
+        : "N/A";
+    document.getElementById("estadoDetalle").textContent =
+      (data.estado || "desconocido").toUpperCase();
+
+    // Llenar punto de referencia
+    document.getElementById("puntoTipoDetalle").textContent =
+      data.punto_referencia?.tipo || "N/A";
+    document.getElementById("puntoAzimutDetalle").textContent =
+      data.punto_referencia?.azimut || "N/A";
+    document.getElementById("puntoDistanciaDetalle").textContent =
+      data.punto_referencia?.distancia_horizontal || "N/A";
+
+    // Llenar tabla de subparcelas
+    const tableBody = document.getElementById("subparcelasTable");
+    tableBody.innerHTML = "";
+
+    if (Array.isArray(data.subparcelas) && data.subparcelas.length > 0) {
+      data.subparcelas.forEach((subparcela) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${subparcela.id || "N/A"}</td>
+          <td>${subparcela.radio || "N/A"}</td>
+          <td>${subparcela.azimut || "N/A"}</td>
+          <td>${subparcela.distancia_centro || "N/A"}</td>
+          <td>${subparcela.materializado || "N/A"}</td>
+          <td>${subparcela.color || "N/A"}</td>
+          <td>${subparcela.posicion || "N/A"}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    } else {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td colspan="7">No hay subparcelas registradas</td>`;
+      tableBody.appendChild(row);
+    }
+
+    // Mostrar el mapa con las subparcelas
+    const coordenadas = parseDMS(data.coordenadas_centro);
+    if (coordenadas && coordenadas.length === 2) {
+      initMapInModal(coordenadas);
+      setTimeout(() => generateSubparcelsOnMap(coordenadas, data.subparcelas), 200);
+    } else {
+      document.getElementById("map").innerHTML = `
+        <div class="map-error">
+          <p>No se pudo mostrar el mapa</p>
+          <small>Coordenadas inválidas: ${
+            data.coordenadas_centro || "No proporcionadas"
+          }</small>
+        </div>
+      `;
+    }
+
+    // Configurar botones de acción según el estado
+    const actionButtons = document.getElementById("actionButtons");
+    actionButtons.innerHTML = "";
+
+    if (currentSection === "conglomerados") {
+      switch (data.estado) {
+        case "pendientes":
+          actionButtons.innerHTML = `
+            <button class="action-button reject-button" onclick="changeStatus('${data.id}', 'rechazados')">RECHAZAR</button>
+            <button class="action-button correct-button" onclick="changeStatus('${data.id}', 'corregir')">CORREGIR</button>
+            <button class="action-button approve-button" onclick="changeStatus('${data.id}', 'aprobados')">APROBAR</button>
+          `;
+          break;
+        case "rechazados":
+          actionButtons.innerHTML = `
+            <button class="action-button correct-button" onclick="changeStatus('${data.id}', 'pendientes')">REVISAR</button>
+            <button class="action-button approve-button" onclick="changeStatus('${data.id}', 'aprobados')">APROBAR</button>
+          `;
+          break;
+        case "aprobados":
+          actionButtons.innerHTML = `
+            <button class="action-button reject-button" onclick="changeStatus('${data.id}', 'rechazados')">RECHAZAR</button>
+          `;
+          break;
+        default:
+          actionButtons.innerHTML = "";
+          break;
+      }
+    } else {
+      // En la papelera solo mostramos opciones de restaurar o eliminar permanentemente
+      actionButtons.innerHTML = `
+        <button class="action-button approve-button" onclick="restoreConglomerado('${data.id}')">RESTAURAR</button>
+        <button class="action-button reject-button" onclick="deletePermanently('${data.id}')">ELIMINAR PERMANENTEMENTE</button>
+      `;
+    }
+
+    // Mostrar modal
+    document.getElementById("modalDetalles").classList.add("open");
+    document.body.style.overflow = "hidden";
+  } catch (error) {
+    console.error("Error cargando detalles:", error);
+    alert("No se pudieron cargar los detalles del conglomerado.");
+  }
 }
 
 // Cambiar estado de un conglomerado
@@ -622,24 +591,17 @@ function editConglomerado(id) {
 }
 
 // Eliminar conglomerado (mover a papelera)
-function deleteConglomerado(id) {
-  if (
-    confirm(
-      `¿Estás seguro de que deseas mover el conglomerado ${id} a la papelera?`
-    )
-  ) {
-    const index = conglomerados.findIndex((c) => c.id === id);
-
-    if (index !== -1) {
-      // Mover a la papelera
-      papelera.push(conglomerados[index]);
-      // Eliminar de la lista principal
-      conglomerados.splice(index, 1);
-
-      saveToLocalStorage();
-      loadConglomerados();
+async function deleteConglomerado(id) {
+    if (confirm(`¿Estás seguro de eliminar el conglomerado ${id}?`)) {
+        const success = await deleteConglomeradoAPI(id);
+        
+        if (success) {
+            loadConglomerados();
+            alert("Conglomerado eliminado exitosamente!");
+        } else {
+            alert("Error al eliminar el conglomerado");
+        }
     }
-  }
 }
 
 // Restaurar conglomerado desde la papelera
