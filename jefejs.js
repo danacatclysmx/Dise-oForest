@@ -13,6 +13,10 @@ const welcomeMessage = document.getElementById('welcomeMessage'); // Mensaje de 
 let map;
 let circles = []; // Círculos de subparcelas
 let containerCircle = null; // Círculo contenedor
+let createMap; // Mapa para creación
+let createMarker; // Marcador en el mapa de creación
+let selectedCoords = null; // Coordenadas seleccionadas
+let locationData = {}; // Datos de geolocalización
 
 // Configuración de radios para subparcelas
 const SUBPARCEL_RADIUS = 40; // Radio de subparcelas individuales
@@ -29,6 +33,75 @@ function initApp() {
     setupEventListeners(); // Configurar eventos
 }
 
+// ======= FUNCIONES DE MAPA PARA CREACIÓN =======
+function initCreateMap() {
+    // Eliminar mapa existente si hay uno
+    if (createMap) {
+        createMap.remove();
+    }
+    
+    // Crear nuevo mapa
+    createMap = L.map('map-container-crear', {
+        preferCanvas: true,
+        zoomControl: true,
+        renderer: L.canvas()
+    }).setView([4.570868, -74.297333], 7); // Centro en Colombia
+
+    // Capa base
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19
+    }).addTo(createMap);
+
+    // Evento de clic en el mapa
+    createMap.on('click', function(e) {
+        // Eliminar marcador anterior si existe
+        if (createMarker) {
+            createMap.removeLayer(createMarker);
+        }
+        
+        // Crear nuevo marcador
+        createMarker = L.marker(e.latlng).addTo(createMap);
+        selectedCoords = e.latlng;
+        
+        // Mostrar coordenadas seleccionadas
+        document.getElementById('selected-coordinates').innerHTML = 
+            `<strong>Coordenadas seleccionadas:</strong> ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+        
+        // Obtener datos de geolocalización
+        reverseGeocode(e.latlng);
+    });
+    
+    // Forzar actualización de tamaño
+    setTimeout(() => createMap.invalidateSize(true), 100);
+}
+
+// Función para obtener datos de ubicación usando geocodificación inversa
+function reverseGeocode(latlng) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&zoom=18&addressdetails=1`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.address) {
+                locationData = {
+                    departamento: data.address.state || '',
+                    municipio: data.address.city || data.address.town || data.address.village || '',
+                    corregimiento: data.address.suburb || data.address.county || ''
+                };
+                
+                // Actualizar UI con datos obtenidos
+                document.getElementById('auto-departamento').textContent = locationData.departamento;
+                document.getElementById('auto-municipio').textContent = locationData.municipio;
+                document.getElementById('auto-corregimiento').textContent = locationData.corregimiento;
+            }
+        })
+        .catch(error => {
+            console.error('Error en geocodificación inversa:', error);
+            document.getElementById('selected-coordinates').innerHTML += 
+                '<br><span style="color:red">Error obteniendo datos de ubicación</span>';
+        });
+}
 
 // ======= CARGA Y FILTRADO DE DATOS =======
 // Cargar conglomerados según la sección actual
@@ -164,17 +237,31 @@ function setupEventListeners() {
         sidebar.classList.remove('open');
         overlay.classList.remove('open');
         menuToggle.classList.remove('open');
+        
+        // Inicializar mapa de creación
+        setTimeout(() => {
+            initCreateMap();
+            // Resetear datos de ubicación
+            locationData = {};
+            selectedCoords = null;
+            document.getElementById('selected-coordinates').textContent = '';
+            document.getElementById('auto-departamento').textContent = '-';
+            document.getElementById('auto-municipio').textContent = '-';
+            document.getElementById('auto-corregimiento').textContent = '-';
+        }, 300);
     });
+
     
-    // Cerrar modal de creación
     document.getElementById('closeCrearModal').addEventListener('click', function() {
         document.getElementById('modalCrear').classList.remove('open');
         document.body.style.overflow = 'auto';
+        if (createMap) createMap.remove();
     });
-    
+
     document.getElementById('cancelarCrear').addEventListener('click', function() {
         document.getElementById('modalCrear').classList.remove('open');
         document.body.style.overflow = 'auto';
+        if (createMap) createMap.remove();
     });
     
     // Cerrar modal al hacer clic fuera del contenido
@@ -189,15 +276,19 @@ function setupEventListeners() {
     document.getElementById('formCrearConglomerado').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        if (!selectedCoords) {
+            alert('Por favor seleccione una ubicación en el mapa');
+            return;
+        }
+
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
 
-        // Validar coordenadas antes de continuar
-        const coordenadas = parseDMS(data.coordenadas);
-        if (!coordenadas) {
-            alert('Por favor ingrese coordenadas válidas en el formato: 04°32\'15.67"N 74°12\'45.89"W');
+        // Validar fechas
+        if (!data.fechaInicio || !data.fechaFin) {
+            alert('Por favor ingrese ambas fechas');
             return;
-        }   
+        }
         
         // Generar un ID único para el nuevo conglomerado
         const nuevoId = 'CONG_' + Math.floor(10000 + Math.random() * 90000);
@@ -205,10 +296,10 @@ function setupEventListeners() {
         // Crear el nuevo conglomerado
         const nuevoConglomerado = {
             id: nuevoId,
-            coordenadas_centro: data.coordenadas,
-            departamento: data.departamento,
-            municipio: data.municipio,
-            corregimiento: data.corregimiento,
+            coordenadas_centro: `${selectedCoords.lat.toFixed(6)}, ${selectedCoords.lng.toFixed(6)}`,
+            departamento: locationData.departamento || 'No identificado',
+            municipio: locationData.municipio || 'No identificado',
+            corregimiento: locationData.corregimiento || '',
             fecha_inicio: data.fechaInicio,
             fecha_finalizacion: data.fechaFin,
             aprobado_por: "",
@@ -276,11 +367,14 @@ function setupEventListeners() {
         document.getElementById('modalCrear').classList.remove('open');
         document.body.style.overflow = 'auto';
         this.reset();
+        if (createMap) createMap.remove();
         
         // Recargar la lista
         if (currentSection === 'conglomerados') {
             loadConglomerados();
         }
+        
+        alert('Conglomerado creado exitosamente!');
     });
     
     // Cerrar modal de detalles
