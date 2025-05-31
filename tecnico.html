@@ -124,16 +124,19 @@
                         class="form-input readonly"
                       />
                     </div>
+                    <!-- En la parte del formulario de muestras, cambia el input de conglomerado por un select -->
                     <div class="form-group">
                       <label for="conglomeradoAsociado"
                         >Conglomerado Asociado</label
                       >
-                      <input
-                        type="text"
+                      <select
                         id="conglomeradoAsociado"
-                        class="form-input"
-                        placeholder="Ingrese el conglomerado"
-                      />
+                        class="form-select"
+                        required
+                      >
+                        <option value="">Seleccionar Conglomerado</option>
+                        <!-- Las opciones se cargarán dinámicamente -->
+                      </select>
                     </div>
                   </div>
 
@@ -143,7 +146,10 @@
                       <select id="subparcela" class="form-select">
                         <option value="">Seleccionar Subparcela</option>
                         <option value="SPF1">SPF1</option>
-                        <option value="SPF2">SPF2</option>
+                        <option value="SPN">SPN</option>
+                        <option value="SPE">SPE</option>
+                        <option value="SPS">SPS</option>
+                        <option value="SPO">SPO</option>
                       </select>
                     </div>
                     <div class="form-group">
@@ -298,6 +304,10 @@
         <div class="section" id="rutas-section">
           <div class="section-header">
             <h2>RUTAS DE MUESTREO</h2>
+            <button class="btn btn-primary" id="btn-nueva-ruta">
+              <i data-lucide="plus"></i>
+              Nueva Ruta
+            </button>
           </div>
 
           <div class="empty-state" id="rutas-empty">
@@ -306,6 +316,97 @@
           </div>
           <div class="cards-grid" id="rutas-grid" style="display: none">
             <!-- Las rutas se cargarán aquí dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Modal para nueva ruta -->
+        <div class="modal" id="modal-nueva-ruta" style="display: none">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Nueva Ruta de Muestreo</h3>
+              <button class="modal-close" id="close-modal-ruta">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form id="form-nueva-ruta">
+                <div class="form-group">
+                  <label for="muestra-select">Seleccionar Muestra</label>
+                  <select id="muestra-select" class="form-select" required>
+                    <option value="">Seleccionar muestra para envío</option>
+                    <!-- Se cargarán las muestras disponibles -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="fecha-envio">Fecha de Envío</label>
+                  <input
+                    type="date"
+                    id="fecha-envio"
+                    class="form-input"
+                    required
+                  />
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    Crear Ruta
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="cancel-ruta"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal para actualizar estado -->
+        <div class="modal" id="modal-actualizar-estado" style="display: none">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Actualizar Estado de Ruta</h3>
+              <button class="modal-close" id="close-modal-estado">
+                &times;
+              </button>
+            </div>
+            <div class="modal-body">
+              <form id="form-actualizar-estado">
+                <input type="hidden" id="ruta-id-estado" />
+                <div class="form-group">
+                  <label for="nuevo-estado">Nuevo Estado</label>
+                  <select id="nuevo-estado" class="form-select" required>
+                    <option value="0">Recolectada</option>
+                    <option value="1">Empacada</option>
+                    <option value="2">En Ruta</option>
+                    <option value="3">Entregada</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="fecha-actualizacion"
+                    >Fecha de Actualización</label
+                  >
+                  <input
+                    type="date"
+                    id="fecha-actualizacion"
+                    class="form-input"
+                    required
+                  />
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary">
+                    Actualizar Estado
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="cancel-estado"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
 

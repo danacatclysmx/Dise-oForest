@@ -33,6 +33,7 @@ function setupEventListeners() {
       switchSection(section);
     });
   });
+
   // Botón de logout
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
@@ -45,6 +46,15 @@ function setupEventListeners() {
     formulario.addEventListener("submit", handleSubmitMuestra);
   }
 
+  // Botón nueva ruta
+  const btnNuevaRuta = document.getElementById("btn-nueva-ruta");
+  if (btnNuevaRuta) {
+    btnNuevaRuta.addEventListener("click", abrirModalNuevaRuta);
+  }
+
+  // Modales
+  setupModalEventListeners();
+
   // Cerrar sidebar al hacer clic en enlaces
   document.addEventListener("click", (e) => {
     if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
@@ -52,13 +62,46 @@ function setupEventListeners() {
     }
   });
 }
-// funcion cerrar sesión
-function handleLogout() {
-  if (confirm("¿Estás seguro que deseas cerrar sesión?")) {
-    // Redirigir al login
-    window.location.href = "login.html";
-  }
+
+// Event listeners para modales
+function setupModalEventListeners() {
+  // Modal nueva ruta
+  const modalNuevaRuta = document.getElementById("modal-nueva-ruta");
+  const closeModalRuta = document.getElementById("close-modal-ruta");
+  const cancelRuta = document.getElementById("cancel-ruta");
+  const formNuevaRuta = document.getElementById("form-nueva-ruta");
+
+  if (closeModalRuta)
+    closeModalRuta.addEventListener("click", () =>
+      cerrarModal("modal-nueva-ruta")
+    );
+  if (cancelRuta)
+    cancelRuta.addEventListener("click", () => cerrarModal("modal-nueva-ruta"));
+  if (formNuevaRuta)
+    formNuevaRuta.addEventListener("submit", handleSubmitNuevaRuta);
+
+  // Modal actualizar estado
+  const closeModalEstado = document.getElementById("close-modal-estado");
+  const cancelEstado = document.getElementById("cancel-estado");
+  const formActualizarEstado = document.getElementById(
+    "form-actualizar-estado"
+  );
+
+  if (closeModalEstado)
+    closeModalEstado.addEventListener("click", () =>
+      cerrarModal("modal-actualizar-estado")
+    );
+  if (cancelEstado)
+    cancelEstado.addEventListener("click", () =>
+      cerrarModal("modal-actualizar-estado")
+    );
+  if (formActualizarEstado)
+    formActualizarEstado.addEventListener(
+      "submit",
+      handleSubmitActualizarEstado
+    );
 }
+
 // Funciones del sidebar
 function toggleSidebar() {
   sidebar.classList.toggle("open");
@@ -109,6 +152,27 @@ function loadData() {
   if (savedRutas) rutas = JSON.parse(savedRutas);
   if (savedPapelera) papelera = JSON.parse(savedPapelera);
 
+  // Datos de ejemplo para conglomerados si no existen
+  if (conglomerados.length === 0) {
+    conglomerados = [
+      {
+        id: "cong1",
+        nombre: "Conglomerado Amazonas Norte",
+        departamento: "Amazonas",
+        municipio: "Leticia",
+        estado: "aprobado",
+      },
+      {
+        id: "cong2",
+        nombre: "Conglomerado Chocó Sur",
+        departamento: "Chocó",
+        municipio: "Quibdó",
+        estado: "aprobado",
+      },
+    ];
+    saveToLocalStorage();
+  }
+
   // Datos de ejemplo para rutas si no existen
   if (rutas.length === 0) {
     rutas = [
@@ -119,16 +183,6 @@ function loadData() {
         fecha: "15/06/2023",
         estado: 1,
         fechaRecoleccion: "10/06/2023",
-      },
-      {
-        id: "ruta2",
-        codigo: "MSTR-002",
-        conglomerado: "CONG-002",
-        fecha: "20/06/2023",
-        estado: 3,
-        fechaRecoleccion: "15/06/2023",
-        fechaEnvio: "16/06/2023",
-        fechaEnRuta: "17/06/2023",
       },
     ];
     saveToLocalStorage();
@@ -145,6 +199,7 @@ function loadSectionData(sectionName) {
       break;
     case "muestras":
       renderMuestras();
+      cargarConglomeradosEnSelect();
       break;
     case "rutas":
       renderRutas();
@@ -152,6 +207,78 @@ function loadSectionData(sectionName) {
     case "papelera":
       renderPapelera();
       break;
+  }
+}
+// muestre los conglomerados correctamente
+function cargarConglomeradosEnSelect() {
+  const select = document.getElementById("conglomeradoAsociado");
+  if (select) {
+    // Limpiar opciones existentes
+    select.innerHTML = '<option value="">Seleccionar Conglomerado</option>';
+
+    // Verificar si hay conglomerados
+    if (conglomerados.length === 0) {
+      console.log("No hay conglomerados disponibles");
+
+      // Intentar cargar conglomerados desde localStorage global (compartido con jefe)
+      const jefeConglomerados = localStorage.getItem("jefeConglomerados");
+      if (jefeConglomerados) {
+        try {
+          const conglomeradosJefe = JSON.parse(jefeConglomerados);
+          // Filtrar solo los aprobados
+          const aprobados = conglomeradosJefe.filter(
+            (c) => c.estado === "APROBADOS" || c.estado === "aprobados"
+          );
+
+          if (aprobados.length > 0) {
+            // Actualizar nuestros conglomerados con los del jefe
+            conglomerados = aprobados.map((c) => ({
+              id: c.id || c.codigo,
+              nombre: c.nombre || c.codigo || "Conglomerado " + c.id,
+              departamento: c.departamento,
+              municipio: c.municipio,
+              estado: "aprobado",
+              ubicacion: c.coordenadas || c.ubicacion,
+            }));
+            saveToLocalStorage();
+            console.log("Conglomerados cargados desde jefe:", conglomerados);
+          }
+        } catch (e) {
+          console.error("Error al cargar conglomerados del jefe:", e);
+        }
+      }
+
+      // Si aún no hay conglomerados, agregar el de ejemplo
+      if (conglomerados.length === 0) {
+        // Agregar el conglomerado que vemos en la imagen
+        conglomerados.push({
+          id: "CONG_32361",
+          nombre: "CONG_32361",
+          departamento: "Meta",
+          municipio: "Cubarral",
+          estado: "aprobado",
+          ubicacion: "3.909747, -74.128876",
+        });
+        saveToLocalStorage();
+      }
+    }
+
+    // Ahora agregar las opciones al select
+    conglomerados.forEach((conglomerado) => {
+      const option = document.createElement("option");
+      option.value = conglomerado.id;
+      // Usar el nombre o el ID si no hay nombre
+      option.textContent =
+        conglomerado.nombre || conglomerado.id || "Sin nombre";
+      select.appendChild(option);
+    });
+
+    console.log(
+      "Opciones de conglomerado cargadas:",
+      select.options.length - 1
+    );
+  } else {
+    console.error("No se encontró el elemento select de conglomerados");
   }
 }
 
@@ -172,7 +299,9 @@ function renderConglomerados() {
         (conglomerado) => `
             <div class="card">
                 <div class="card-header">
-                    <h3>${conglomerado.nombre || "Sin nombre"}</h3>
+                    <h3>${
+                      conglomerado.nombre || conglomerado.id || "Sin nombre"
+                    }</h3>
                 </div>
                 <div class="card-content">
                     <p><strong>Departamento:</strong> ${
@@ -180,6 +309,9 @@ function renderConglomerados() {
                     }</p>
                     <p><strong>Municipio:</strong> ${
                       conglomerado.municipio || "No especificado"
+                    }</p>
+                    <p><strong>ID:</strong> ${
+                      conglomerado.id || "No especificado"
                     }</p>
                     <div class="badge">${
                       conglomerado.estado || "pendiente"
@@ -201,7 +333,6 @@ function renderConglomerados() {
     lucide.createIcons();
   }
 }
-
 // Renderizar muestras
 function renderMuestras() {
   const listContainer = document.getElementById("muestras-list");
@@ -215,36 +346,41 @@ function renderMuestras() {
         `;
   } else {
     listContainer.innerHTML = muestras
-      .map(
-        (muestra) => `
-            <div class="muestra-item">
-                <div class="muestra-header">
-                    <div class="muestra-info">
-                        <h4>${muestra.codigo}</h4>
-                        <p><strong>Conglomerado:</strong> ${
-                          muestra.conglomerado
-                        }</p>
-                        <p><strong>Fecha:</strong> ${new Date(
-                          muestra.fechaRecoleccion
-                        ).toLocaleDateString()}</p>
-                        <div class="muestra-badges">
-                            ${muestra.analisis
-                              .map(
-                                (analisis) =>
-                                  `<span class="badge">${analisis}</span>`
-                              )
-                              .join("")}
+      .map((muestra) => {
+        const conglomerado = conglomerados.find(
+          (c) => c.id === muestra.conglomerado
+        );
+        return `
+                <div class="muestra-item">
+                    <div class="muestra-header">
+                        <div class="muestra-info">
+                            <h4>${muestra.codigo}</h4>
+                            <p><strong>Conglomerado:</strong> ${
+                              conglomerado
+                                ? conglomerado.nombre
+                                : muestra.conglomerado
+                            }</p>
+                            <p><strong>Fecha:</strong> ${new Date(
+                              muestra.fechaRecoleccion
+                            ).toLocaleDateString()}</p>
+                            <div class="muestra-badges">
+                                ${muestra.analisis
+                                  .map(
+                                    (analisis) =>
+                                      `<span class="badge">${analisis}</span>`
+                                  )
+                                  .join("")}
+                            </div>
                         </div>
+                        <button class="btn btn-destructive btn-sm" onclick="eliminarMuestra('${
+                          muestra.id
+                        }')">
+                            <i data-lucide="trash-2"></i>
+                        </button>
                     </div>
-                    <button class="btn btn-destructive btn-sm" onclick="eliminarMuestra('${
-                      muestra.id
-                    }')">
-                        <i data-lucide="trash-2"></i>
-                    </button>
                 </div>
-            </div>
-        `
-      )
+            `;
+      })
       .join("");
   }
 
@@ -311,7 +447,9 @@ function renderRutas() {
                     </div>
                     
                     <div class="ruta-actions">
-                        <button class="btn btn-secondary btn-sm" style="flex: 1;">
+                        <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="abrirModalActualizarEstado('${
+                          ruta.id
+                        }')">
                             Actualizar Estado
                         </button>
                         <button class="btn btn-destructive btn-sm" onclick="eliminarItem('${
@@ -372,6 +510,120 @@ function renderPapelera() {
   }
 }
 
+// Funciones de modales
+function abrirModalNuevaRuta() {
+  const modal = document.getElementById("modal-nueva-ruta");
+  const select = document.getElementById("muestra-select");
+
+  // Cargar muestras disponibles (que no tengan ruta ya)
+  const muestrasDisponibles = muestras.filter(
+    (muestra) => !rutas.some((ruta) => ruta.muestraId === muestra.id)
+  );
+
+  select.innerHTML = '<option value="">Seleccionar muestra para envío</option>';
+  muestrasDisponibles.forEach((muestra) => {
+    const conglomerado = conglomerados.find(
+      (c) => c.id === muestra.conglomerado
+    );
+    const option = document.createElement("option");
+    option.value = muestra.id;
+    option.textContent = `${muestra.codigo} - ${
+      conglomerado ? conglomerado.nombre : "Sin conglomerado"
+    }`;
+    select.appendChild(option);
+  });
+
+  // Establecer fecha actual
+  document.getElementById("fecha-envio").value = new Date()
+    .toISOString()
+    .split("T")[0];
+
+  modal.style.display = "flex";
+}
+
+function abrirModalActualizarEstado(rutaId) {
+  const modal = document.getElementById("modal-actualizar-estado");
+  const ruta = rutas.find((r) => r.id === rutaId);
+
+  if (ruta) {
+    document.getElementById("ruta-id-estado").value = rutaId;
+    document.getElementById("nuevo-estado").value = ruta.estado;
+    document.getElementById("fecha-actualizacion").value = new Date()
+      .toISOString()
+      .split("T")[0];
+
+    modal.style.display = "flex";
+  }
+}
+
+function cerrarModal(modalId) {
+  const modal = document.getElementById(modalId);
+  modal.style.display = "none";
+}
+
+// Manejar envío de nueva ruta
+function handleSubmitNuevaRuta(e) {
+  e.preventDefault();
+
+  const muestraId = document.getElementById("muestra-select").value;
+  const fechaEnvio = document.getElementById("fecha-envio").value;
+
+  const muestra = muestras.find((m) => m.id === muestraId);
+  const conglomerado = conglomerados.find((c) => c.id === muestra.conglomerado);
+
+  const nuevaRuta = {
+    id: Date.now().toString(),
+    codigo: muestra.codigo,
+    muestraId: muestraId,
+    conglomerado: conglomerado ? conglomerado.nombre : "Sin conglomerado",
+    fecha: fechaEnvio,
+    estado: 0,
+    fechaRecoleccion: muestra.fechaRecoleccion,
+  };
+
+  rutas.push(nuevaRuta);
+  saveToLocalStorage();
+  renderRutas();
+  cerrarModal("modal-nueva-ruta");
+
+  alert("Ruta creada correctamente");
+}
+
+// Manejar actualización de estado
+function handleSubmitActualizarEstado(e) {
+  e.preventDefault();
+
+  const rutaId = document.getElementById("ruta-id-estado").value;
+  const nuevoEstado = parseInt(document.getElementById("nuevo-estado").value);
+  const fechaActualizacion = document.getElementById(
+    "fecha-actualizacion"
+  ).value;
+
+  const ruta = rutas.find((r) => r.id === rutaId);
+  if (ruta) {
+    ruta.estado = nuevoEstado;
+
+    // Actualizar fechas según el estado
+    switch (nuevoEstado) {
+      case 1:
+        ruta.fechaEnvio = fechaActualizacion;
+        break;
+      case 2:
+        ruta.fechaEnRuta = fechaActualizacion;
+        break;
+      case 3:
+        ruta.fechaEntrega = fechaActualizacion;
+        break;
+    }
+
+    saveToLocalStorage();
+    renderRutas();
+    cerrarModal("modal-actualizar-estado");
+
+    alert("Estado actualizado correctamente");
+  }
+}
+
 // Funciones auxiliares
 function getEstadoRuta(estado) {
   const estados = [
@@ -416,7 +668,10 @@ function getItemDetails(item) {
             }</p>
         `;
   } else if (item.tipo === "muestra") {
-    return `<p><strong>Conglomerado:</strong> ${item.conglomerado}</p>`;
+    const conglomerado = conglomerados.find((c) => c.id === item.conglomerado);
+    return `<p><strong>Conglomerado:</strong> ${
+      conglomerado ? conglomerado.nombre : "Sin conglomerado"
+    }</p>`;
   } else if (item.tipo === "ruta") {
     return `
             <p><strong>Conglomerado:</strong> ${item.conglomerado}</p>
@@ -439,7 +694,6 @@ function generateSampleCode() {
 function handleSubmitMuestra(e) {
   e.preventDefault();
 
-  const formData = new FormData(e.target);
   const analisisCheckboxes = document.querySelectorAll(
     'input[name="analisis"]:checked'
   );
@@ -472,6 +726,13 @@ function handleSubmitMuestra(e) {
   renderMuestras();
 
   alert("Muestra registrada correctamente");
+}
+
+// Función para manejar el logout
+function handleLogout() {
+  if (confirm("¿Estás seguro que deseas cerrar sesión?")) {
+    window.location.href = "login.html";
+  }
 }
 
 // Funciones de acciones
