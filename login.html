@@ -1,116 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>iniciar sesión</title>
-
-    <!-- Iconos de Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
-      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-
-    <!-- Enlace a la hoja de estilos CSS -->
-    <link rel="stylesheet" href="estilos.css" />
-
-    <!-- Ícono de la pestaña del navegador -->
-    <link rel="icon" type="image/png" href="imgs/logo.png" />
-  </head>
-
-  <body class="class_body_login">
-
-    <!-- Contenedor principal -->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Track - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="estilos.css">
+    <link rel="icon" type="image/png" href="imgs/logo.png">
+</head>
+<body class="class_body_login">
     <div class="container" id="container">
-      <!-- Formulario para solicitar una cuenta nueva -->
-      <div class="form-container sign-up-container">
-        <form action="#">
-          <h1>Pide Tu cuenta</h1>
-
-          <!-- Campo para el nombre -->
-          <div class="infield">
-            <input type="text" placeholder="Nombre" />
-            <label></label>
-          </div>
-
-          <!-- Campo para el cargo -->
-          <div class="infield">
-            <input type="text" placeholder="Cargo" />
-            <label></label>
-          </div>
-
-          <!-- Campo para el correo electrónico -->
-          <div class="infield">
-            <input type="email" placeholder="Correo" name="email" />
-            <label></label>
-          </div>
-
-          <!-- Botón para solicitar la cuenta -->
-          <button class="styles_button">Pidela</button>
-        </form>
-      </div>
-
-      <!-- Formulario de inicio de sesión -->
-      <div class="form-container sign-in-container">
-        <form action="#" id="loginForm">
-          <h1>Iniciar sesión</h1>
-
-          <!-- Campo para el usuario -->
-          <div class="infield">
-            <input type="text" id="usuario" placeholder="usuario" />
-            <label></label>
-          </div>
-
-          <!-- Campo para la contraseña -->
-          <div class="infield">
-            <input type="password" id="contrasena" placeholder="Contraseña" />
-            <label></label>
-          </div>
-
-          <!-- Enlace para recuperar contraseña -->
-          <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
-
-          <!-- Botón para acceder -->
-          <button class="styles_button" type="submit" id="accederBtn">
-            Acceder
-          </button>
-
-          <!-- Mensaje de error -->
-          <p id="mensajeError" class="error"></p>
-        </form>
-      </div>
-
-      <!-- Contenedor de superposición (overlay) -->
-      <div class="overlay-container" id="overlayCon">
-        <div class="overlay">
-          <!-- Panel de superposición izquierdo -->
-          <div class="overlay-panel overlay-left">
-            <h1>FOREST TRACK</h1>
-            <p><strong>Accede a tu cuenta</strong> y sigue donde lo dejaste.</p>
-            <button type="submit">Acceder</button>
-          </div>
-
-          <!-- Panel de superposición derecho -->
-          <div class="overlay-panel overlay-right">
-            <!-- Logo de la aplicación -->
-            <img src="imgs/logo.png" alt="Forest Track Logo" class="logo" />
-
-            <p>¿No te han dado tu usuario?, <strong>Pídelo ahora!</strong></p>
-            <button>Pídelo</button>
-          </div>
-          az
+        <div class="form-container sign-up-container">
+            <form action="#">
+                <h1>Pide Tu cuenta</h1>
+                <div class="infield">
+                    <input type="text" placeholder="Nombre">
+                    <label></label>
+                </div>
+                <div class="infield">
+                    <input type="text" placeholder="Cargo">
+                    <label></label>
+                </div>
+                <div class="infield">
+                    <input type="email" placeholder="Correo" name="email">
+                    <label></label>
+                </div>
+                <button class="styles_button">Pidela</button>
+            </form>
         </div>
-
-        <!-- Botón oculto para controlar el overlay -->
-        <button id="overlayBtn"></button>
-      </div>
+        
+        <div class="form-container sign-in-container">
+            <form action="#" id="loginForm">
+                <h1>Iniciar sesión</h1>
+                <div class="infield">
+                    <input type="text" id="usuario" placeholder="usuario">
+                    <label></label>
+                </div>
+                <div class="infield">
+                    <input type="password" id="contrasena" placeholder="Contraseña">
+                    <label></label>
+                </div>
+                <div class="remember-container">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Recordar mi usuario</label>
+                </div>
+                <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
+                <button class="styles_button" type="submit" id="accederBtn">
+                    Acceder
+                </button>
+                <p id="mensajeError" class="error"></p>
+            </form>
+        </div>
+        
+        <div class="overlay-container" id="overlayCon">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>FOREST TRACK</h1>
+                    <p><strong>Accede a tu cuenta</strong> y sigue donde lo dejaste.</p>
+                    <button type="submit">Acceder</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <img src="imgs/logo.png" alt="Forest Track Logo" class="logo">
+                    <p>¿No te han dado tu usuario?, <strong>Pídelo ahora!</strong></p>
+                    <button>Pídelo</button>
+                </div>
+            </div>
+            <button id="overlayBtn"></button>
+        </div>
     </div>
-
-    <!-- Inclusión del archivo JavaScript principal -->
+    
+    <div class="cookie-banner" id="cookieBanner">
+        <h3>Uso de Cookies</h3>
+        <p>Utilizamos cookies para mejorar tu experiencia y recordar tus preferencias. Si continúas navegando, aceptas su uso. Consulta nuestra <a href="#" style="color: #7db352;">Política de Cookies</a> para más información.</p>
+        <div class="cookie-buttons">
+            <button class="cookie-btn reject" id="rejectCookies">Rechazar</button>
+            <button class="cookie-btn accept" id="acceptCookies">Aceptar</button>
+        </div>
+    </div>
+    
     <script src="main.js"></script>
-  </body>
+</body>
 </html>

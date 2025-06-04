@@ -18,6 +18,14 @@ let createMarker; // Marcador en el mapa de creación
 let selectedCoords = null; // Coordenadas seleccionadas
 let locationData = {}; // Datos de geolocalización
 
+
+// Variables para la calculadora de área
+let areaDrawingMode = false;
+let areaPoints = [];
+let areaMarkers = [];
+let areaLines = [];
+let areaPolygon = null;
+
 // Configuración de radios para subparcelas
 const SUBPARCEL_RADIUS = 40; // Radio de subparcelas individuales
 const CONTAINER_RADIUS = 100; // Radio del círculo contenedor
@@ -101,6 +109,159 @@ function reverseGeocode(latlng) {
             document.getElementById('selected-coordinates').innerHTML += 
                 '<br><span style="color:red">Error obteniendo datos de ubicación</span>';
         });
+}
+
+// ======= CALCULADORA DE ÁREA =======
+function toggleAreaCalculator() {
+    const section = document.getElementById('areaCalculatorSection');
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+    } else {
+        section.style.display = 'none';
+        disableAreaDrawing();
+    }
+}
+
+function enableAreaDrawing() {
+    areaDrawingMode = true;
+    areaPoints = [];
+    clearAreaDrawing();
+    
+    // Cambiar el cursor
+    map.getContainer().style.cursor = 'crosshair';
+    
+    // Agregar evento de clic al mapa
+    map.on('click', addAreaPoint);
+}
+
+function disableAreaDrawing() {
+    areaDrawingMode = false;
+    map.getContainer().style.cursor = '';
+    map.off('click', addAreaPoint);
+}
+
+function clearAreaDrawing() {
+    // Eliminar todos los elementos de dibujo
+    areaMarkers.forEach(marker => marker.remove());
+    areaLines.forEach(line => line.remove());
+    if (areaPolygon) areaPolygon.remove();
+    
+    areaMarkers = [];
+    areaLines = [];
+    areaPolygon = null;
+    areaPoints = [];
+    
+    document.getElementById('area-result').textContent = '';
+}
+
+function addAreaPoint(e) {
+    if (!areaDrawingMode) return;
+    
+    // Agregar punto
+    const point = e.latlng;
+    areaPoints.push(point);
+    
+    // Crear marcador visual
+    const marker = L.circleMarker(point, {
+        radius: 6,
+        color: '#ff5722',
+        fillColor: '#ff5722',
+        fillOpacity: 1
+    }).addTo(map);
+    areaMarkers.push(marker);
+    
+    // Dibujar líneas entre puntos
+    if (areaPoints.length > 1) {
+        const points = [areaPoints[areaPoints.length - 2], areaPoints[areaPoints.length - 1]];
+        const line = L.polyline(points, {color: '#ff5722', weight: 2}).addTo(map);
+        areaLines.push(line);
+    }
+    
+    // Dibujar polígono si hay 3 o más puntos
+    if (areaPoints.length >= 3) {
+        if (areaPolygon) areaPolygon.remove();
+        areaPolygon = L.polygon(areaPoints, {
+            color: '#ff5722',
+            weight: 2,
+            fillColor: '#ff5722',
+            fillOpacity: 0.2
+        }).addTo(map);
+        
+        // Calcular área
+        calculateArea();
+    }
+}
+
+function calculateArea() {
+    if (areaPoints.length < 3) return;
+    
+    // Calcular área usando la fórmula de Gauss
+    let area = 0;
+    const n = areaPoints.length;
+    
+    for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        const xi = areaPoints[i].lng * Math.PI / 180;
+        const yi = areaPoints[i].lat * Math.PI / 180;
+        const xj = areaPoints[j].lng * Math.PI / 180;
+        const yj = areaPoints[j].lat * Math.PI / 180;
+        
+        area += xi * yj - xj * yi;
+    }
+    
+    area = Math.abs(area) / 2;
+    
+    // Convertir a metros cuadrados
+    const earthRadius = 6378137; // Radio de la Tierra en metros
+    const areaM2 = area * earthRadius * earthRadius;
+    
+    // Mostrar resultado
+    let resultText = `Área: ${areaM2.toFixed(2)} m²`;
+    
+    // Convertir a hectáreas si es grande
+    if (areaM2 > 10000) {
+        const hectares = areaM2 / 10000;
+        resultText += ` (${hectares.toFixed(4)} ha)`;
+    }
+    
+    document.getElementById('area-result').textContent = resultText;
+}
+
+function toggleAreaCalculator() {
+    const areaControls = document.getElementById('area-controls');
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    
+    if (areaControls.style.display === 'block') {
+        areaControls.style.display = 'none';
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
+        disableAreaDrawing();
+    } else {
+        areaControls.style.display = 'block';
+        calculateBtn.textContent = 'OCULTAR CALCULADORA';
+        calculateBtn.innerHTML = '<i class="fas fa-times"></i> OCULTAR CALCULADORA';
+        clearAreaDrawing();
+    }
+}
+
+function enableAreaDrawing() {
+    areaDrawingMode = true;
+    areaPoints = [];
+    clearAreaDrawing();
+    
+    // Cambiar el cursor
+    map.getContainer().style.cursor = 'crosshair';
+    
+    // Agregar evento de clic al mapa
+    map.on('click', addAreaPoint);
+}
+
+function disableAreaDrawing() {
+    areaDrawingMode = false;
+    map.getContainer().style.cursor = '';
+    if (map) {
+        map.off('click', addAreaPoint);
+    }
 }
 
 // ======= CARGA Y FILTRADO DE DATOS =======
@@ -500,6 +661,18 @@ function closeDetailsModal() {
         circles = [];
         containerCircle = null;
     }
+
+    // Desactivar la calculadora al cerrar el modal
+    const areaControls = document.getElementById('area-controls');
+    if (areaControls) {
+        areaControls.style.display = 'none';
+    }
+    
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    if (calculateBtn) {
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
+    }
     
     // Limpiar contenedor del mapa completamente
     const mapContainer = document.getElementById('map');
@@ -654,6 +827,12 @@ function showDetails(conglomeradoId) {
         `;
     }
     
+    setTimeout(() => {
+        document.getElementById('calculateAreaBtn')?.addEventListener('click', toggleAreaCalculator);
+        document.getElementById('startDrawingBtn')?.addEventListener('click', enableAreaDrawing);
+        document.getElementById('clearDrawingBtn')?.addEventListener('click', clearAreaDrawing);
+    }, 300);
+
     // Mostrar modal
     document.getElementById('modalDetalles').classList.add('open');
     document.body.style.overflow = 'hidden';

@@ -759,3 +759,46 @@ tr:nth-child(even) {
     box-shadow: var(--shadow-lg);
     
 }
+/* Botón flotante para calculadora */
+.floating-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.floating-button:hover {
+    background-color: #7b1fa2;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Estilo para el contenedor de controles */
+#area-controls {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    max-width: 250px;
+}
+
+/* Estilo para el resultado del área */
+#area-result {
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f1f8e9;
+    border-radius: 4px;
+    border-left: 3px solid #4caf50;
+}

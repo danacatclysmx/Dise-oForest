@@ -210,7 +210,25 @@
             <div class="modal-section">
                 <h3>Mapa de Subparcelas</h3>
                 <div id="map-container">
-                    <div id="map"></div> <!-- Contenedor para mapa Leaflet -->
+                    <div id="map"></div>
+                    
+                    <!-- Controles flotantes para la calculadora de área -->
+                    <div id="area-controls" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 1000; background: white; padding: 10px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <button id="startDrawingBtn" class="action-button" style="flex: 1;">
+                                <i class="fas fa-draw-polygon"></i> Dibujar
+                            </button>
+                            <button id="clearDrawingBtn" class="action-button reject-button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div id="area-result" style="font-size: 14px; margin-top: 5px;"></div>
+                    </div>
+                    
+                    <!-- Botón flotante para activar la calculadora -->
+                    <button id="calculateAreaBtn" class="floating-button">
+                        <i class="fas fa-calculator"></i> CALCULAR ÁREA
+                    </button>
                 </div>
             </div>
             <!-- Información de puntos de referencia -->
