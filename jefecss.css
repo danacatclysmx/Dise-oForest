@@ -765,7 +765,7 @@ tr:nth-child(even) {
     top: 10px;
     right: 10px;
     z-index: 1000;
-    background-color: #9c27b0;
+    background-color: #087b00;
     color: white;
     border: none;
     border-radius: 4px;
@@ -779,7 +779,7 @@ tr:nth-child(even) {
 }
 
 .floating-button:hover {
-    background-color: #7b1fa2;
+    background-color: #1bce7a;
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
