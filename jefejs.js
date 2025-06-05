@@ -164,8 +164,8 @@ function addAreaPoint(e) {
     // Crear marcador visual
     const marker = L.circleMarker(point, {
         radius: 6,
-        color: '#ff5722',
-        fillColor: '#ff5722',
+        color: '#ffffff',
+        fillColor: '#000000',
         fillOpacity: 1
     }).addTo(map);
     areaMarkers.push(marker);
@@ -173,7 +173,7 @@ function addAreaPoint(e) {
     // Dibujar líneas entre puntos
     if (areaPoints.length > 1) {
         const points = [areaPoints[areaPoints.length - 2], areaPoints[areaPoints.length - 1]];
-        const line = L.polyline(points, {color: '#ff5722', weight: 2}).addTo(map);
+        const line = L.polyline(points, {color: '#ff0000', weight: 2}).addTo(map);
         areaLines.push(line);
     }
     
