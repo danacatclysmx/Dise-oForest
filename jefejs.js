@@ -111,37 +111,49 @@ function reverseGeocode(latlng) {
         });
 }
 
+
 // ======= CALCULADORA DE ÁREA =======
+// Variables adicionales para la calculadora
+let coordinateList = []; // Almacenar coordenadas de puntos
+let currentHoveredPoint = null; // Punto resaltado actualmente
+
 function toggleAreaCalculator() {
-    const section = document.getElementById('areaCalculatorSection');
-    if (section.style.display === 'none') {
-        section.style.display = 'block';
-    } else {
-        section.style.display = 'none';
+    const areaControls = document.getElementById('area-controls');
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    
+    if (areaControls.style.display === 'block') {
+        areaControls.style.display = 'none';
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
         disableAreaDrawing();
+    } else {
+        areaControls.style.display = 'block';
+        calculateBtn.textContent = 'OCULTAR CALCULADORA';
+        calculateBtn.innerHTML = '<i class="fas fa-times"></i> OCULTAR CALCULADORA';
+        clearAreaDrawing();
+        updateCoordinateList();
     }
 }
 
 function enableAreaDrawing() {
     areaDrawingMode = true;
     areaPoints = [];
+    coordinateList = [];
     clearAreaDrawing();
     
-    // Cambiar el cursor
     map.getContainer().style.cursor = 'crosshair';
-    
-    // Agregar evento de clic al mapa
     map.on('click', addAreaPoint);
+    map.on('mousemove', showMouseCoordinates);
 }
 
 function disableAreaDrawing() {
     areaDrawingMode = false;
     map.getContainer().style.cursor = '';
     map.off('click', addAreaPoint);
+    map.off('mousemove', showMouseCoordinates);
 }
 
 function clearAreaDrawing() {
-    // Eliminar todos los elementos de dibujo
     areaMarkers.forEach(marker => marker.remove());
     areaLines.forEach(line => line.remove());
     if (areaPolygon) areaPolygon.remove();
@@ -150,34 +162,72 @@ function clearAreaDrawing() {
     areaLines = [];
     areaPolygon = null;
     areaPoints = [];
+    coordinateList = [];
     
     document.getElementById('area-result').textContent = '';
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.textContent = '';
+        coordsContainer.style.display = 'none';
+    }
+    updateCoordinateList();
+}
+
+function showMouseCoordinates(e) {
+    if (!areaDrawingMode) return;
+    
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.innerHTML = `
+            <strong>Coordenadas actuales:</strong>
+            <div class="coordinates-values">
+                <span>Lat: ${e.latlng.lat.toFixed(6)}</span>
+                <span>Lng: ${e.latlng.lng.toFixed(6)}</span>
+            </div>
+        `;
+    }
 }
 
 function addAreaPoint(e) {
     if (!areaDrawingMode) return;
     
-    // Agregar punto
     const point = e.latlng;
     areaPoints.push(point);
     
-    // Crear marcador visual
+    coordinateList.push({
+        id: coordinateList.length + 1,
+        lat: point.lat,
+        lng: point.lng
+    });
+    
+    updateCoordinateList();
+    
     const marker = L.circleMarker(point, {
-        radius: 6,
+        radius: 8,
         color: '#ffffff',
         fillColor: '#000000',
-        fillOpacity: 1
+        fillOpacity: 1,
+        weight: 2
     }).addTo(map);
+    
+    marker.bindTooltip((coordinateList.length).toString(), {
+        permanent: true,
+        direction: 'center',
+        className: 'marker-number'
+    });
+    
+    // Eventos hover para el marcador
+    marker.on('mouseover', () => highlightPoint(areaMarkers.length - 1));
+    marker.on('mouseout', () => unhighlightPoint(areaMarkers.length - 1));
+    
     areaMarkers.push(marker);
     
-    // Dibujar líneas entre puntos
     if (areaPoints.length > 1) {
         const points = [areaPoints[areaPoints.length - 2], areaPoints[areaPoints.length - 1]];
         const line = L.polyline(points, {color: '#ff0000', weight: 2}).addTo(map);
         areaLines.push(line);
     }
     
-    // Dibujar polígono si hay 3 o más puntos
     if (areaPoints.length >= 3) {
         if (areaPolygon) areaPolygon.remove();
         areaPolygon = L.polygon(areaPoints, {
@@ -186,9 +236,69 @@ function addAreaPoint(e) {
             fillColor: '#ff5722',
             fillOpacity: 0.2
         }).addTo(map);
-        
-        // Calcular área
         calculateArea();
+    }
+}
+
+function updateCoordinateList() {
+    const coordsListContainer = document.getElementById('coordinates-list');
+    if (!coordsListContainer) return;
+    
+    if (coordinateList.length === 0) {
+        coordsListContainer.innerHTML = '<p class="no-coords">No hay puntos seleccionados</p>';
+        return;
+    }
+    
+    let html = '<div class="coordinates-header">';
+    html += '<span style="flex:0.5">#</span><span style="flex:1">Latitud</span><span style="flex:1">Longitud</span>';
+    html += '</div>';
+    
+    coordinateList.forEach((coord, index) => {
+        html += `
+            <div class="coord-item" 
+                 data-index="${index}"
+                 onmouseenter="highlightPoint(${index})"
+                 onmouseleave="unhighlightPoint(${index})">
+                <span class="coord-number" style="flex:0.5">${index + 1}</span>
+                <span class="coord-lat" style="flex:1">${coord.lat.toFixed(6)}</span>
+                <span class="coord-lng" style="flex:1">${coord.lng.toFixed(6)}</span>
+            </div>
+        `;
+    });
+    
+    coordsListContainer.innerHTML = html;
+}
+
+function highlightPoint(index) {
+    if (index >= 0 && index < areaMarkers.length) {
+        currentHoveredPoint = index;
+        areaMarkers[index].setStyle({
+            radius: 10,
+            fillColor: '#ff0000',
+            weight: 3
+        });
+        
+        // Resaltar temporalmente el ítem en la lista
+        const coordItems = document.querySelectorAll('.coord-item');
+        if (coordItems[index]) {
+            coordItems[index].classList.add('hovered');
+        }
+    }
+}
+
+function unhighlightPoint(index) {
+    if (index >= 0 && index < areaMarkers.length) {
+        areaMarkers[index].setStyle({
+            radius: 8,
+            fillColor: '#000000',
+            weight: 2
+        });
+        
+        // Quitar resaltado del ítem en la lista
+        const coordItems = document.querySelectorAll('.coord-item');
+        if (coordItems[index]) {
+            coordItems[index].classList.remove('hovered');
+        }
     }
 }
 
@@ -247,13 +357,19 @@ function toggleAreaCalculator() {
 function enableAreaDrawing() {
     areaDrawingMode = true;
     areaPoints = [];
+    coordinateList = [];
     clearAreaDrawing();
     
-    // Cambiar el cursor
-    map.getContainer().style.cursor = 'crosshair';
+    // Inicializar el contenedor de coordenadas
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.innerHTML = '<strong>Coordenadas actuales:</strong><br>Mueva el mouse sobre el mapa';
+        coordsContainer.style.display = 'block';
+    }
     
-    // Agregar evento de clic al mapa
+    map.getContainer().style.cursor = 'crosshair';
     map.on('click', addAreaPoint);
+    map.on('mousemove', showMouseCoordinates);
 }
 
 function disableAreaDrawing() {

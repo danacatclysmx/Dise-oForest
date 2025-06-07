@@ -213,7 +213,7 @@
                     <div id="map"></div>
                     
                     <!-- Controles flotantes para la calculadora de área -->
-                    <div id="area-controls" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 1000; background: white; padding: 10px; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); padding-top: 40px;">
+                    <div id="area-controls" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 1000; width: 240px; padding-top: 40px;">
                         <div style="display: flex; gap: 5px; margin-bottom: 10px;">
                             <button id="startDrawingBtn" class="action-button" style="flex: 1;">
                                 <i class="fas fa-draw-polygon"></i> Dibujar
@@ -222,7 +222,13 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <div id="area-result" style="font-size: 14px; margin-top: 5px;"></div>
+                        
+                        <div id="mouse-coordinates" style="font-size: 13px; margin-bottom: 10px;"></div>
+                        
+                        <div id="coordinates-list"></div>
+                        
+                        <div id="area-result" style="font-weight: bold; margin-top: 10px; padding: 8px; 
+                            background-color: #f1f8e9; border-radius: 4px; border-left: 3px solid #4caf50;"></div>
                     </div>
                     
                     <!-- Botón flotante para activar la calculadora -->
