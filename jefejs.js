@@ -18,6 +18,14 @@ let createMarker; // Marcador en el mapa de creación
 let selectedCoords = null; // Coordenadas seleccionadas
 let locationData = {}; // Datos de geolocalización
 
+
+// Variables para la calculadora de área
+let areaDrawingMode = false;
+let areaPoints = [];
+let areaMarkers = [];
+let areaLines = [];
+let areaPolygon = null;
+
 // Configuración de radios para subparcelas
 const SUBPARCEL_RADIUS = 40; // Radio de subparcelas individuales
 const CONTAINER_RADIUS = 100; // Radio del círculo contenedor
@@ -101,6 +109,275 @@ function reverseGeocode(latlng) {
             document.getElementById('selected-coordinates').innerHTML += 
                 '<br><span style="color:red">Error obteniendo datos de ubicación</span>';
         });
+}
+
+
+// ======= CALCULADORA DE ÁREA =======
+// Variables adicionales para la calculadora
+let coordinateList = []; // Almacenar coordenadas de puntos
+let currentHoveredPoint = null; // Punto resaltado actualmente
+
+function toggleAreaCalculator() {
+    const areaControls = document.getElementById('area-controls');
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    
+    if (areaControls.style.display === 'block') {
+        areaControls.style.display = 'none';
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
+        disableAreaDrawing();
+    } else {
+        areaControls.style.display = 'block';
+        calculateBtn.textContent = 'OCULTAR CALCULADORA';
+        calculateBtn.innerHTML = '<i class="fas fa-times"></i> OCULTAR CALCULADORA';
+        clearAreaDrawing();
+        updateCoordinateList();
+    }
+}
+
+function enableAreaDrawing() {
+    areaDrawingMode = true;
+    areaPoints = [];
+    coordinateList = [];
+    clearAreaDrawing();
+    
+    map.getContainer().style.cursor = 'crosshair';
+    map.on('click', addAreaPoint);
+    map.on('mousemove', showMouseCoordinates);
+}
+
+function disableAreaDrawing() {
+    areaDrawingMode = false;
+    map.getContainer().style.cursor = '';
+    map.off('click', addAreaPoint);
+    map.off('mousemove', showMouseCoordinates);
+}
+
+function clearAreaDrawing() {
+    areaMarkers.forEach(marker => marker.remove());
+    areaLines.forEach(line => line.remove());
+    if (areaPolygon) areaPolygon.remove();
+    
+    areaMarkers = [];
+    areaLines = [];
+    areaPolygon = null;
+    areaPoints = [];
+    coordinateList = [];
+    
+    document.getElementById('area-result').textContent = '';
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.textContent = '';
+        coordsContainer.style.display = 'none';
+    }
+    updateCoordinateList();
+}
+
+function showMouseCoordinates(e) {
+    if (!areaDrawingMode) return;
+    
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.innerHTML = `
+            <strong>Coordenadas actuales:</strong>
+            <div class="coordinates-values">
+                <span>Lat: ${e.latlng.lat.toFixed(6)}</span>
+                <span>Lng: ${e.latlng.lng.toFixed(6)}</span>
+            </div>
+        `;
+    }
+}
+
+function addAreaPoint(e) {
+    if (!areaDrawingMode) return;
+    
+    const point = e.latlng;
+    areaPoints.push(point);
+    
+    coordinateList.push({
+        id: coordinateList.length + 1,
+        lat: point.lat,
+        lng: point.lng
+    });
+    
+    updateCoordinateList();
+    
+    const marker = L.circleMarker(point, {
+        radius: 8,
+        color: '#ffffff',
+        fillColor: '#000000',
+        fillOpacity: 1,
+        weight: 2
+    }).addTo(map);
+    
+    marker.bindTooltip((coordinateList.length).toString(), {
+        permanent: true,
+        direction: 'center',
+        className: 'marker-number'
+    });
+    
+    // Eventos hover para el marcador
+    marker.on('mouseover', () => highlightPoint(areaMarkers.length - 1));
+    marker.on('mouseout', () => unhighlightPoint(areaMarkers.length - 1));
+    
+    areaMarkers.push(marker);
+    
+    if (areaPoints.length > 1) {
+        const points = [areaPoints[areaPoints.length - 2], areaPoints[areaPoints.length - 1]];
+        const line = L.polyline(points, {color: '#ff0000', weight: 2}).addTo(map);
+        areaLines.push(line);
+    }
+    
+    if (areaPoints.length >= 3) {
+        if (areaPolygon) areaPolygon.remove();
+        areaPolygon = L.polygon(areaPoints, {
+            color: '#ff5722',
+            weight: 2,
+            fillColor: '#ff5722',
+            fillOpacity: 0.2
+        }).addTo(map);
+        calculateArea();
+    }
+}
+
+function updateCoordinateList() {
+    const coordsListContainer = document.getElementById('coordinates-list');
+    if (!coordsListContainer) return;
+    
+    if (coordinateList.length === 0) {
+        coordsListContainer.innerHTML = '<p class="no-coords">No hay puntos seleccionados</p>';
+        return;
+    }
+    
+    let html = '<div class="coordinates-header">';
+    html += '<span style="flex:0.5">#</span><span style="flex:1">Latitud</span><span style="flex:1">Longitud</span>';
+    html += '</div>';
+    
+    coordinateList.forEach((coord, index) => {
+        html += `
+            <div class="coord-item" 
+                 data-index="${index}"
+                 onmouseenter="highlightPoint(${index})"
+                 onmouseleave="unhighlightPoint(${index})">
+                <span class="coord-number" style="flex:0.5">${index + 1}</span>
+                <span class="coord-lat" style="flex:1">${coord.lat.toFixed(6)}</span>
+                <span class="coord-lng" style="flex:1">${coord.lng.toFixed(6)}</span>
+            </div>
+        `;
+    });
+    
+    coordsListContainer.innerHTML = html;
+}
+
+function highlightPoint(index) {
+    if (index >= 0 && index < areaMarkers.length) {
+        currentHoveredPoint = index;
+        areaMarkers[index].setStyle({
+            radius: 10,
+            fillColor: '#ff0000',
+            weight: 3
+        });
+        
+        // Resaltar temporalmente el ítem en la lista
+        const coordItems = document.querySelectorAll('.coord-item');
+        if (coordItems[index]) {
+            coordItems[index].classList.add('hovered');
+        }
+    }
+}
+
+function unhighlightPoint(index) {
+    if (index >= 0 && index < areaMarkers.length) {
+        areaMarkers[index].setStyle({
+            radius: 8,
+            fillColor: '#000000',
+            weight: 2
+        });
+        
+        // Quitar resaltado del ítem en la lista
+        const coordItems = document.querySelectorAll('.coord-item');
+        if (coordItems[index]) {
+            coordItems[index].classList.remove('hovered');
+        }
+    }
+}
+
+function calculateArea() {
+    if (areaPoints.length < 3) return;
+    
+    // Calcular área usando la fórmula de Gauss
+    let area = 0;
+    const n = areaPoints.length;
+    
+    for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        const xi = areaPoints[i].lng * Math.PI / 180;
+        const yi = areaPoints[i].lat * Math.PI / 180;
+        const xj = areaPoints[j].lng * Math.PI / 180;
+        const yj = areaPoints[j].lat * Math.PI / 180;
+        
+        area += xi * yj - xj * yi;
+    }
+    
+    area = Math.abs(area) / 2;
+    
+    // Convertir a metros cuadrados
+    const earthRadius = 6378137; // Radio de la Tierra en metros
+    const areaM2 = area * earthRadius * earthRadius;
+    
+    // Mostrar resultado
+    let resultText = `Área: ${areaM2.toFixed(2)} m²`;
+    
+    // Convertir a hectáreas si es grande
+    if (areaM2 > 10000) {
+        const hectares = areaM2 / 10000;
+        resultText += ` (${hectares.toFixed(4)} ha)`;
+    }
+    
+    document.getElementById('area-result').textContent = resultText;
+}
+
+function toggleAreaCalculator() {
+    const areaControls = document.getElementById('area-controls');
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    
+    if (areaControls.style.display === 'block') {
+        areaControls.style.display = 'none';
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
+        disableAreaDrawing();
+    } else {
+        areaControls.style.display = 'block';
+        calculateBtn.textContent = 'OCULTAR CALCULADORA';
+        calculateBtn.innerHTML = '<i class="fas fa-times"></i> OCULTAR CALCULADORA';
+        clearAreaDrawing();
+    }
+}
+
+function enableAreaDrawing() {
+    areaDrawingMode = true;
+    areaPoints = [];
+    coordinateList = [];
+    clearAreaDrawing();
+    
+    // Inicializar el contenedor de coordenadas
+    const coordsContainer = document.getElementById('mouse-coordinates');
+    if (coordsContainer) {
+        coordsContainer.innerHTML = '<strong>Coordenadas actuales:</strong><br>Mueva el mouse sobre el mapa';
+        coordsContainer.style.display = 'block';
+    }
+    
+    map.getContainer().style.cursor = 'crosshair';
+    map.on('click', addAreaPoint);
+    map.on('mousemove', showMouseCoordinates);
+}
+
+function disableAreaDrawing() {
+    areaDrawingMode = false;
+    map.getContainer().style.cursor = '';
+    if (map) {
+        map.off('click', addAreaPoint);
+    }
 }
 
 // ======= CARGA Y FILTRADO DE DATOS =======
@@ -500,6 +777,18 @@ function closeDetailsModal() {
         circles = [];
         containerCircle = null;
     }
+
+    // Desactivar la calculadora al cerrar el modal
+    const areaControls = document.getElementById('area-controls');
+    if (areaControls) {
+        areaControls.style.display = 'none';
+    }
+    
+    const calculateBtn = document.getElementById('calculateAreaBtn');
+    if (calculateBtn) {
+        calculateBtn.textContent = 'CALCULAR ÁREA';
+        calculateBtn.innerHTML = '<i class="fas fa-calculator"></i> CALCULAR ÁREA';
+    }
     
     // Limpiar contenedor del mapa completamente
     const mapContainer = document.getElementById('map');
@@ -654,6 +943,12 @@ function showDetails(conglomeradoId) {
         `;
     }
     
+    setTimeout(() => {
+        document.getElementById('calculateAreaBtn')?.addEventListener('click', toggleAreaCalculator);
+        document.getElementById('startDrawingBtn')?.addEventListener('click', enableAreaDrawing);
+        document.getElementById('clearDrawingBtn')?.addEventListener('click', clearAreaDrawing);
+    }, 300);
+
     // Mostrar modal
     document.getElementById('modalDetalles').classList.add('open');
     document.body.style.overflow = 'hidden';

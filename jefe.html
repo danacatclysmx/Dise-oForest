@@ -296,10 +296,98 @@
 
     <!-- Modal de detalles de conglomerado -->
     <div class="modal-overlay" id="modalDetalles">
+<<<<<<< HEAD
       <div class="modal-content">
         <div class="modal-header">
           <div class="modal-title" id="modalConglomeradoId"></div>
           <button class="close-button" id="closeModal">&times;</button>
+=======
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalConglomeradoId"></div>
+                <button class="close-button" id="closeModal">&times;</button>
+            </div>
+            <!-- Sección de información general -->
+            <div class="modal-section">
+                <div class="info-grid">
+                    <div class="info-item"><strong>Fecha de Inicio:</strong> <span id="fechaInicioDetalle"></span></div>
+                    <div class="info-item"><strong>Fecha de Finalización:</strong> <span id="fechaFinDetalle"></span></div>
+                    <div class="info-item"><strong>Departamento:</strong> <span id="departamentoDetalle"></span></div>
+                    <div class="info-item"><strong>Municipio:</strong> <span id="municipioDetalle"></span></div>
+                    <div class="info-item"><strong>Corregimiento:</strong> <span id="corregimientoDetalle"></span></div>
+                    <div class="info-item"><strong>Coordenadas Centro:</strong> <span id="coordenadasDetalle"></span></div>
+                    <div class="info-item"><strong>Aprobado por:</strong> <span id="aprobadoPorDetalle"></span></div>
+                    <div class="info-item"><strong>Precisión GPS:</strong> <span id="precisionDetalle"></span></div>
+                    <div class="info-item"><strong>Fecha Aprobación:</strong> <span id="fechaAprobacionDetalle"></span></div>
+                    <div class="info-item"><strong>Estado:</strong> <span id="estadoDetalle"></span></div>
+                </div>
+            </div>
+            <!-- Mapa de subparcelas -->
+            <div class="divider"></div>
+            <div class="modal-section">
+                <h3>Mapa de Subparcelas</h3>
+                <div id="map-container">
+                    <div id="map"></div>
+                    
+                    <!-- Controles flotantes para la calculadora de área -->
+                    <div id="area-controls" style="display: none; position: absolute; top: 10px; right: 10px; z-index: 1000; width: 240px; padding-top: 40px;">
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <button id="startDrawingBtn" class="action-button" style="flex: 1;">
+                                <i class="fas fa-draw-polygon"></i> Dibujar
+                            </button>
+                            <button id="clearDrawingBtn" class="action-button reject-button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="mouse-coordinates" style="font-size: 13px; margin-bottom: 10px;"></div>
+                        
+                        <div id="coordinates-list"></div>
+                        
+                        <div id="area-result" style="font-weight: bold; margin-top: 10px; padding: 8px; 
+                            background-color: #f1f8e9; border-radius: 4px; border-left: 3px solid #4caf50;"></div>
+                    </div>
+                    
+                    <!-- Botón flotante para activar la calculadora -->
+                    <button id="calculateAreaBtn" class="floating-button">
+                        <i class="fas fa-calculator"></i> CALCULAR ÁREA
+                    </button>
+                </div>
+            </div>
+            <!-- Información de puntos de referencia -->
+            <div class="divider"></div>
+            <div class="modal-section">
+                <h3>Puntos de Referencia</h3>
+                <div class="punto-referencia">
+                    <div><strong>Tipo:</strong> <span id="puntoTipoDetalle"></span></div>
+                    <div><strong>Azimut:</strong> <span id="puntoAzimutDetalle"></span></div>
+                    <div><strong>Distancia horizontal:</strong> <span id="puntoDistanciaDetalle"></span></div>
+                </div>
+            </div>
+            <!-- Tabla de subparcelas -->
+            <div class="divider"></div>
+            <div class="modal-section">
+                <h3>Subparcelas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subparcela</th>
+                            <th>Radio</th>
+                            <th>Azimut</th>
+                            <th>Distancia al Centro</th>
+                            <th>Materializado</th>
+                            <th>Color</th>
+                            <th>Posición</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subparcelasTable">
+                        <!-- Datos de subparcelas se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Botones de acción dinámicos -->
+            <div class="action-buttons" id="actionButtons"></div>
+>>>>>>> 1e3a58b4b1ef5d49251b78901016c82e97164a7c
         </div>
         <!-- Sección de información general -->
         <div class="modal-section">
