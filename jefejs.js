@@ -212,7 +212,7 @@ function addAreaPoint(e) {
     
     marker.bindTooltip((coordinateList.length).toString(), {
         permanent: true,
-        direction: 'center',
+        direction: 'center',    
         className: 'marker-number'
     });
     

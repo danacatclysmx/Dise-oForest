@@ -1,307 +1,190 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <!-- Configuración básica del documento -->
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <!-- Meta viewport para responsividad -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conglomerados</title>
-
+    
     <!-- Estilos externos -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    />
-    <!-- Mapas interactivos -->
-    <link rel="stylesheet" href="jefecss.css" />
-    <!-- Estilos personalizados -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-    />
-    <!-- Iconos -->
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" /> <!-- Mapas interactivos -->
+    <link rel="stylesheet" href="jefecss.css"> <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Iconos -->
+</head>
+<body>
     <div class="container">
-      <!-- Menú hamburguesa para dispositivos móviles -->
-      <button class="menu-toggle" id="menuToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <!-- Overlay para cerrar menú lateral -->
-      <div class="overlay" id="overlay"></div>
-
-      <!-- Menú lateral de navegación -->
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2 class="sidebar-title">Menú</h2>
+        <!-- Menú hamburguesa para dispositivos móviles -->
+        <button class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <!-- Overlay para cerrar menú lateral -->
+        <div class="overlay" id="overlay"></div>
+        
+        <!-- Menú lateral de navegación -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Menú</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <!-- Opciones de menú con iconos -->
+                <li class="menu-item active" data-section="conglomerados">
+                    <i class="fas fa-list"></i>
+                    <span>Lista de Conglomerados</span>
+                </li>
+                <li class="menu-item" data-section="papelera">
+                    <i class="fas fa-trash"></i>
+                    <span>Papelera</span>
+                </li>
+            </ul>
+            <div class="logout-button" id="logoutButton">
+                <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
+            </div>
+            <!-- Botón para crear nuevo conglomerado -->
+            <div class="create-button" id="createButton">
+                <i class="fas fa-plus"></i> CREAR
+            </div>
         </div>
-        <ul class="sidebar-menu">
-          <!-- Opciones de menú con iconos -->
-          <li class="menu-item active" data-section="conglomerados">
-            <i class="fas fa-list"></i>
-            <span>Lista de Conglomerados</span>
-          </li>
-          <li class="menu-item" data-section="papelera">
-            <i class="fas fa-trash"></i>
-            <span>Papelera</span>
-          </li>
-        </ul>
-        <div class="logout-button" id="logoutButton">
-          <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
+
+        <div class="modal-overlay" id="modalCrear">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">CREAR NUEVO CONGLOMERADO</div>
+                    <button class="close-button" id="closeCrearModal">&times;</button>
+                </div>
+                <!-- Contenedor del mapa para seleccionar ubicación -->
+                <div class="form-group">
+                    <label>Seleccione la ubicación en el mapa:</label>
+                    <div id="map-container-crear" style="height: 400px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 4px;"></div>
+                    <div id="selected-coordinates" style="font-style: italic; margin-bottom: 15px;"></div>
+                    <div id="location-details" style="margin-bottom: 20px;">
+                        <div><strong>Departamento:</strong> <span id="auto-departamento">-</span></div>
+                        <div><strong>Municipio:</strong> <span id="auto-municipio">-</span></div>
+                        <div><strong>Corregimiento:</strong> <span id="auto-corregimiento">-</span></div>
+                    </div>
+                </div>
+                
+                <!-- Resto de campos -->
+                <form id="formCrearConglomerado">
+                    <div class="form-group">
+                        <label for="fechaInicio">Fecha de Inicio:</label>
+                        <input type="date" id="fechaInicio" name="fechaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaFin">Fecha de Finalización:</label>
+                        <input type="date" id="fechaFin" name="fechaFin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precision">Precisión GPS:</label>
+                        <input type="text" id="precision" name="precision" placeholder="Ej: ±0.35 m" required>
+                    </div>
+                    <h3>Punto de Referencia</h3>
+                    <div class="form-group">
+                        <label for="puntoTipo">Tipo:</label>
+                        <input type="text" id="puntoTipo" name="puntoTipo" placeholder="Ej: Árbol destacado">
+                    </div>
+                    <div class="form-group">
+                        <label for="puntoAzimut">Azimut:</label>
+                        <input type="text" id="puntoAzimut" name="puntoAzimut" placeholder="Ej: 45°">
+                    </div>
+                    <div class="form-group">
+                        <label for="puntoDistancia">Distancia horizontal:</label>
+                        <input type="text" id="puntoDistancia" name="puntoDistancia" placeholder="Ej: 15 m">
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" class="action-button reject-button" id="cancelarCrear">CANCELAR</button>
+                        <button type="submit" class="action-button approve-button">GUARDAR</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <!-- Botón para crear nuevo conglomerado -->
-        <div class="create-button" id="createButton">
-          <i class="fas fa-plus"></i> CREAR
+
+        <!-- Modal de Edición -->
+        <div class="modal-overlay" id="modalEditar">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">EDITAR CONGLOMERADO <span id="editConglomeradoId"></span></div>
+                    <button class="close-button" id="closeEditarModal">&times;</button>
+                </div>
+                <form id="formEditarConglomerado">
+                    <input type="hidden" id="editConglomeradoOriginalId">
+                    
+                    <!-- Ubicación fija (solo lectura) -->
+                    <div class="form-group">
+                        <label>Coordenadas Centro:</label>
+                        <input type="text" id="editCoordenadas" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Departamento:</label>
+                        <input type="text" id="editDepartamento" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Municipio:</label>
+                        <input type="text" id="editMunicipio" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Corregimiento:</label>
+                        <input type="text" id="editCorregimiento" readonly>
+                    </div>
+                    
+                    <!-- Campos editables -->
+                    <div class="form-group">
+                        <label for="editFechaInicio">Fecha de Inicio:</label>
+                        <input type="date" id="editFechaInicio" name="fechaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFechaFin">Fecha de Finalización:</label>
+                        <input type="date" id="editFechaFin" name="fechaFin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrecision">Precisión GPS:</label>
+                        <input type="text" id="editPrecision" name="precision" placeholder="Ej: ±0.35 m" required>
+                    </div>
+                    <h3>Punto de Referencia</h3>
+                    <div class="form-group">
+                        <label for="editPuntoTipo">Tipo:</label>
+                        <input type="text" id="editPuntoTipo" name="puntoTipo" placeholder="Ej: Árbol destacado">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPuntoAzimut">Azimut:</label>
+                        <input type="text" id="editPuntoAzimut" name="puntoAzimut" placeholder="Ej: 45°">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPuntoDistancia">Distancia horizontal:</label>
+                        <input type="text" id="editPuntoDistancia" name="puntoDistancia" placeholder="Ej: 15 m">
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" class="action-button reject-button" id="cancelarEditar">CANCELAR</button>
+                        <button type="submit" class="action-button approve-button">GUARDAR CAMBIOS</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
 
-      <div class="modal-overlay" id="modalCrear">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title">CREAR NUEVO CONGLOMERADO</div>
-            <button class="close-button" id="closeCrearModal">&times;</button>
-          </div>
-          <!-- Contenedor del mapa para seleccionar ubicación -->
-          <div class="form-group">
-            <label>Seleccione la ubicación en el mapa:</label>
-            <div
-              id="map-container-crear"
-              style="
-                height: 400px;
-                margin-bottom: 20px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-              "
-            ></div>
-            <div
-              id="selected-coordinates"
-              style="font-style: italic; margin-bottom: 15px"
-            ></div>
-            <div id="location-details" style="margin-bottom: 20px">
-              <div>
-                <strong>Departamento:</strong>
-                <span id="auto-departamento">-</span>
-              </div>
-              <div>
-                <strong>Municipio:</strong> <span id="auto-municipio">-</span>
-              </div>
-              <div>
-                <strong>Corregimiento:</strong>
-                <span id="auto-corregimiento">-</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Resto de campos -->
-          <form id="formCrearConglomerado">
-            <div class="form-group">
-              <label for="fechaInicio">Fecha de Inicio:</label>
-              <input type="date" id="fechaInicio" name="fechaInicio" required />
-            </div>
-            <div class="form-group">
-              <label for="fechaFin">Fecha de Finalización:</label>
-              <input type="date" id="fechaFin" name="fechaFin" required />
-            </div>
-            <div class="form-group">
-              <label for="precision">Precisión GPS:</label>
-              <input
-                type="text"
-                id="precision"
-                name="precision"
-                placeholder="Ej: ±0.35 m"
-                required
-              />
-            </div>
-            <h3>Punto de Referencia</h3>
-            <div class="form-group">
-              <label for="puntoTipo">Tipo:</label>
-              <input
-                type="text"
-                id="puntoTipo"
-                name="puntoTipo"
-                placeholder="Ej: Árbol destacado"
-              />
-            </div>
-            <div class="form-group">
-              <label for="puntoAzimut">Azimut:</label>
-              <input
-                type="text"
-                id="puntoAzimut"
-                name="puntoAzimut"
-                placeholder="Ej: 45°"
-              />
-            </div>
-            <div class="form-group">
-              <label for="puntoDistancia">Distancia horizontal:</label>
-              <input
-                type="text"
-                id="puntoDistancia"
-                name="puntoDistancia"
-                placeholder="Ej: 15 m"
-              />
-            </div>
-            <div class="action-buttons">
-              <button
-                type="button"
-                class="action-button reject-button"
-                id="cancelarCrear"
-              >
-                CANCELAR
-              </button>
-              <button type="submit" class="action-button approve-button">
-                GUARDAR
-              </button>
-            </div>
-          </form>
+        <!-- Título principal -->
+        <h1 id="mainTitle">CONGLOMERADOS</h1>
+        
+        <!-- Mensaje de bienvenida personalizado -->
+        <div id="welcomeMessage" class="welcome-message"></div>
+        
+        <!-- Filtros por estado -->
+        <div class="status-tabs" id="statusTabs">
+            <div class="status-tab active" data-status="pendientes" onclick="filterConglomerados('pendientes', event)">PENDIENTES</div>
+            <div class="status-tab" data-status="aprobados" onclick="filterConglomerados('aprobados', event)">APROBADOS</div>
+            <div class="status-tab" data-status="rechazados" onclick="filterConglomerados('rechazados', event)">RECHAZADOS</div>
         </div>
-      </div>
-
-      <!-- Modal de Edición -->
-      <div class="modal-overlay" id="modalEditar">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title">
-              EDITAR CONGLOMERADO <span id="editConglomeradoId"></span>
-            </div>
-            <button class="close-button" id="closeEditarModal">&times;</button>
-          </div>
-          <form id="formEditarConglomerado">
-            <input type="hidden" id="editConglomeradoOriginalId" />
-
-            <!-- Ubicación fija (solo lectura) -->
-            <div class="form-group">
-              <label>Coordenadas Centro:</label>
-              <input type="text" id="editCoordenadas" readonly />
-            </div>
-            <div class="form-group">
-              <label>Departamento:</label>
-              <input type="text" id="editDepartamento" readonly />
-            </div>
-            <div class="form-group">
-              <label>Municipio:</label>
-              <input type="text" id="editMunicipio" readonly />
-            </div>
-            <div class="form-group">
-              <label>Corregimiento:</label>
-              <input type="text" id="editCorregimiento" readonly />
-            </div>
-
-            <!-- Campos editables -->
-            <div class="form-group">
-              <label for="editFechaInicio">Fecha de Inicio:</label>
-              <input
-                type="date"
-                id="editFechaInicio"
-                name="fechaInicio"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="editFechaFin">Fecha de Finalización:</label>
-              <input type="date" id="editFechaFin" name="fechaFin" required />
-            </div>
-            <div class="form-group">
-              <label for="editPrecision">Precisión GPS:</label>
-              <input
-                type="text"
-                id="editPrecision"
-                name="precision"
-                placeholder="Ej: ±0.35 m"
-                required
-              />
-            </div>
-            <h3>Punto de Referencia</h3>
-            <div class="form-group">
-              <label for="editPuntoTipo">Tipo:</label>
-              <input
-                type="text"
-                id="editPuntoTipo"
-                name="puntoTipo"
-                placeholder="Ej: Árbol destacado"
-              />
-            </div>
-            <div class="form-group">
-              <label for="editPuntoAzimut">Azimut:</label>
-              <input
-                type="text"
-                id="editPuntoAzimut"
-                name="puntoAzimut"
-                placeholder="Ej: 45°"
-              />
-            </div>
-            <div class="form-group">
-              <label for="editPuntoDistancia">Distancia horizontal:</label>
-              <input
-                type="text"
-                id="editPuntoDistancia"
-                name="puntoDistancia"
-                placeholder="Ej: 15 m"
-              />
-            </div>
-            <div class="action-buttons">
-              <button
-                type="button"
-                class="action-button reject-button"
-                id="cancelarEditar"
-              >
-                CANCELAR
-              </button>
-              <button type="submit" class="action-button approve-button">
-                GUARDAR CAMBIOS
-              </button>
-            </div>
-          </form>
+        
+        <!-- Contenedor para listado dinámico de conglomerados -->
+        <div id="conglomeradosContainer">
+            <!-- Los conglomerados se cargarán dinámicamente aquí -->
         </div>
-      </div>
-
-      <!-- Título principal -->
-      <h1 id="mainTitle">CONGLOMERADOS</h1>
-
-      <!-- Mensaje de bienvenida personalizado -->
-      <div id="welcomeMessage" class="welcome-message"></div>
-
-      <!-- Filtros por estado -->
-      <div class="status-tabs" id="statusTabs">
-        <div
-          class="status-tab active"
-          data-status="pendientes"
-          onclick="filterConglomerados('pendientes', event)"
-        >
-          PENDIENTES
-        </div>
-        <div
-          class="status-tab"
-          data-status="aprobados"
-          onclick="filterConglomerados('aprobados', event)"
-        >
-          APROBADOS
-        </div>
-        <div
-          class="status-tab"
-          data-status="rechazados"
-          onclick="filterConglomerados('rechazados', event)"
-        >
-          RECHAZADOS
-        </div>
-      </div>
-
-      <!-- Contenedor para listado dinámico de conglomerados -->
-      <div id="conglomeradosContainer">
-        <!-- Los conglomerados se cargarán dinámicamente aquí -->
-      </div>
     </div>
 
     <!-- Modal de detalles de conglomerado -->
     <div class="modal-overlay" id="modalDetalles">
-<<<<<<< HEAD
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title" id="modalConglomeradoId"></div>
-          <button class="close-button" id="closeModal">&times;</button>
-=======
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title" id="modalConglomeradoId"></div>
@@ -387,107 +270,11 @@
             </div>
             <!-- Botones de acción dinámicos -->
             <div class="action-buttons" id="actionButtons"></div>
->>>>>>> 1e3a58b4b1ef5d49251b78901016c82e97164a7c
         </div>
-        <!-- Sección de información general -->
-        <div class="modal-section">
-          <div class="info-grid">
-            <div class="info-item">
-              <strong>Fecha de Inicio:</strong>
-              <span id="fechaInicioDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Fecha de Finalización:</strong>
-              <span id="fechaFinDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Departamento:</strong>
-              <span id="departamentoDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Municipio:</strong> <span id="municipioDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Corregimiento:</strong>
-              <span id="corregimientoDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Coordenadas Centro:</strong>
-              <span id="coordenadasDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Aprobado por:</strong>
-              <span id="aprobadoPorDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Precisión GPS:</strong>
-              <span id="precisionDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Fecha Aprobación:</strong>
-              <span id="fechaAprobacionDetalle"></span>
-            </div>
-            <div class="info-item">
-              <strong>Estado:</strong> <span id="estadoDetalle"></span>
-            </div>
-          </div>
-        </div>
-        <!-- Mapa de subparcelas -->
-        <div class="divider"></div>
-        <div class="modal-section">
-          <h3>Mapa de Subparcelas</h3>
-          <div id="map-container">
-            <div id="map"></div>
-            <!-- Contenedor para mapa Leaflet -->
-          </div>
-        </div>
-        <!-- Información de puntos de referencia -->
-        <div class="divider"></div>
-        <div class="modal-section">
-          <h3>Puntos de Referencia</h3>
-          <div class="punto-referencia">
-            <div>
-              <strong>Tipo:</strong> <span id="puntoTipoDetalle"></span>
-            </div>
-            <div>
-              <strong>Azimut:</strong> <span id="puntoAzimutDetalle"></span>
-            </div>
-            <div>
-              <strong>Distancia horizontal:</strong>
-              <span id="puntoDistanciaDetalle"></span>
-            </div>
-          </div>
-        </div>
-        <!-- Tabla de subparcelas -->
-        <div class="divider"></div>
-        <div class="modal-section">
-          <h3>Subparcelas</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Subparcela</th>
-                <th>Radio</th>
-                <th>Azimut</th>
-                <th>Distancia al Centro</th>
-                <th>Materializado</th>
-                <th>Color</th>
-                <th>Posición</th>
-              </tr>
-            </thead>
-            <tbody id="subparcelasTable">
-              <!-- Datos de subparcelas se llenarán dinámicamente -->
-            </tbody>
-          </table>
-        </div>
-        <!-- Botones de acción dinámicos -->
-        <div class="action-buttons" id="actionButtons"></div>
-      </div>
     </div>
 
     <!-- Scripts necesarios -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Librería de mapas -->
-    <script src="jefejs.js"></script>
-    <!-- Lógica de aplicación -->
-  </body>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> <!-- Librería de mapas -->
+    <script src="jefejs.js"></script> <!-- Lógica de aplicación -->
+</body>
 </html>
